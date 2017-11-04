@@ -18,6 +18,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/createNew"
+            android:drawableLeft="@drawable/ic_file_plus_1703"
             android:enabled="false"
             style="?android:attr/buttonBarButtonStyle"/>
 
@@ -28,6 +29,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/open"
+            android:drawableLeft="@drawable/ic_directory_search_1623"
             style="?android:attr/buttonBarButtonStyle"/>
     </LinearLayout>
 
@@ -55,6 +57,7 @@
                 android:gravity="center"
                 android:text="@string/settings"
                 android:enabled="false"
+                android:drawableLeft="@drawable/ic_settings_1389"
                 style="?android:attr/buttonBarButtonStyle"/>
     </LinearLayout>
 
