@@ -1,6 +1,6 @@
 aRevelation
 ===========
-Android password manager based on Revelation Password Manager file format.
+Android password manager based on Revelation Password Manager file format.  
 https://revelation.olasagasti.info/
 
 ## Build (Ubuntu)
