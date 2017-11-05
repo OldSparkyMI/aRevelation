@@ -55,7 +55,7 @@ You can find .apk files in aRevelation/build/apk
 https://github.com/MarmaladeSky/aRevelation
 * Icon set from Alexandru Stoica  
 https://dribbble.com/shots/2888226-1800-Free-Minimal-Icon-Pack-20x20
-* Original Revelation project
+* Original Revelation project  
 https://revelation.olasagasti.info/
 * Current developer  
 https://github.com/OldSparkyMI
