@@ -1,4 +1,7 @@
-# aRevelation
+aRevelation
+===========
+Android password manager based on Revelation Password Manager file format.
+https://revelation.olasagasti.info/
 
 ## Build (Ubuntu)
 
@@ -46,3 +49,13 @@ export ANDROID_HOME="path/to/android-sdk-linux"
 ./gradlew build
 ```
 You can find .apk files in aRevelation/build/apk
+
+## About
+* Initial Android Projoct from MarmaladeSky  
+https://github.com/MarmaladeSky/aRevelation
+* Icon set from Alexandru Stoica  
+https://dribbble.com/shots/2888226-1800-Free-Minimal-Icon-Pack-20x20
+* Original Revelation project
+https://revelation.olasagasti.info/
+* Current developer  
+https://github.com/OldSparkyMI
