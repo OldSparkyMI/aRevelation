@@ -5,60 +5,71 @@
               android:orientation="vertical"
               tools:ignore="NestedWeights"> <!-- Suppress nested weights warning - noncritical -->
 
+    <ImageView
+        android:paddingTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        android:text="@string/app_name"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:text="a secure password manager for android"
+        />
+
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:layout_gravity="bottom"
         android:orientation="horizontal"
         style="?android:attr/buttonBarStyle">
 
         <Button
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:padding="20dp"
             android:gravity="center"
             android:text="@string/createNew"
             android:drawableLeft="@drawable/ic_file_plus_1703"
             android:enabled="false"
+            android:layout_gravity="bottom"
             style="?android:attr/buttonBarButtonStyle"/>
 
         <Button
             android:id="@+id/btnOpen"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:padding="20dp"
             android:gravity="center"
             android:text="@string/open"
+            android:layout_gravity="bottom"
             android:drawableLeft="@drawable/ic_directory_search_1623"
             style="?android:attr/buttonBarButtonStyle"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/recentItemsList"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="1"
-        android:orientation="horizontal"
-        style="?android:attr/buttonBarStyle">
-        <Button
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/recent"
-                android:enabled="false"
-                style="?android:attr/buttonBarButtonStyle"/>
 
         <Button
-                android:id="@+id/btnOption"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/settings"
-                android:enabled="false"
-                android:drawableLeft="@drawable/ic_settings_1389"
-                style="?android:attr/buttonBarButtonStyle"/>
-    </LinearLayout>
+            android:id="@+id/btnAbout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="20dp"
+            android:gravity="center"
+            android:text="@string/about"
+            android:layout_gravity="bottom"
+            android:drawableLeft="@drawable/ic_information_1447"
+            style="?android:attr/buttonBarButtonStyle"/>
 
+    </LinearLayout>
 </LinearLayout>

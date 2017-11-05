@@ -23,56 +23,67 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.github.marmaladesky.data.RevelationData;
+import com.igloffstein.maik.aRevelation.AboutFragment;
+
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
 public class StartScreenFragment extends Fragment {
 
-	private static final int REQUEST_FILE_OPEN = 1;
+    private static final int REQUEST_FILE_OPEN = 1;
 
-	@TargetApi(19)
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState)  {
-		View v = inflater.inflate(R.layout.start_screen, container, false);
+    @TargetApi(19)
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.start_screen, container, false);
 
-        Button btnOpen = (Button) v.findViewById(R.id.btnOpen);
-        Button btnOption = (Button) v.findViewById(R.id.btnOption);
+        Button btnOpen = v.findViewById(R.id.btnOpen);
+        Button btnAbout = v.findViewById(R.id.btnAbout);
 
-		btnOpen.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				String action = Build.VERSION.SDK_INT >= 19 ? Intent.ACTION_OPEN_DOCUMENT : Intent.ACTION_GET_CONTENT;
-				Intent intent = new Intent(action);
-				intent.addCategory(Intent.CATEGORY_OPENABLE);
-				intent.setType("application/*");
-				startActivityForResult(intent, REQUEST_FILE_OPEN);
+        btnOpen.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                String action = Build.VERSION.SDK_INT >= 19 ? Intent.ACTION_OPEN_DOCUMENT : Intent.ACTION_GET_CONTENT;
+                Intent intent = new Intent(action);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("application/*");
+                startActivityForResult(intent, REQUEST_FILE_OPEN);
+            }
+        });
 
-			}
-		});
-        btnOption.setOnClickListener(new OptionButtonListener());
+        btnAbout.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                Fragment aboutFragment = new AboutFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.mainContainer, aboutFragment); // give your fragment container id in first parameter
+                transaction.addToBackStack(null);  // if written, this transaction will be added to backstack
+                transaction.commit();
+            }
+        });
 
         ((ARevelation) getActivity()).checkButton();
 
-		return v;
-	}
+        return v;
+    }
 
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == REQUEST_FILE_OPEN && data != null) {
-			System.out.println("Image openned, result code is " + resultCode
-					+ ", file is " + data.getData());
-			try {
-				(AskPasswordDialog.newInstance(data.getData().toString())).show(getFragmentManager(), "Tag");
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_FILE_OPEN && data != null) {
+            System.out.println("Image opened, result code is " + resultCode
+                    + ", file is " + data.getData());
+            try {
+                (AskPasswordDialog.newInstance(data.getData().toString())).show(getFragmentManager(), "Tag");
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
 
 
-	public static class AskPasswordDialog extends DialogFragment {
+    public static class AskPasswordDialog extends DialogFragment {
 
         public String file;
 
@@ -84,52 +95,52 @@ public class StartScreenFragment extends Fragment {
             return f;
         }
 
-		@SuppressLint("InflateParams") // Passing null is normal for dialogs
-		@Override
-		public Dialog onCreateDialog(Bundle savedInstanceState) {
-            if(savedInstanceState != null && savedInstanceState.getString("file") != null)
+        @SuppressLint("InflateParams") // Passing null is normal for dialogs
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            if (savedInstanceState != null && savedInstanceState.getString("file") != null)
                 file = savedInstanceState.getString("file");
             else
                 file = getArguments().getString("file");
 
-			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-			LayoutInflater inflater = getActivity().getLayoutInflater();
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            LayoutInflater inflater = getActivity().getLayoutInflater();
 
-			builder.setView(inflater.inflate(R.layout.ask_password_dialog, null));
-			builder
-				.setPositiveButton(R.string.open,
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) { /* See onStart() */ }
-					})
-							
-				.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
+            builder.setView(inflater.inflate(R.layout.ask_password_dialog, null));
+            builder
+                    .setPositiveButton(R.string.open,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) { /* See onStart() */ }
+                            })
+
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
             return builder.create();
-		}
+        }
 
-		@Override
-		public void onStart() {
-			super.onStart();
-			AlertDialog d = (AlertDialog)getDialog();
-			if(d != null) {
-				Button positiveButton = d.getButton(Dialog.BUTTON_POSITIVE);
-			    positiveButton.setOnClickListener(new View.OnClickListener() {
-			    	public void onClick(View v) {
+        @Override
+        public void onStart() {
+            super.onStart();
+            AlertDialog d = (AlertDialog) getDialog();
+            if (d != null) {
+                Button positiveButton = d.getButton(Dialog.BUTTON_POSITIVE);
+                positiveButton.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
                         EditText passwordEdit = ((EditText) getDialog().findViewById(R.id.password));
 
                         // Hide keyboard
-                        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(
+                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
                                 Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(passwordEdit.getWindowToken(), 0);
 
                         (new DecryptTask(v.getContext())).execute(passwordEdit.getText().toString(), file, v.getContext());
                     }
-			    });
-			}
-		}
+                });
+            }
+        }
 
         @Override
         public void onSaveInstanceState(Bundle outState) {
@@ -165,7 +176,7 @@ public class StartScreenFragment extends Fragment {
 
                     try {
                         SelfTestingResult testing = ARevelation.testData(result);
-                        if(testing == SelfTestingResult.Different) {
+                        if (testing == SelfTestingResult.Different) {
                             res.toastMessage = R.string.self_testing_super_warning;
                         } else if (testing == SelfTestingResult.Similar) {
                             res.toastMessage = R.string.self_testing_warning;
@@ -193,8 +204,8 @@ public class StartScreenFragment extends Fragment {
                 super.onPostExecute(s);
                 progressDialog.dismiss();
 
-                if(!isCancelled()) {
-                    if(!s.isFail) {
+                if (!isCancelled()) {
+                    if (!s.isFail) {
                         Toast.makeText(context, getActivity().getString(s.toastMessage), Toast.LENGTH_LONG).show();
                         ((ARevelation) getActivity()).rvlData = s.data;
 
@@ -221,7 +232,8 @@ public class StartScreenFragment extends Fragment {
                 boolean isFail;
                 Throwable exception;
 
-                DecryptTaskResult() {}
+                DecryptTaskResult() {
+                }
 
                 DecryptTaskResult(Throwable e) {
                     exception = e;
@@ -245,15 +257,4 @@ public class StartScreenFragment extends Fragment {
         }
 
     }
-
-
-    private static class OptionButtonListener implements OnClickListener {
-
-        @Override
-        public void onClick(View v) {
-
-        }
-    }
-
-
 }

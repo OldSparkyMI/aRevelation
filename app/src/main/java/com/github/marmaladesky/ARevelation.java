@@ -2,6 +2,8 @@ package com.github.marmaladesky;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Button;
 import com.github.marmaladesky.data.RevelationData;
@@ -83,6 +85,13 @@ public class ARevelation extends Activity {
             saveButton.setVisibility(View.VISIBLE);
         else
             saveButton.setVisibility(View.GONE);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
     }
 
     public static SelfTestingResult testData(String xmlData) throws Exception {
