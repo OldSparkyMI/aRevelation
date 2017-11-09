@@ -27,7 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.marmaladesky.data.RevelationData;
-import com.igloffstein.maik.aRevelation.AboutFragment;
+import de.igloffstein.maik.aRevelation.AboutFragment;
 
 import org.custommonkey.xmlunit.*;
 import org.simpleframework.xml.Serializer;

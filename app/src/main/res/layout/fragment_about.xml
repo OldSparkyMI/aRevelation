@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="4dp"
-    tools:context="com.igloffstein.maik.aRevelation.AboutFragment">
+    tools:context="de.igloffstein.maik.aRevelation.AboutFragment">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="fill_parent"

@@ -1,4 +1,4 @@
-package com.igloffstein.maik.aRevelation;
+package de.igloffstein.maik.aRevelation;
 
 import android.content.Context;
 import android.net.Uri;

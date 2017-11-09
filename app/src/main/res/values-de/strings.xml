@@ -9,10 +9,10 @@
     <string name="about">Über</string>
     <string name="createNew">Neu</string>
     <string name="ask_password_message">Passwort eingeben</string>
-    <string name="self_testing_warning">Warnung! Editieren und speichern könnte zum Datenverlust führen! Sei vorsichtig.</string>
-    <string name="self_testing_super_warning">Warnung! Editieren und speichern führt zum Datenverlust! Pass auf!</string>
-    <string name="self_testing_passed_message">Selsttest erfolgreich, Editieren ohne Einschränkungen.</string>
-    <string name="self_testing_internal_error">Unbehandelter interner Fehler während des Tests. Vorsichtig vorgehen.</string>
+    <string name="self_testing_warning">Warnung! Editieren und speichern kann unter Umständen zu einem Datenverlust führen! Obacht!</string>
+    <string name="self_testing_super_warning">Warnung! Editieren und speichern führt zum Datenverlust! Vorsicht!</string>
+    <string name="self_testing_passed_message">Selsttest erfolgreich.</string>
+    <string name="self_testing_internal_error">Unbehandelter interner Fehler während des Selbsttests. Vorsichtig vorgehen.</string>
     <string name="decrypt_progress_bar_label">Entschlüsseln…</string>
     <!--Field names-->
     <string name="name">Name</string>
