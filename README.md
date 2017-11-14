@@ -1,6 +1,13 @@
 aRevelation
 ===========
-Android password manager based on Revelation Password Manager file format.  
+An android password manager based on Revelation Password Manager file format. It stores all your accounts and passwords in a single, secure place, and gives you access to it through a user-friendly graphical interface on your smartphone.
+
+* very simple gui, easy to use
+* no master password
+* stores your information in a secured single file
+* categorize your passwords
+* simple, secure and powerful
+
 https://revelation.olasagasti.info/
 
 ## Build (Ubuntu)
