@@ -11,7 +11,7 @@
     <string name="ask_password_message">Passwort eingeben</string>
     <string name="self_testing_warning">Warnung! Editieren und speichern kann unter Umständen zu einem Datenverlust führen! Obacht!</string>
     <string name="self_testing_super_warning">Warnung! Editieren und speichern führt zum Datenverlust! Vorsicht!</string>
-    <string name="self_testing_passed_message">Selsttest erfolgreich.</string>
+    <string name="self_testing_passed_message">Integritätstest erfolgreich.</string>
     <string name="self_testing_internal_error">Unbehandelter interner Fehler während des Selbsttests. Vorsichtig vorgehen.</string>
     <string name="decrypt_progress_bar_label">Entschlüsseln…</string>
     <!--Field names-->
