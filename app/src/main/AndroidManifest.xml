@@ -17,7 +17,9 @@
         android:label="@string/app_name">
         <activity
             android:name=".ARevelation"
-            android:label="aRevelation">
+            android:label="aRevelation"
+            android:theme="@style/Theme.AppCompat"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -10,6 +10,8 @@ import java.io.*;
 import java.util.List;
 import java.util.UUID;
 
+import lombok.Getter;
+
 @Root(name="revelationdata")
 @Order(attributes = {"version", "dataversion"})
 public class RevelationData implements Serializable {
@@ -22,19 +24,24 @@ public class RevelationData implements Serializable {
     @Attribute(name="dataversion")
     private String dataversion;
 
+    @Getter
     @ElementList(inline = true)
-    private List<Entry> list;
+    private List<Entry> entries;
 
     public RevelationData(@Attribute(name="version") String version,
                           @Attribute(name="dataversion") String dataversion,
-                          @ElementList(inline = true) List<Entry> list) {
+                          @ElementList(inline = true) List<Entry> entries) {
         this.version = version;
         this.dataversion = dataversion;
-        this.list = list;
+        this.entries = entries;
     }
 
     public Entry getEntryById(String uuid) {
-        return getEntryById(list, uuid);
+        return getEntryById(entries, uuid);
+    }
+
+    public void addEntry(Entry entry){
+        entries.add(entry);
     }
 
     private static Entry getEntryById(List<Entry> list, String uuid) {
@@ -52,7 +59,7 @@ public class RevelationData implements Serializable {
     }
 
     public FieldWrapper getFieldById(String uuid) throws Exception {
-        FieldWrapper fw = getFieldById(uuid, list);
+        FieldWrapper fw = getFieldById(uuid, entries);
         if(fw != null)
             return fw;
         else
@@ -91,11 +98,11 @@ public class RevelationData implements Serializable {
 
     public List<Entry> getEntryGroupById(String uuid) throws Exception {
         if(this.uuid.equals(uuid)) {
-            return list;
+            return entries;
         } else {
-            List<Entry> l = getEntryGroupById(list, uuid);
+            List<Entry> l = getEntryGroupById(entries, uuid);
             if(l != null)
-                return getEntryGroupById(list, uuid);
+                return getEntryGroupById(entries, uuid);
             else
                 throw new Exception("Cannot find group with id = " + uuid);
         }
@@ -120,7 +127,7 @@ public class RevelationData implements Serializable {
     }
 
     public boolean isEdited() {
-        for(Entry e : list) if(e.isEdited()) return true;
+        for(Entry e : entries) if(e.isEdited()) return true;
         return false;
     }
 
@@ -137,6 +144,6 @@ public class RevelationData implements Serializable {
     }
 
     private void cleanUpdateStatus() {
-        for(Entry e : list) e.cleanUpdateStatus();
+        for(Entry e : entries) e.cleanUpdateStatus();
     }
 }

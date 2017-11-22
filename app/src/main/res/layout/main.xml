@@ -1,20 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:weightSum="1">
-    <LinearLayout
-         android:layout_width="fill_parent"
-         android:layout_height="wrap_content"
-         android:id="@+id/mainContainer"
-         android:orientation="horizontal"
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:weightSum="1"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        >
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/mainContainer"
+            android:orientation="horizontal"
             android:layout_weight="0.99"/>
-    <Button android:id="@+id/saveButton"
+        <Button android:id="@+id/saveButton"
             android:visibility="visible"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/save"
             android:onClick="saveChanges"
             android:layout_weight="0.01"/>
-</LinearLayout>
+        />
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:visibility="invisible"
+        android:onClick="addEntry"
+        app:srcCompat="@android:drawable/ic_input_add"
+        />
+
+</FrameLayout>

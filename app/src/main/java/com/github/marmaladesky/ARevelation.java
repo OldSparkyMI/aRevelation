@@ -7,7 +7,6 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,6 +14,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,21 +23,37 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.marmaladesky.data.Entry;
+import com.github.marmaladesky.data.Field;
 import com.github.marmaladesky.data.RevelationData;
-import de.igloffstein.maik.aRevelation.AboutFragment;
 
-import org.custommonkey.xmlunit.*;
+import org.custommonkey.xmlunit.DetailedDiff;
+import org.custommonkey.xmlunit.Diff;
+import org.custommonkey.xmlunit.Difference;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public class ARevelation extends Activity implements AboutFragment.OnFragmentInteractionListener {
+import de.igloffstein.maik.aRevelation.AboutFragment;
+import de.igloffstein.maik.aRevelation.EntryType;
+import de.igloffstein.maik.aRevelation.Helper.ARevelationHelper;
+import de.igloffstein.maik.aRevelation.Helper.EntryHelper;
+
+public class ARevelation extends AppCompatActivity implements AboutFragment.OnFragmentInteractionListener {
 
     private static final int REQUEST_FILE_OPEN = 1;
     private static final String ARGUMENT_RVLDATA = "rvlData";
@@ -49,9 +65,68 @@ public class ARevelation extends Activity implements AboutFragment.OnFragmentInt
     RevelationData rvlData;
     String password;
     String currentFile;
+    DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
 
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+
+            Entry entry = EntryHelper.newEntry(EntryType.getFromPosition(which));
+
+            // get id from language values
+            int id = getResources().getIdentifier(
+                    EntryType.getFromPosition(which).toString().toLowerCase(),
+                    "string", getPackageName()
+            );
+            entry.setName(getString(id));
+
+            rvlData.addEntry(entry);
+
+            EntryFragment nextFrag = EntryFragment.newInstance(entry.getUuid());
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.mainContainer, nextFrag)
+                    .addToBackStack(null).commit();
+        }
+    };
     private Button saveButton;
 
+    public static SelfTestingResult testData(String xmlData) throws Exception {
+        Serializer serializer1 = new Persister();
+        RevelationData data = serializer1.read(RevelationData.class, xmlData, false);
+
+        Serializer serializer2 = new Persister();
+        Writer writer = new StringWriter();
+        serializer2.write(data, writer);
+
+        XMLUnit.setIgnoreWhitespace(true);
+        Diff diff = new Diff(xmlData, writer.toString());
+
+        if (BuildConfig.DEBUG) {
+            System.out.println("Similar? " + diff.similar());
+            System.out.println("Identical? " + diff.identical());
+            System.out.println(diff);
+
+            DetailedDiff detDiff = new DetailedDiff(diff);
+            List differences = detDiff.getAllDifferences();
+            System.out.println(differences.size() + " diffs founded");
+
+            int counter = 0;
+            for (Object object : differences) {
+                Difference difference = (Difference) object;
+                System.out.println("***********************");
+                System.out.println(difference);
+                System.out.println("***********************");
+                if (++counter > 100) break;
+            }
+            System.out.println(differences.size() + " diffs founded");
+        }
+        if (diff.identical())
+            return SelfTestingResult.Identical;
+        else if (diff.similar())
+            return SelfTestingResult.Similar;
+        else
+            return SelfTestingResult.Different;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,13 +147,22 @@ public class ARevelation extends Activity implements AboutFragment.OnFragmentInt
                     .commit();
         }
 
-        dateFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.MEDIUM, getResources().getConfiguration().locale);
+        dateFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.MEDIUM, ARevelationHelper.getLocale(getResources()));
         saveButton = (Button) this.findViewById(R.id.saveButton);
     }
 
     public void saveChanges(View view) throws Exception {
         rvlData.save(currentFile, password, getContentResolver());
         checkButton();
+    }
+
+    public void addEntry(View view) {
+        // nice from: https://stackoverflow.com/questions/15762905/how-can-i-display-a-list-view-in-an-android-alert-dialog
+        new AlertDialog.Builder(view.getContext())
+                .setTitle(R.string.add_entry)
+                .setItems(EntryType.getTranslatedEntryTypes(getApplicationContext()), onClickListener)
+                .create()
+                .show();
     }
 
     @Override
@@ -150,44 +234,6 @@ public class ARevelation extends Activity implements AboutFragment.OnFragmentInt
         transaction.commit();
     }
 
-    public static SelfTestingResult testData(String xmlData) throws Exception {
-        Serializer serializer1 = new Persister();
-        RevelationData data = serializer1.read(RevelationData.class, xmlData, false);
-
-        Serializer serializer2 = new Persister();
-        Writer writer = new StringWriter();
-        serializer2.write(data, writer);
-
-        XMLUnit.setIgnoreWhitespace(true);
-        Diff diff = new Diff(xmlData, writer.toString());
-
-        if (BuildConfig.DEBUG) {
-            System.out.println("Similar? " + diff.similar());
-            System.out.println("Identical? " + diff.identical());
-            System.out.println(diff);
-
-            DetailedDiff detDiff = new DetailedDiff(diff);
-            List differences = detDiff.getAllDifferences();
-            System.out.println(differences.size() + " diffs founded");
-
-            int counter = 0;
-            for (Object object : differences) {
-                Difference difference = (Difference) object;
-                System.out.println("***********************");
-                System.out.println(difference);
-                System.out.println("***********************");
-                if (++counter > 100) break;
-            }
-            System.out.println(differences.size() + " diffs founded");
-        }
-        if (diff.identical())
-            return SelfTestingResult.Identical;
-        else if (diff.similar())
-            return SelfTestingResult.Similar;
-        else
-            return SelfTestingResult.Different;
-    }
-
     @Override
     public void onFragmentInteraction(Uri uri) {
 
@@ -206,7 +252,6 @@ public class ARevelation extends Activity implements AboutFragment.OnFragmentInt
             }
         }
     }
-
 
     public static class AskPasswordDialog extends DialogFragment {
 
@@ -276,11 +321,15 @@ public class ARevelation extends Activity implements AboutFragment.OnFragmentInt
         private class DecryptTask extends AsyncTask<Object, Void, DecryptTask.DecryptTaskResult> {
 
             private Context context;
-            private ProgressDialog progressDialog;
+            private ProgressBar progressBar;
             private String password;
 
             DecryptTask(Context context) {
                 this.context = context;
+
+                getDialog().setContentView(R.layout.text_progressbar);
+                progressBar = getDialog().findViewById(R.id.textProgressbar);
+                ((TextView) getDialog().findViewById(R.id.textProgressbarTextView)).setText(R.string.decrypt_progress_bar_label);
             }
 
             @Override
@@ -297,7 +346,6 @@ public class ARevelation extends Activity implements AboutFragment.OnFragmentInt
                     String result = Cryptographer.decrypt(inputData, password);
                     Serializer serializer = new Persister();
                     res.data = serializer.read(RevelationData.class, result, false);
-
 
                     try {
                         SelfTestingResult testing = ARevelation.testData(result);
@@ -321,13 +369,13 @@ public class ARevelation extends Activity implements AboutFragment.OnFragmentInt
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                progressDialog = ProgressDialog.show(context, null, getActivity().getString(R.string.decrypt_progress_bar_label));
+                progressBar.setVisibility(View.VISIBLE);
             }
 
             @Override
             protected void onPostExecute(DecryptTaskResult s) {
                 super.onPostExecute(s);
-                progressDialog.dismiss();
+                progressBar.setVisibility(View.INVISIBLE);
 
                 if (!isCancelled()) {
                     if (!s.isFail) {
@@ -343,11 +391,24 @@ public class ARevelation extends Activity implements AboutFragment.OnFragmentInt
                                 .addToBackStack(null).commit();
 
                         AskPasswordDialog.this.dismiss();
+                        getActivity().findViewById(R.id.fab).setVisibility(View.VISIBLE);
                     } else {
                         TextView t = (TextView) getDialog().findViewById(R.id.message);
                         t.setText(s.exception.getMessage());
                     }
                 }
+            }
+
+            private byte[] getBytes(InputStream inputStream) throws IOException {
+                ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+                int bufferSize = 1024;
+                byte[] buffer = new byte[bufferSize];
+
+                int len;
+                while ((len = inputStream.read(buffer)) != -1) {
+                    byteBuffer.write(buffer, 0, len);
+                }
+                return byteBuffer.toByteArray();
             }
 
             class DecryptTaskResult {
@@ -366,20 +427,6 @@ public class ARevelation extends Activity implements AboutFragment.OnFragmentInt
                 }
 
             }
-
-            private byte[] getBytes(InputStream inputStream) throws IOException {
-                ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
-                int bufferSize = 1024;
-                byte[] buffer = new byte[bufferSize];
-
-                int len;
-                while ((len = inputStream.read(buffer)) != -1) {
-                    byteBuffer.write(buffer, 0, len);
-                }
-                return byteBuffer.toByteArray();
-            }
-
         }
-
     }
 }

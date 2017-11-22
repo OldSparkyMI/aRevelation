@@ -45,6 +45,7 @@
             android:drawableLeft="@drawable/ic_file_plus_1703"
             android:enabled="false"
             android:layout_gravity="bottom"
+            android:textColor="#1bff92"
             style="?android:attr/buttonBarButtonStyle"/>
 
         <Button
@@ -57,6 +58,7 @@
             android:text="@string/open"
             android:layout_gravity="bottom"
             android:drawableLeft="@drawable/ic_directory_search_1623"
+            android:textColor="#1bff92"
             style="?android:attr/buttonBarButtonStyle"/>
 
         <Button
@@ -69,6 +71,7 @@
             android:text="@string/about"
             android:layout_gravity="bottom"
             android:drawableLeft="@drawable/ic_information_1447"
+            android:textColor="#1bff92"
             style="?android:attr/buttonBarButtonStyle"/>
 
     </LinearLayout>

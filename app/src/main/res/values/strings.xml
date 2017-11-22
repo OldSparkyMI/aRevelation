@@ -7,6 +7,7 @@
     <string name="settings">Settings</string>
     <string name="about">About</string>
     <string name="createNew">New</string>
+    <string name="add_entry">Add Entry</string>
     <string name="ask_password_message">Input password</string>
     <string name="self_testing_warning">Warning! Editing and saving could cause data lost! Be careful.</string>
     <string name="self_testing_super_warning">Super Warning! Editing and saving will cause data lost! Be careful.</string>
@@ -30,4 +31,17 @@
     <string name="creditcard_cardnumber">Card number</string>
     <string name="creditcard_expirydate">Expiry date</string>
     <string name="creditcard_ccv">CCV</string>
+    <!-- Entry types -->
+    <string name="creditcard">Creditcard</string>
+    <string name="cryptokey">Cryptokey</string>
+    <string name="database">Database</string>
+    <string name="door">Door</string>
+    <string name="email">Email</string>
+    <string name="ftp">FTP</string>
+    <string name="generic">Generic</string>
+    <string name="phone">Phone</string>
+    <string name="shell">Shell</string>
+    <string name="remotedesktop">Remote desktop</string>
+    <string name="vnc">VNC</string>
+    <string name="website">Website</string>
 </resources>

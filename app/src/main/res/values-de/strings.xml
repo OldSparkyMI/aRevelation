@@ -7,6 +7,7 @@
     <string name="settings">Einstellungen</string>
     <string name="about">Über</string>
     <string name="createNew">Neu</string>
+    <string name="add_entry">Eintrag hinzufügen</string>
     <string name="ask_password_message">Passwort eingeben</string>
     <string name="self_testing_warning">Warnung! Editieren und speichern kann unter Umständen zu einem Datenverlust führen! Obacht!</string>
     <string name="self_testing_super_warning">Warnung! Editieren und speichern führt zum Datenverlust! Vorsicht!</string>
@@ -16,7 +17,7 @@
     <!--Field names-->
     <string name="name">Name</string>
     <string name="description">Beschreibung</string>
-    <string name="notes">Aufzeichnung</string>
+    <string name="notes">Notizen</string>
     <string name="updated">Aktualisiert</string>
     <string name="generic_hostname">Hostname</string>
     <string name="generic_username">Benutzername</string>
@@ -30,4 +31,17 @@
     <string name="creditcard_cardnumber">Kreditkarten Nummer</string>
     <string name="creditcard_expirydate">Ablaufdatum</string>
     <string name="creditcard_ccv">CCV</string>
+    <!-- Entry types -->
+    <string name="creditcard">Kreditkarte</string>
+    <string name="cryptokey">Schlüssel</string>
+    <string name="database">Datenbank</string>
+    <string name="door">Türschloss</string>
+    <string name="email">E-Mail</string>
+    <string name="ftp">FTP</string>
+    <string name="generic">Allgemein</string>
+    <string name="phone">Telefon</string>
+    <string name="shell">Shell</string>
+    <string name="remotedesktop">Entfernter Desktop</string>
+    <string name="vnc">VNC</string>
+    <string name="website">Webseite</string>
 </resources>

@@ -17,6 +17,9 @@ public class StartScreenFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        getActivity().findViewById(R.id.fab).setVisibility(View.INVISIBLE);
+
         View v = inflater.inflate(R.layout.start_screen, container, false);
 
         Button btnOpen = v.findViewById(R.id.btnOpen);
