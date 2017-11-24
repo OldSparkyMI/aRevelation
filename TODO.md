@@ -61,4 +61,8 @@ W/System.err:     at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:779
 * Add: search/filter for passwords
   * Add: highlighting
 * Add: password generation
+
+
+# Done
 * Add: FloatingActionButton
+* Add: Add a revelation entry support
