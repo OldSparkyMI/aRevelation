@@ -18,7 +18,7 @@ FATAL EXCEPTION: main
                       at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:779)
 ```
 * Open multiple files and hit back -> white screen
-  * Reason: id "b5a0040f-e7bd-4314-b065-5f10be276730" from file b is not in file a
+  * Reason: revelation entry group id "b5a0040f-e7bd-4314-b065-5f10be276730" (e.g.) from file b is not in file a
   * Exception:
 ```
 W/System.err: java.lang.Exception: Cannot find group with id = b5a0040f-e7bd-4314-b065-5f10be276730
