@@ -7,7 +7,7 @@ import android.content.Context;
  */
 
 public enum EntryType {
-    CREDITCARD, CRYPTOKEY, DATABASE, DOOR, EMAIL, FTP, GENERIC, PHONE, SHELL, REMOTEDESKTOP, VNC, WEBSITE;
+    CREDITCARD, CRYPTOKEY, DATABASE, DOOR, EMAIL, FTP, GENERIC, PHONE, SHELL, REMOTEDESKTOP, VNC, WEBSITE, FOLDER;
 
     public static EntryType getFromPosition(int position){
         EntryType[] entryTypes = EntryType.values();

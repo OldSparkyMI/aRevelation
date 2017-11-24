@@ -13,6 +13,8 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import de.igloffstein.maik.aRevelation.Adapter.RevelationStructureBrowserAdapter;
+
 public class RevelationBrowserFragment extends Fragment {
 
 	private static final String ARGUMENT_UUID_LIST = "uuidList";
@@ -43,9 +45,11 @@ public class RevelationBrowserFragment extends Fragment {
 			group = ((ARevelation) getActivity()).rvlData.getEntryGroupById(groupUuid);
 
 			ListView simple = (ListView) v.findViewById(R.id.rootList);
-			NodeArrayAdapter itemsAdapter = new NodeArrayAdapter(this.getActivity(), android.R.layout.simple_list_item_1, group);
+			//NodeArrayAdapter itemsAdapter = new NodeArrayAdapter(this.getActivity(), android.R.layout.simple_list_item_1, group);
+			RevelationStructureBrowserAdapter revelationStructureBrowserAdapter
+					= new RevelationStructureBrowserAdapter(this.getActivity(), group);
 			simple.setOnItemClickListener(new ListListener());
-			simple.setAdapter(itemsAdapter);
+			simple.setAdapter(revelationStructureBrowserAdapter);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -44,4 +44,7 @@
     <string name="remotedesktop">Remote desktop</string>
     <string name="vnc">VNC</string>
     <string name="website">Website</string>
+    <string name="folder">Folder</string>
+    <!-- Temporarily -->
+    <string name="new_folder_currently_not_supported">Creating a new folder is currently not supported.</string>
 </resources>

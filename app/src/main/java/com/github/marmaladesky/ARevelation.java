@@ -1,7 +1,6 @@
 package com.github.marmaladesky;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -28,7 +27,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.marmaladesky.data.Entry;
-import com.github.marmaladesky.data.Field;
 import com.github.marmaladesky.data.RevelationData;
 
 import org.custommonkey.xmlunit.DetailedDiff;
@@ -44,14 +42,14 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import de.igloffstein.maik.aRevelation.AboutFragment;
+import de.igloffstein.maik.aRevelation.Fragment.AboutFragment;
 import de.igloffstein.maik.aRevelation.EntryType;
 import de.igloffstein.maik.aRevelation.Helper.ARevelationHelper;
 import de.igloffstein.maik.aRevelation.Helper.EntryHelper;
+
+import static com.github.marmaladesky.R.string.new_folder_currently_not_supported;
 
 public class ARevelation extends AppCompatActivity implements AboutFragment.OnFragmentInteractionListener {
 
@@ -72,20 +70,26 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
 
             Entry entry = EntryHelper.newEntry(EntryType.getFromPosition(which));
 
-            // get id from language values
-            int id = getResources().getIdentifier(
-                    EntryType.getFromPosition(which).toString().toLowerCase(),
-                    "string", getPackageName()
-            );
-            entry.setName(getString(id));
+            if (EntryType.getFromPosition(which) == EntryType.FOLDER){
+                // folder is currently not supported
+                Toast.makeText(getApplicationContext(), new_folder_currently_not_supported, Toast.LENGTH_LONG).show();
+            } else {
 
-            rvlData.addEntry(entry);
+                // get id from language values
+                int id = getResources().getIdentifier(
+                        EntryType.getFromPosition(which).toString().toLowerCase(),
+                        "string", getPackageName()
+                );
+                entry.setName(getString(id));
 
-            EntryFragment nextFrag = EntryFragment.newInstance(entry.getUuid());
-            getFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.mainContainer, nextFrag)
-                    .addToBackStack(null).commit();
+                rvlData.addEntry(entry);
+
+                EntryFragment nextFrag = EntryFragment.newInstance(entry.getUuid());
+                getFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.mainContainer, nextFrag)
+                        .addToBackStack(null).commit();
+            }
         }
     };
     private Button saveButton;

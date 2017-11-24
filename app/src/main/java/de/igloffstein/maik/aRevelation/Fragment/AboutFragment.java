@@ -1,4 +1,4 @@
-package de.igloffstein.maik.aRevelation;
+package de.igloffstein.maik.aRevelation.Fragment;
 
 import android.content.Context;
 import android.net.Uri;
