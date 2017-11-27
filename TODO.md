@@ -1,22 +1,4 @@
 # Bugs
-* During "encoding ..." click somewhere
-  *  Exception:
-```
-FATAL EXCEPTION: main
-                  Process: de.igloffstein.maik.aRevelation, PID: 16079
-                  java.lang.NullPointerException: Attempt to invoke virtual method 'java.lang.String android.app.Activity.getString(int)' on a null object reference
-                      at com.github.marmaladesky.ARevelation$AskPasswordDialog$DecryptTask.onPostExecute(ARevelation.java:386)
-                      at com.github.marmaladesky.ARevelation$AskPasswordDialog$DecryptTask.onPostExecute(ARevelation.java:325)
-                      at android.os.AsyncTask.finish(AsyncTask.java:667)
-                      at android.os.AsyncTask.-wrap1(AsyncTask.java)
-                      at android.os.AsyncTask$InternalHandler.handleMessage(AsyncTask.java:684)
-                      at android.os.Handler.dispatchMessage(Handler.java:102)
-                      at android.os.Looper.loop(Looper.java:154)
-                      at android.app.ActivityThread.main(ActivityThread.java:6186)
-                      at java.lang.reflect.Method.invoke(Native Method)
-                      at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:889)
-                      at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:779)
-```
 * Open multiple files and hit back -> white screen
   * Reason: revelation entry group id "b5a0040f-e7bd-4314-b065-5f10be276730" (e.g.) from file b is not in file a
   * Exception:
@@ -73,7 +55,6 @@ W/System.err:     at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:779
 * Lint complains: Ran lint on variant release: 43 issues found
 
 # Features
-* Change: Wrong password message
 * Change: Remove build warnings
 * Add: search/filter for passwords
   * Add: highlighting
@@ -84,4 +65,23 @@ W/System.err:     at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:779
 # Done
 * Add: FloatingActionButton
   * Creating new items now possible
-* Add: Show icons for every entry in the list view  
+* Add: Show icons for every entry in the list view
+* Change: Wrong password message
+* During "encoding ..." click somewhere
+  *  Exception:
+  ```
+  FATAL EXCEPTION: main
+                Process: de.igloffstein.maik.aRevelation, PID: 16079
+                java.lang.NullPointerException: Attempt to invoke virtual method 'java.lang.String android.app.Activity.getString(int)' on a null object reference
+                    at com.github.marmaladesky.ARevelation$AskPasswordDialog$DecryptTask.onPostExecute(ARevelation.java:386)
+                    at com.github.marmaladesky.ARevelation$AskPasswordDialog$DecryptTask.onPostExecute(ARevelation.java:325)
+                    at android.os.AsyncTask.finish(AsyncTask.java:667)
+                    at android.os.AsyncTask.-wrap1(AsyncTask.java)
+                    at android.os.AsyncTask$InternalHandler.handleMessage(AsyncTask.java:684)
+                    at android.os.Handler.dispatchMessage(Handler.java:102)
+                    at android.os.Looper.loop(Looper.java:154)
+                    at android.app.ActivityThread.main(ActivityThread.java:6186)
+                    at java.lang.reflect.Method.invoke(Native Method)
+                    at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:889)
+                    at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:779)
+  ```

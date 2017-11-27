@@ -13,7 +13,10 @@
     <string name="self_testing_super_warning">Warnung! Editieren und speichern führt zum Datenverlust! Vorsicht!</string>
     <string name="self_testing_passed_message">Integritätstest erfolgreich.</string>
     <string name="self_testing_internal_error">Unbehandelter interner Fehler während des Integritätstests. Vorsichtig vorgehen.</string>
-    <string name="decrypt_progress_bar_label">Entschlüsseln…</string>
+    <string name="decrypt_label">Entschlüsseln…</string>
+    <string name="decrypt_canceled_label">Vorgang abgebrochen!</string>
+    <string name="decrypt_invalid_password_label">Passwort ungültig</string>
+    <string name="decrypt_empty_passwort_label">Kein Passwort eingegeben</string>
     <!--Field names-->
     <string name="name">Name</string>
     <string name="description">Beschreibung</string>

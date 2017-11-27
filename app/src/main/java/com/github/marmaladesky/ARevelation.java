@@ -70,7 +70,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
 
             Entry entry = EntryHelper.newEntry(EntryType.getFromPosition(which));
 
-            if (EntryType.getFromPosition(which) == EntryType.FOLDER){
+            if (EntryType.getFromPosition(which) == EntryType.FOLDER) {
                 // folder is currently not supported
                 Toast.makeText(getApplicationContext(), new_folder_currently_not_supported, Toast.LENGTH_LONG).show();
             } else {
@@ -266,6 +266,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
             Bundle args = new Bundle();
             args.putString("file", file);
             f.setArguments(args);
+            f.setCancelable(false);
             return f;
         }
 
@@ -325,15 +326,10 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
         private class DecryptTask extends AsyncTask<Object, Void, DecryptTask.DecryptTaskResult> {
 
             private Context context;
-            private ProgressBar progressBar;
             private String password;
 
             DecryptTask(Context context) {
                 this.context = context;
-
-                getDialog().setContentView(R.layout.text_progressbar);
-                progressBar = getDialog().findViewById(R.id.textProgressbar);
-                ((TextView) getDialog().findViewById(R.id.textProgressbarTextView)).setText(R.string.decrypt_progress_bar_label);
             }
 
             @Override
@@ -373,32 +369,46 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                progressBar.setVisibility(View.VISIBLE);
+                TextView t = (TextView) getDialog().findViewById(R.id.message);
+                t.setText(R.string.decrypt_label);
             }
 
             @Override
             protected void onPostExecute(DecryptTaskResult s) {
                 super.onPostExecute(s);
-                progressBar.setVisibility(View.INVISIBLE);
 
                 if (!isCancelled()) {
-                    if (!s.isFail) {
-                        Toast.makeText(context, getActivity().getString(s.toastMessage), Toast.LENGTH_LONG).show();
-                        ((ARevelation) getActivity()).rvlData = s.data;
+                    if (getActivity() != null) {    // need if user hits back or touches somewhere the screen.
+                        if (!s.isFail) {
+                            Toast.makeText(context, getActivity().getString(s.toastMessage), Toast.LENGTH_LONG).show();
+                            ((ARevelation) getActivity()).rvlData = s.data;
 
-                        RevelationBrowserFragment nextFrag = RevelationBrowserFragment.newInstance(((ARevelation) getActivity()).rvlData.getUuid());
-                        ((ARevelation) getActivity()).password = password;
-                        ((ARevelation) getActivity()).currentFile = file;
+                            RevelationBrowserFragment nextFrag = RevelationBrowserFragment.newInstance(((ARevelation) getActivity()).rvlData.getUuid());
+                            ((ARevelation) getActivity()).password = password;
+                            ((ARevelation) getActivity()).currentFile = file;
 
-                        getActivity().getFragmentManager().beginTransaction()
-                                .replace(R.id.mainContainer, nextFrag)
-                                .addToBackStack(null).commit();
+                            getActivity().getFragmentManager().beginTransaction()
+                                    .replace(R.id.mainContainer, nextFrag)
+                                    .addToBackStack(null).commit();
 
-                        AskPasswordDialog.this.dismiss();
-                        getActivity().findViewById(R.id.fab).setVisibility(View.VISIBLE);
+                            AskPasswordDialog.this.dismiss();
+                            getActivity().findViewById(R.id.fab).setVisibility(View.VISIBLE);
+                        } else {
+                            TextView t = (TextView) getDialog().findViewById(R.id.message);
+                            String message = s.exception.getMessage();
+
+                            if (message.endsWith(":BAD_DECRYPT")) {
+                                t.setText(R.string.decrypt_invalid_password_label);
+                            } else {
+                                if (("Could not generate secret key").equals(message)) {
+                                    t.setText(R.string.decrypt_empty_passwort_label);
+                                } else {
+                                    t.setText(s.exception.getMessage());
+                                }
+                            }
+                        }
                     } else {
-                        TextView t = (TextView) getDialog().findViewById(R.id.message);
-                        t.setText(s.exception.getMessage());
+                        Toast.makeText(context, R.string.decrypt_canceled_label, Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -429,7 +439,6 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
                     exception = e;
                     isFail = true;
                 }
-
             }
         }
     }

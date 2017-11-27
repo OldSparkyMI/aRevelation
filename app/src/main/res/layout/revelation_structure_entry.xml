@@ -8,7 +8,7 @@
         android:id="@+id/imageIdentifier"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:padding="15dp"
+        android:padding="20dp"
         />
 
     <TextView

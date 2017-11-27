@@ -13,7 +13,10 @@
     <string name="self_testing_super_warning">Super Warning! Editing and saving will cause data lost! Be careful.</string>
     <string name="self_testing_passed_message">Self testing passed. Editing is safe.</string>
     <string name="self_testing_internal_error">Internal unknown error of self testing. Be careful.</string>
-    <string name="decrypt_progress_bar_label">Decrypting…</string>
+    <string name="decrypt_label">Decrypting…</string>
+    <string name="decrypt_canceled_label">Decrypting canceled!</string>
+    <string name="decrypt_invalid_password_label">Invalid password</string>
+    <string name="decrypt_empty_passwort_label">No password entered</string>
     <!--Field names-->
     <string name="name">Name</string>
     <string name="description">Description</string>
