@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?><!-- Lint doesn't see non-direct access --><!--suppress AndroidLintUnusedResources -->
 <resources>
     <string name="app_name">aRevelation</string>
+    <string name="app_slogan">ein sicherer Passwortmanager für Android</string>
     <string name="cancel">Abbrechen</string>
     <string name="open">Öffnen</string>
     <string name="save">Speichern</string>

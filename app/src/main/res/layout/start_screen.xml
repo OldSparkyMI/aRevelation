@@ -10,12 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:src="@drawable/icon"
+        android:contentDescription="@string/app_name"
         />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textSize="30dp"
+        android:textSize="30sp"
         android:textStyle="bold"
         android:text="@string/app_name"
         />
@@ -29,7 +30,7 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_gravity="bottom"
         android:orientation="horizontal"
@@ -42,7 +43,7 @@
             android:padding="20dp"
             android:gravity="center"
             android:text="@string/createNew"
-            android:drawableLeft="@drawable/ic_file_plus_1703"
+            android:drawableStart="@drawable/ic_file_plus_1703"
             android:enabled="false"
             android:layout_gravity="bottom"
             android:textColor="#1bff92"
@@ -57,7 +58,7 @@
             android:gravity="center"
             android:text="@string/open"
             android:layout_gravity="bottom"
-            android:drawableLeft="@drawable/ic_directory_search_1623"
+            android:drawableStart="@drawable/ic_directory_search_1623"
             android:textColor="#1bff92"
             style="?android:attr/buttonBarButtonStyle"/>
 
@@ -70,7 +71,7 @@
             android:gravity="center"
             android:text="@string/about"
             android:layout_gravity="bottom"
-            android:drawableLeft="@drawable/ic_information_1447"
+            android:drawableStart="@drawable/ic_information_1447"
             android:textColor="#1bff92"
             style="?android:attr/buttonBarButtonStyle"/>
 

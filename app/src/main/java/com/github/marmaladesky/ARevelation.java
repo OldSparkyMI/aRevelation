@@ -210,16 +210,21 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
         switch (item.getItemId()) {
             case R.id.menu_new:
                 // currently not implementet
-                return true;
+                break;
             case R.id.menu_open:
                 optionItemSelectedOpen();
-                return true;
+                break;
+            case R.id.menu_settings:
+                Toast.makeText(this, "Currently in development", Toast.LENGTH_LONG);
+                break;
             case R.id.menu_about:
                 optionItemSelectedAbout();
-                return true;
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
+
+        return true;
     }
 
     public void optionItemSelectedOpen() {

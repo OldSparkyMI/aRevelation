@@ -1,98 +1,82 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="4dp"
-    tools:context="de.igloffstein.maik.aRevelation.Fragment.AboutFragment">
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:context="de.igloffstein.maik.aRevelation.Fragment.AboutFragment"
+    tools:ignore="NestedWeights">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="fill_parent"
+    <ImageView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        tools:ignore="NestedWeights">
+        android:contentDescription="@string/app_name"
+        android:paddingBottom="10dp"
+        android:src="@drawable/icon" />
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon"
-            android:paddingBottom="10dp"
-            />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="OldSparkyMI"
+        android:textIsSelectable="true" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="OldSparkyMI"
-            android:textIsSelectable="true"
-            />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="https://github.com/OldSparkyMI/aRevelation"
+        android:textIsSelectable="true" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="https://github.com/OldSparkyMI/aRevelation"
-            android:textIsSelectable="true"
-            />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text=""
-            />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="MarmaladeSky"
+        android:textIsSelectable="true" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="MarmaladeSky"
-            android:textIsSelectable="true"
-            />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="https://github.com/MarmaladeSky/aRevelation"
+        android:textIsSelectable="true" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="https://github.com/MarmaladeSky/aRevelation"
-            android:textIsSelectable="true"
-            />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text=""
-            />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Alexandru Stoica"
+        android:textIsSelectable="true" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Alexandru Stoica"
-            android:textIsSelectable="true"
-            />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="https://dribbble.com/shots/2888226-1800-Free-Minimal-Icon-Pack-20x20"
+        android:textIsSelectable="true" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="https://dribbble.com/shots/2888226-1800-Free-Minimal-Icon-Pack-20x20"
-            android:textIsSelectable="true"
-            />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text=""
-            />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Erik Grinaker, Mikel Olasagasti &amp; Revelation contributors"
+        android:textIsSelectable="true" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Erik Grinaker, Mikel Olasagasti &amp; Revelation contributors"
-            android:textIsSelectable="true"
-            />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="https://revelation.olasagasti.info/"
+        android:textIsSelectable="true" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="https://revelation.olasagasti.info/"
-            android:textIsSelectable="true"
-            />
+</LinearLayout>
 
-    </LinearLayout>
-</FrameLayout>
 
 

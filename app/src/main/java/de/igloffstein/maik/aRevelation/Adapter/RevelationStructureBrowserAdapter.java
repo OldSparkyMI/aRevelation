@@ -33,7 +33,7 @@ public class RevelationStructureBrowserAdapter extends ArrayAdapter<String> {
 
     public View getView(int position, View view, ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
-        View rowView = inflater.inflate(R.layout.revelation_structure_entry, null, true);
+        View rowView = inflater.inflate(R.layout.revelation_structure_entry, parent, false);
 
         ImageView imageView = (ImageView) rowView.findViewById(R.id.imageIdentifier);
         TextView txtTitle = (TextView) rowView.findViewById(R.id.headerIdentifier);
