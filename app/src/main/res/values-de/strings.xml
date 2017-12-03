@@ -5,7 +5,6 @@
     <string name="cancel">Abbrechen</string>
     <string name="open">Öffnen</string>
     <string name="save">Speichern</string>
-    <string name="settings">Einstellungen</string>
     <string name="about">Über</string>
     <string name="createNew">Neu</string>
     <string name="add_entry">Eintrag hinzufügen</string>
@@ -51,4 +50,37 @@
     <string name="folder">Verzeichnis</string>
     <!-- Temporarily -->
     <string name="new_folder_currently_not_supported">Das Erstellen eines neuen Verzeichnisses wird momentan nicht unterstützt.</string>
+
+    <!-- Strings related to Settings -->
+    <!-- password settings -->
+    <string name="pref_header_security">Sicherheitseinstellungen</string>
+    <string name="pref_title_hide_password_and_secrets">Passwörter und andere Geheimnisse verstecken</string>
+    <string name="pref_description_hide_passwords_and_secrets">Passwörter und andere Geheimnise verschlüsselt (*******) auf dem Bildschirm wiedergeben</string>
+    <string name="pref_title_toggle_password">Passwörter schnellentsperren</string>
+    <string name="pref_description_toggle_password">Zeigt ein Icon hinter dem Passwort um dieses in Klartext anzuzeigen</string>
+    <string name="pref_title_lock_after_screen_turn_off">Bildschirm aus -> Datei sperren</string>
+    <string name="pref_description_lock_after_screen_turn_off">Datei sperren, sobald der Bildschrim des Mobilgerätes ausgeschaltet wird</string>
+    <string name="pref_title_lock_after_application_to_background">Anwendung im Hintergrund -> Datei sperren</string>
+    <string name="pref_description_lock_after_application_to_background">Datei sperren, sobald die Anwendung im Hintergrund ausgeführt wird</string>
+    <string name="pref_title_auto_lock">Datei automatisch sperren</string>
+    <string-array name="pref_auto_lock_titles">
+        <item>5 Minuten</item>
+        <item>10 Minuten</item>
+        <item>15 Minuten</item>
+        <item>20 Minuten</item>
+        <item>30 Minuten</item>
+        <item>45 Minuten</item>
+        <item>1 Stunde</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_auto_lock_values">
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>30</item>
+        <item>45</item>
+        <item>60</item>
+        <item>-1</item>
+    </string-array>
 </resources>

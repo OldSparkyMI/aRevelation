@@ -44,6 +44,7 @@ import java.io.Writer;
 import java.text.DateFormat;
 import java.util.List;
 
+import de.igloffstein.maik.aRevelation.ARevelationSettingsActivity;
 import de.igloffstein.maik.aRevelation.Fragment.AboutFragment;
 import de.igloffstein.maik.aRevelation.EntryType;
 import de.igloffstein.maik.aRevelation.Helper.ARevelationHelper;
@@ -152,7 +153,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
         }
 
         dateFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.MEDIUM, ARevelationHelper.getLocale(getResources()));
-        saveButton = (Button) this.findViewById(R.id.saveButton);
+        saveButton = this.findViewById(R.id.saveButton);
     }
 
     public void saveChanges(View view) throws Exception {
@@ -215,7 +216,8 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
                 optionItemSelectedOpen();
                 break;
             case R.id.menu_settings:
-                Toast.makeText(this, "Currently in development", Toast.LENGTH_LONG);
+                Intent intent = new Intent(this, ARevelationSettingsActivity.class);
+                startActivity(intent);
                 break;
             case R.id.menu_about:
                 optionItemSelectedAbout();
@@ -309,7 +311,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
                 Button positiveButton = d.getButton(Dialog.BUTTON_POSITIVE);
                 positiveButton.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        EditText passwordEdit = ((EditText) getDialog().findViewById(R.id.password));
+                        EditText passwordEdit = getDialog().findViewById(R.id.password);
 
                         // Hide keyboard
                         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
@@ -374,7 +376,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                TextView t = (TextView) getDialog().findViewById(R.id.message);
+                TextView t = getDialog().findViewById(R.id.message);
                 t.setText(R.string.decrypt_label);
             }
 
@@ -399,7 +401,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
                             AskPasswordDialog.this.dismiss();
                             getActivity().findViewById(R.id.fab).setVisibility(View.VISIBLE);
                         } else {
-                            TextView t = (TextView) getDialog().findViewById(R.id.message);
+                            TextView t = getDialog().findViewById(R.id.message);
                             String message = s.exception.getMessage();
 
                             if (message.endsWith(":BAD_DECRYPT")) {

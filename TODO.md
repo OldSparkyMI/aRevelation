@@ -52,7 +52,6 @@ W/System.err:     at java.lang.reflect.Method.invoke(Native Method)
 W/System.err:     at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:889)
 W/System.err:     at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:779)
 ```
-* Lint complains: Ran lint on variant release: 43 issues found
 
 # Features
 * Change: Remove build warnings
@@ -61,6 +60,7 @@ W/System.err:     at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:779
 * Add: password generation
 * Add: create a new file
 * Maybe: nicer graphics
+* Secure Share (Share passwords and credentials on two different ways (E-Mail, WhatsApp, Signal, ...))
 
 # Done
 * Add: FloatingActionButton
