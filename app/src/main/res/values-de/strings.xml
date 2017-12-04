@@ -54,9 +54,9 @@
     <!-- Strings related to Settings -->
     <!-- password settings -->
     <string name="pref_header_security">Sicherheitseinstellungen</string>
-    <string name="pref_title_hide_password_and_secrets">Passwörter und andere Geheimnisse verstecken</string>
-    <string name="pref_description_hide_passwords_and_secrets">Passwörter und andere Geheimnise verschlüsselt (*******) auf dem Bildschirm wiedergeben</string>
-    <string name="pref_title_toggle_password">Passwörter schnellentsperren</string>
+    <string name="pref_title_hide_password_and_secrets">Passwörter verstecken</string>
+    <string name="pref_description_hide_passwords_and_secrets">Passwörter verschlüsselt (*******) auf dem Bildschirm wiedergeben</string>
+    <string name="pref_title_toggle_password">Schnell entsperren</string>
     <string name="pref_description_toggle_password">Zeigt ein Icon hinter dem Passwort um dieses in Klartext anzuzeigen</string>
     <string name="pref_title_lock_after_screen_turn_off">Bildschirm aus -> Datei sperren</string>
     <string name="pref_description_lock_after_screen_turn_off">Datei sperren, sobald der Bildschrim des Mobilgerätes ausgeschaltet wird</string>

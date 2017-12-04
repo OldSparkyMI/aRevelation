@@ -2,14 +2,14 @@
 
     <SwitchPreference
         android:defaultValue="true"
-        android:key="hide_passwords"
+        android:key="preference_hide_passwords"
         android:summary="@string/pref_description_hide_passwords_and_secrets"
         android:title="@string/pref_title_hide_password_and_secrets" />
 
     <SwitchPreference
         android:defaultValue="true"
-        android:key="toggle_password_visibility_via_icon"
-        android:dependency="hide_passwords"
+        android:key="preference_quick_unlock"
+        android:dependency="preference_hide_passwords"
         android:summary="@string/pref_description_toggle_password"
         android:title="@string/pref_title_toggle_password" />
 

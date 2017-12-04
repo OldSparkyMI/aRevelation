@@ -2,20 +2,26 @@ package com.github.marmaladesky;
 
 import android.app.DialogFragment;
 import android.app.Fragment;
-import android.content.Context;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
 import android.text.method.PasswordTransformationMethod;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.TwoLineListItem;
 import com.github.marmaladesky.data.Entry;
 import com.github.marmaladesky.data.Field;
 import com.github.marmaladesky.data.FieldWrapper;
+
+import org.w3c.dom.Text;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -27,6 +33,7 @@ public class EntryFragment extends Fragment {
 
     private static final String ROW_HEADER_IDENTIFIER = "First Line";
     private static final String ROW_DATA_IDENTIFIER = "Second Line";
+    private static final String ROW_DATA_IMAGE = "Image View";
 
     private static final String ARGUMENT_ENTRY_ID = "entryId";
 
@@ -89,20 +96,41 @@ public class EntryFragment extends Fragment {
 
         SimpleAdapter itemsAdapter = new SimpleAdapter(
                 this.getActivity(), data,
-                android.R.layout.simple_list_item_2,
+                R.layout.revelation_entry_layout,
                 new String[] {ROW_HEADER_IDENTIFIER, ROW_DATA_IDENTIFIER },
-                new int[] {android.R.id.text1, android.R.id.text2 }) {
+                new int[] {R.id.text1, R.id.text2 }) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
-                try {
-                    HashMap<String, Object> o = (HashMap<String, Object>) simple.getItemAtPosition(position);
-                    if(getString(R.string.generic_password).equals(o.get(ROW_HEADER_IDENTIFIER))) {
-                        TwoLineListItem v = (TwoLineListItem)super.getView(position, convertView, parent);
-                        v.getText2().setTransformationMethod(PasswordTransformationMethod.getInstance());
-                        return v;
+                if (PreferenceManager.getDefaultSharedPreferences(parent.getContext()).getBoolean("preference_hide_passwords", true)) {
+                    try {
+                        HashMap<String, Object> o = (HashMap<String, Object>) simple.getItemAtPosition(position);
+                        if (getString(R.string.generic_password).equals(o.get(ROW_HEADER_IDENTIFIER))) {
+                            View view = super.getView(position, convertView, parent);
+
+                            final TextView textView1 = view.findViewById(R.id.text1);
+                            final TextView textView2 = view.findViewById(R.id.text2);
+                            final ImageView imageView1 = view.findViewById(R.id.image1);
+
+                            if (PreferenceManager.getDefaultSharedPreferences(parent.getContext()).getBoolean("preference_quick_unlock", true)) {
+                                // display unlock icon
+                                imageView1.setVisibility(View.VISIBLE);
+                                // unlock password on click
+                                view.findViewById(R.id.image1).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        textView2.setTransformationMethod(null);
+                                        imageView1.setVisibility(View.INVISIBLE);
+                                    }
+                                });
+                            }
+
+                            // encode password
+                            textView2.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                            return view;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
                 return super.getView(position, convertView, parent);
             }
@@ -132,9 +160,12 @@ public class EntryFragment extends Fragment {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             try {
-                TwoLineListItem item = (TwoLineListItem) view;
 
-                String header = item.getText1().getText().toString();
+                final TextView textView1 = view.findViewById(R.id.text1);
+                final TextView textView2 = view.findViewById(R.id.text2);
+                final ImageView imageView1 = view.findViewById(R.id.image1);
+
+                String header = textView1.getText().toString();
 
                 FieldWrapper fw;
                 Object v = ((HashMap<String, Object>) parent.getAdapter().getItem(position)).get(ROW_DATA_IDENTIFIER);
