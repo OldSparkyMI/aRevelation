@@ -4,24 +4,19 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.content.ContextCompat;
 import android.text.method.PasswordTransformationMethod;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.TwoLineListItem;
+
 import com.github.marmaladesky.data.Entry;
 import com.github.marmaladesky.data.Field;
 import com.github.marmaladesky.data.FieldWrapper;
-
-import org.w3c.dom.Text;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -54,7 +49,7 @@ public class EntryFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
-        if(savedInstanceState == null || savedInstanceState.getString(ARGUMENT_ENTRY_ID) == null)
+        if (savedInstanceState == null || savedInstanceState.getString(ARGUMENT_ENTRY_ID) == null)
             entry = ((ARevelation) getActivity()).rvlData.getEntryById(getArguments().getString(ARGUMENT_ENTRY_ID));
         else
             entry = ((ARevelation) getActivity()).rvlData.getEntryById(savedInstanceState.getString(ARGUMENT_ENTRY_ID));
@@ -62,7 +57,7 @@ public class EntryFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.revelation_entry_browser, container, false);
 
-        simple = (ListView) v.findViewById(R.id.entryList);
+        simple = v.findViewById(R.id.entryList);
 
         ArrayList<Map<String, Object>> data = new ArrayList<>();
 
@@ -71,34 +66,34 @@ public class EntryFragment extends Fragment {
         values.put(ROW_HEADER_IDENTIFIER, getString(R.string.name));
         values.put(ROW_DATA_IDENTIFIER, entry.getName() == null ? "" : entry.getName());
         data.add(values);
-        values = new HashMap<String, Object>();
+        values = new HashMap<>();
         values.put(ROW_HEADER_IDENTIFIER, getString(R.string.description));
         values.put(ROW_DATA_IDENTIFIER, entry.getDescription() == null ? "" : entry.getDescription());
         data.add(values);
 
-        for(Field f : entry.fields) {
+        for (Field f : entry.fields) {
             values = new HashMap<>();
             values.put(ROW_HEADER_IDENTIFIER, getGenericHeader(f.id));
             values.put(ROW_DATA_IDENTIFIER, f);
             data.add(values);
         }
 
-        values = new HashMap<String, Object>();
+        values = new HashMap<>();
         values.put(ROW_HEADER_IDENTIFIER, getString(R.string.notes));
         values.put(ROW_DATA_IDENTIFIER, entry.getNotes() == null ? "" : entry.getNotes());
         data.add(values);
 
-        DateFormat dateFormatter = ((ARevelation)getActivity()).dateFormatter;
-        values = new HashMap<String, Object>();
+        DateFormat dateFormatter = ((ARevelation) getActivity()).dateFormatter;
+        values = new HashMap<>();
         values.put(ROW_HEADER_IDENTIFIER, getString(R.string.updated));
-        values.put(ROW_DATA_IDENTIFIER, dateFormatter.format(new Date(entry.updated*1000L))); // In python world it is seconds
+        values.put(ROW_DATA_IDENTIFIER, dateFormatter.format(new Date(entry.updated * 1000L))); // In python world it is seconds
         data.add(values);
 
         SimpleAdapter itemsAdapter = new SimpleAdapter(
                 this.getActivity(), data,
                 R.layout.revelation_entry_layout,
-                new String[] {ROW_HEADER_IDENTIFIER, ROW_DATA_IDENTIFIER },
-                new int[] {R.id.text1, R.id.text2 }) {
+                new String[]{ROW_HEADER_IDENTIFIER, ROW_DATA_IDENTIFIER},
+                new int[]{R.id.text1, R.id.text2}) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 if (PreferenceManager.getDefaultSharedPreferences(parent.getContext()).getBoolean("preference_hide_passwords", true)) {
@@ -145,14 +140,14 @@ public class EntryFragment extends Fragment {
     private String getGenericHeader(String name) {
         String packageName = getActivity().getPackageName();
         int resId = getResources().getIdentifier(name.replace('-', '_'), "string", packageName);
-        if(resId == 0) return name;
+        if (resId == 0) return name;
         else return getString(resId);
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if(entry != null) outState.putString("entryId", entry.getUuid());
+        if (entry != null) outState.putString("entryId", entry.getUuid());
     }
 
     private class PasswordOnClickListener implements AdapterView.OnItemClickListener {

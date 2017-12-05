@@ -55,13 +55,13 @@
     <!-- password settings -->
     <string name="pref_header_security">Sicherheitseinstellungen</string>
     <string name="pref_title_hide_password_and_secrets">Passwörter verstecken</string>
-    <string name="pref_description_hide_passwords_and_secrets">Passwörter verschlüsselt (*******) auf dem Bildschirm wiedergeben</string>
+    <string name="pref_description_hide_passwords_and_secrets">Passwörter verschlüsselt (*******) auf dem Bildschirm wiedergeben.</string>
     <string name="pref_title_toggle_password">Schnell entsperren</string>
-    <string name="pref_description_toggle_password">Zeigt ein Icon hinter dem Passwort um dieses in Klartext anzuzeigen</string>
+    <string name="pref_description_toggle_password">Zeigt ein Icon hinter dem Passwort um dieses in Klartext anzuzeigen.</string>
     <string name="pref_title_lock_after_screen_turn_off">Bildschirm aus -> Datei sperren</string>
-    <string name="pref_description_lock_after_screen_turn_off">Datei sperren, sobald der Bildschrim des Mobilgerätes ausgeschaltet wird</string>
+    <string name="pref_description_lock_after_screen_turn_off">Datei sperren, sobald der Bildschrim des Mobilgerätes ausgeschaltet wird. Ungespeicherte Änderungen sind verloren.</string>
     <string name="pref_title_lock_after_application_to_background">Anwendung im Hintergrund -> Datei sperren</string>
-    <string name="pref_description_lock_after_application_to_background">Datei sperren, sobald die Anwendung im Hintergrund ausgeführt wird</string>
+    <string name="pref_description_lock_after_application_to_background">Datei sperren, sobald die Anwendung im Hintergrund ausgeführt wird.</string>
     <string name="pref_title_auto_lock">Datei automatisch sperren</string>
     <string-array name="pref_auto_lock_titles">
         <item>5 Minuten</item>

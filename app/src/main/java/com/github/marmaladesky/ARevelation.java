@@ -6,22 +6,28 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,16 +60,19 @@ import static com.github.marmaladesky.R.string.new_folder_currently_not_supporte
 
 public class ARevelation extends AppCompatActivity implements AboutFragment.OnFragmentInteractionListener {
 
+    private static final String LOG_TAG = "ARevelation: ";
     private static final int REQUEST_FILE_OPEN = 1;
     private static final String ARGUMENT_RVLDATA = "rvlData";
     private static final String ARGUMENT_PASSWORD = "password";
     private static final String ARGUMENT_FILE = "file";
+    private static int sessionDepth = 0;
 
     DateFormat dateFormatter;
 
     RevelationData rvlData;
     String password;
     String currentFile;
+    private Button saveButton;
     DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
 
         @Override
@@ -85,15 +94,64 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
 
                 rvlData.addEntry(entry);
 
-                EntryFragment nextFrag = EntryFragment.newInstance(entry.getUuid());
                 getFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.mainContainer, nextFrag)
+                        .replace(R.id.mainContainer, EntryFragment.newInstance(entry.getUuid()))
                         .addToBackStack(null).commit();
             }
         }
     };
-    private Button saveButton;
+    final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("preference_lock_after_screen_off", true)) {
+                if (currentFile != null && !"".equals(currentFile)) {
+                    if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction())) {
+                        // on SCREEN OFF, log event
+                        Log.d(LOG_TAG, Intent.ACTION_SCREEN_OFF + " clear the application state");
+                        // clear data, besides the currentFile
+                        clearState(false);
+                        // clear views
+                        ((ViewGroup) findViewById(R.id.mainContainer)).removeAllViews();
+                    } else if (Intent.ACTION_SCREEN_ON.equals(intent.getAction())) {
+                        if (currentFile != null && !"".equals(currentFile)) {
+                            // on SCREEN ON, log event
+                            Log.d(LOG_TAG, Intent.ACTION_SCREEN_ON + " reenter the password");
+
+                            // if we on a different activity, e.g. ARevelationSettingsActivity, this won't work
+                            // and currently, I do not know how to fix that!
+                            // And the data isn't really save - I should report a bug to myself
+                            try {
+
+                                // dummy secure
+                                findViewById(R.id.fab).setVisibility(View.INVISIBLE);   // hide fab icon
+                                findViewById(R.id.saveButton).setVisibility(View.INVISIBLE); // hide save button
+
+                                // set start screen
+                                getFragmentManager()
+                                        .beginTransaction()
+                                        .replace(R.id.mainContainer, new StartScreenFragment())
+                                        .commit();
+
+                                // lets reenter the password to the current file
+                                openAskPasswordDialog(currentFile);
+                            } catch (RuntimeException e) {
+                                Log.d(LOG_TAG, e.getMessage());
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    };
+    // actions are defined in the constructor
+    IntentFilter intentFilter = new IntentFilter();
+
+    public ARevelation() {
+        intentFilter.addAction(Intent.ACTION_SCREEN_ON);
+        intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
+    }
 
     public static SelfTestingResult testData(String xmlData) throws Exception {
         Serializer serializer1 = new Persister();
@@ -154,6 +212,15 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
 
         dateFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.MEDIUM, ARevelationHelper.getLocale(getResources()));
         saveButton = this.findViewById(R.id.saveButton);
+
+        //ToDo: read where to register and unregister a receiver - this is not here!
+        registerReceiver(broadcastReceiver, intentFilter);  // to handle SCREEN ON / OFF actions
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        unregisterReceiver(broadcastReceiver);
     }
 
     public void saveChanges(View view) throws Exception {
@@ -185,10 +252,14 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
         checkButton();
     }
 
-    private void clearState() {
+    private void clearState(boolean resetFile) {
         rvlData = null;
         password = null;
-        currentFile = null;
+        currentFile = resetFile ? null : currentFile;
+    }
+
+    private void clearState() {
+        clearState(true);
     }
 
     public void checkButton() {
@@ -238,9 +309,8 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
     }
 
     public void optionItemSelectedAbout() {
-        Fragment aboutFragment = AboutFragment.newInstance(null, null);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.mainContainer, aboutFragment); // give your fragment container id in first parameter
+        transaction.replace(R.id.mainContainer, AboutFragment.newInstance(null, null)); // give your fragment container id in first parameter
         transaction.addToBackStack(null);  // if written, this transaction will be added to backstack
         transaction.commit();
     }
@@ -256,12 +326,16 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
             System.out.println("Image opened, result code is " + resultCode
                     + ", file is " + data.getData());
             try {
-                (AskPasswordDialog.newInstance(data.getData().toString())).show(getFragmentManager(), "Tag");
+                openAskPasswordDialog(data.getData().toString());
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
+    }
+
+    protected void openAskPasswordDialog(String file) {
+        AskPasswordDialog.newInstance(file).show(getFragmentManager(), "Tag");
     }
 
     public static class AskPasswordDialog extends DialogFragment {
@@ -286,8 +360,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
                 file = getArguments().getString("file");
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            LayoutInflater inflater = getActivity().getLayoutInflater();
-
+            final LayoutInflater inflater = getActivity().getLayoutInflater();
             builder.setView(inflater.inflate(R.layout.ask_password_dialog, null));
             builder
                     .setPositiveButton(R.string.open,

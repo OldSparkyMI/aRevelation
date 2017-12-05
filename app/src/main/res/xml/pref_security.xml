@@ -15,7 +15,7 @@
 
     <SwitchPreference
         android:defaultValue="true"
-        android:key="lock_after_screen_turn_off"
+        android:key="preference_lock_after_screen_off"
         android:summary="@string/pref_description_lock_after_screen_turn_off"
         android:title="@string/pref_title_lock_after_screen_turn_off" />
 
