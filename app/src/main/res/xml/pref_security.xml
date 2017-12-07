@@ -13,25 +13,20 @@
         android:summary="@string/pref_description_toggle_password"
         android:title="@string/pref_title_toggle_password" />
 
-    <SwitchPreference
-        android:defaultValue="true"
-        android:key="preference_lock_after_screen_off"
-        android:summary="@string/pref_description_lock_after_screen_turn_off"
-        android:title="@string/pref_title_lock_after_screen_turn_off" />
-
-    <SwitchPreference
-        android:defaultValue="true"
-        android:key="lock_after_application_to_background"
-        android:summary="@string/pref_description_lock_after_application_to_background"
-        android:title="@string/pref_title_lock_after_application_to_background" />
+    <ListPreference
+        android:defaultValue="0"
+        android:entries="@array/pref_lock_in_background_titles"
+        android:entryValues="@array/pref_lock_in_background_values"
+        android:key="preference_lock_in_background"
+        android:summary="@string/pref_title_lock_in_background"
+        android:title="@string/pref_description_lock_in_background" />
 
     <ListPreference
         android:defaultValue="180"
         android:entries="@array/pref_auto_lock_titles"
         android:entryValues="@array/pref_auto_lock_values"
-        android:key="auto_lock"
-        android:negativeButtonText="@null"
-        android:positiveButtonText="@null"
+        android:key="preference_auto_lock"
+        android:summary="@string/pref_description_auto_lock"
         android:title="@string/pref_title_auto_lock" />
 
 </PreferenceScreen>

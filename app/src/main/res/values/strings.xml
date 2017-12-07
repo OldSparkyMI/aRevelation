@@ -55,15 +55,36 @@
     <!-- Strings related to Settings -->
     <!-- password settings -->
     <string name="pref_header_security">Security settings</string>
+
     <string name="pref_title_hide_password_and_secrets">Hide passwords and secrets</string>
     <string name="pref_description_hide_passwords_and_secrets">Displays ****** instead of the passwords and secrets directly.</string>
+
     <string name="pref_title_toggle_password">Quick unlock</string>
     <string name="pref_description_toggle_password">Displays passwords and secrets directly after clicking a button.</string>
-    <string name="pref_title_lock_after_screen_turn_off">Screens turns off -> lock file</string>
-    <string name="pref_description_lock_after_screen_turn_off">Reenter the revelation file password to display our secrets after a screen turn off. Unsaved changes are lost!</string>
-    <string name="pref_title_lock_after_application_to_background">App to background -> lock file</string>
-    <string name="pref_description_lock_after_application_to_background">Reenter the revelation file password to display our secrets after moving the app into the background.</string>
-    <string name="pref_title_auto_lock">Automatically file lock</string>
+
+    <string name="pref_title_lock_in_background">App to background -> lock file</string>
+    <string name="pref_description_lock_in_background">Reenter the revelation file password to display your secrets after moving the app into the background.</string>
+    <string-array name="pref_lock_in_background_titles">
+        <item>Instant</item>
+        <item>1 minutes</item>
+        <item>3 minutes</item>
+        <item>5 minutes</item>
+        <item>10 minutes</item>
+        <item>15 minutes</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_lock_in_background_values">
+        <item>0</item>
+        <item>1</item>
+        <item>3</item>
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>-1</item>
+    </string-array>
+
+    <string name="pref_title_auto_lock">Automatically file-locking</string>
+    <string name="pref_description_auto_lock">Locks the file after a specified time.</string>
     <string-array name="pref_auto_lock_titles">
         <item>5 minutes</item>
         <item>10 minutes</item>

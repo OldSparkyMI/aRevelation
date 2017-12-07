@@ -4,13 +4,10 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -27,8 +24,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -73,6 +68,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
     String password;
     String currentFile;
     private Button saveButton;
+    private long onPauseSystemMillis = 0;
     DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
 
         @Override
@@ -101,56 +97,42 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
             }
         }
     };
-    final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("preference_lock_after_screen_off", true)) {
-                if (currentFile != null && !"".equals(currentFile)) {
-                    if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction())) {
-                        // on SCREEN OFF, log event
-                        Log.d(LOG_TAG, Intent.ACTION_SCREEN_OFF + " clear the application state");
-                        // clear data, besides the currentFile
-                        clearState(false);
-                        // clear views
-                        ((ViewGroup) findViewById(R.id.mainContainer)).removeAllViews();
-                    } else if (Intent.ACTION_SCREEN_ON.equals(intent.getAction())) {
-                        if (currentFile != null && !"".equals(currentFile)) {
-                            // on SCREEN ON, log event
-                            Log.d(LOG_TAG, Intent.ACTION_SCREEN_ON + " reenter the password");
 
-                            // if we on a different activity, e.g. ARevelationSettingsActivity, this won't work
-                            // and currently, I do not know how to fix that!
-                            // And the data isn't really save - I should report a bug to myself
-                            try {
+    /**
+     * After https://developer.android.com/guide/components/activities/activity-lifecycle.html this
+     * is the latest call before the acitivity is displayed to the user
+     *
+     * lets check, if the user has to enter his password again
+     */
+    @Override
+    public void onResume(){
+        super.onResume();
 
-                                // dummy secure
-                                findViewById(R.id.fab).setVisibility(View.INVISIBLE);   // hide fab icon
-                                findViewById(R.id.saveButton).setVisibility(View.INVISIBLE); // hide save button
+        int preferenceLockInBackground = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("preference_lock_in_background", "0"));
+        long preferenceLockInBackgroundNextSeconds = onPauseSystemMillis + preferenceLockInBackground * 60 * 1000;
 
-                                // set start screen
-                                getFragmentManager()
-                                        .beginTransaction()
-                                        .replace(R.id.mainContainer, new StartScreenFragment())
-                                        .commit();
+        if (
+                preferenceLockInBackground == 0 || preferenceLockInBackgroundNextSeconds < System.currentTimeMillis()
 
-                                // lets reenter the password to the current file
-                                openAskPasswordDialog(currentFile);
-                            } catch (RuntimeException e) {
-                                Log.d(LOG_TAG, e.getMessage());
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }
+                ) {
+
+            // clear everything besides the file
+            clearState(false);
+
+            // set start screen
+            openStartScreenFragment();
+
+            if (currentFile != null && !"".equals(currentFile)) {
+                // lets reenter the password to the current file
+                openAskPasswordDialog(currentFile);
             }
         }
-    };
-    // actions are defined in the constructor
-    IntentFilter intentFilter = new IntentFilter();
+    }
 
-    public ARevelation() {
-        intentFilter.addAction(Intent.ACTION_SCREEN_ON);
-        intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
+    @Override
+    public void onPause(){
+        super.onPause();
+        this.onPauseSystemMillis = System.currentTimeMillis();
     }
 
     public static SelfTestingResult testData(String xmlData) throws Exception {
@@ -165,10 +147,6 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
         Diff diff = new Diff(xmlData, writer.toString());
 
         if (BuildConfig.DEBUG) {
-            System.out.println("Similar? " + diff.similar());
-            System.out.println("Identical? " + diff.identical());
-            System.out.println(diff);
-
             DetailedDiff detDiff = new DetailedDiff(diff);
             List differences = detDiff.getAllDifferences();
             System.out.println(differences.size() + " diffs founded");
@@ -204,23 +182,16 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
 
         // Only at the startup
         if (getFragmentManager().getBackStackEntryCount() < 1) {
-            StartScreenFragment newFragment = new StartScreenFragment();
-            getFragmentManager().beginTransaction()
-                    .add(R.id.mainContainer, newFragment)
-                    .commit();
+            openStartScreenFragment();
         }
 
         dateFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.MEDIUM, ARevelationHelper.getLocale(getResources()));
         saveButton = this.findViewById(R.id.saveButton);
-
-        //ToDo: read where to register and unregister a receiver - this is not here!
-        registerReceiver(broadcastReceiver, intentFilter);  // to handle SCREEN ON / OFF actions
     }
 
     @Override
     public void onDestroy(){
         super.onDestroy();
-        unregisterReceiver(broadcastReceiver);
     }
 
     public void saveChanges(View view) throws Exception {
@@ -248,14 +219,19 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if (getFragmentManager().getBackStackEntryCount() < 1) clearState();
         checkButton();
+        if (getFragmentManager().getBackStackEntryCount() < 1) {
+            clearState();
+            openStartScreenFragment();
+        }
+
     }
 
     private void clearState(boolean resetFile) {
         rvlData = null;
         password = null;
         currentFile = resetFile ? null : currentFile;
+        ((ViewGroup) findViewById(R.id.mainContainer)).removeAllViews();
     }
 
     private void clearState() {
@@ -323,9 +299,18 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_FILE_OPEN && data != null) {
-            System.out.println("Image opened, result code is " + resultCode
+            System.out.println("Revelation file opened, result code is " + resultCode
                     + ", file is " + data.getData());
             try {
+                Log.d(LOG_TAG, "openAskPasswordDialog on onActivityResult()");
+                // clear state needed because of 2 open password dialogs
+                // D/ARevelation:: openAskPasswordDialog on onActivityResult() and
+                // openAskPasswordDialog on onResume()
+                // when screen goes on
+                // <cancel> on password dialog
+                // open new file
+                // --> both event get triggered
+                clearState();
                 openAskPasswordDialog(data.getData().toString());
             } catch (Exception e) {
                 // TODO Auto-generated catch block
@@ -521,5 +506,12 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
                 }
             }
         }
+    }
+
+    private void openStartScreenFragment(){
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.mainContainer, new StartScreenFragment())
+                .commit();
     }
 }
