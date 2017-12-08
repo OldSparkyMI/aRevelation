@@ -27,6 +27,7 @@
         android:entryValues="@array/pref_auto_lock_values"
         android:key="preference_auto_lock"
         android:summary="@string/pref_description_auto_lock"
-        android:title="@string/pref_title_auto_lock" />
+        android:title="@string/pref_title_auto_lock"
+        android:enabled="false"/>
 
 </PreferenceScreen>
