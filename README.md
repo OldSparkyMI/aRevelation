@@ -43,7 +43,7 @@ apt-get install git
 
 ####Clone aRevelation project
 ```
-git clone https://github.com/MarmaladeSky/aRevelation.git
+git clone https://github.com/OldSparkyMI/aRevelation.git
 ```
 
 ####Install ia-32-libs or gcc-multilib (x86_64 OS)
