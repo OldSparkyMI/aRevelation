@@ -57,7 +57,7 @@
     <string name="pref_header_security">Security settings</string>
 
     <string name="pref_title_hide_password_and_secrets">Hide passwords and secrets</string>
-    <string name="pref_description_hide_passwords_and_secrets">Displays ****** instead of the passwords and secrets directly.</string>
+    <string name="pref_description_hide_passwords_and_secrets">Displays ****** instead of the passwords or secrets.</string>
 
     <string name="pref_title_toggle_password">Quick unlock Passwords</string>
     <string name="pref_description_toggle_password">Displays passwords and secrets directly after clicking a button.</string>
