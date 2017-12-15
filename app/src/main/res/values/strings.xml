@@ -11,7 +11,7 @@
     <string name="ask_password_message">Input password</string>
     <string name="self_testing_warning">Warning! Editing and saving could cause data lost! Be careful.</string>
     <string name="self_testing_super_warning">Super Warning! Editing and saving will cause data lost! Be careful.</string>
-    <string name="self_testing_passed_message">Self testing passed. Editing is safe.</string>
+    <string name="self_testing_passed_message">Self testing passed. Editing is safe</string>
     <string name="self_testing_internal_error">Internal unknown error of self testing. Be careful.</string>
     <string name="decrypt_label">Decrypting…</string>
     <string name="decrypt_canceled_label">Decrypting canceled!</string>
@@ -85,7 +85,13 @@
 
     <string name="pref_title_auto_lock">Automatically file-locking</string>
     <string name="pref_description_auto_lock">Locks the file after a specified time.</string>
+    <string name="auto_lock_file_locked">File locked</string>
+    <plurals name="auto_lock_time_left">
+        <item quantity="one">File look in %d minute</item>
+        <item quantity="other">File look in %d minutes</item>
+    </plurals>
     <string-array name="pref_auto_lock_titles">
+        <item>1 minutes</item>
         <item>5 minutes</item>
         <item>10 minutes</item>
         <item>15 minutes</item>
@@ -96,6 +102,7 @@
         <item>Never</item>
     </string-array>
     <string-array name="pref_auto_lock_values">
+        <item>1</item>
         <item>5</item>
         <item>10</item>
         <item>15</item>

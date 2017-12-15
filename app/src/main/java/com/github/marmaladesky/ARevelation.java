@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -44,6 +45,8 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.text.DateFormat;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import de.igloffstein.maik.aRevelation.ARevelationSettingsActivity;
 import de.igloffstein.maik.aRevelation.Fragment.AboutFragment;
@@ -55,21 +58,22 @@ import static com.github.marmaladesky.R.string.new_folder_currently_not_supporte
 
 public class ARevelation extends AppCompatActivity implements AboutFragment.OnFragmentInteractionListener {
 
-    private static final String LOG_TAG = "ARevelation: ";
+    private static final String LOG_TAG = ARevelation.class.getSimpleName();
     private static final int REQUEST_FILE_OPEN = 1;
     private static final String ARGUMENT_RVLDATA = "rvlData";
     private static final String ARGUMENT_PASSWORD = "password";
     private static final String ARGUMENT_FILE = "file";
     private static int sessionDepth = 0;
 
+
     DateFormat dateFormatter;
 
-    RevelationData rvlData;
-    String password;
-    String currentFile;
-    private Button saveButton;
-    private long onPauseSystemMillis = 0;
-    DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
+    protected RevelationData rvlData;
+    protected String password;
+    protected String currentFile;
+    protected Button saveButton;
+    protected long onPauseSystemMillis = 0;
+    protected DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
 
         @Override
         public void onClick(DialogInterface dialog, int which) {
@@ -124,7 +128,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
 
             if (currentFile != null && !"".equals(currentFile)) {
                 // lets reenter the password to the current file
-                openAskPasswordDialog(currentFile);
+                openAskPasswordDialog();
             }
         }
     }
@@ -186,8 +190,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
         }
 
         dateFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.MEDIUM, ARevelationHelper.getLocale(getResources()));
-        saveButton = this.findViewById(R.id.saveButton);
-    }
+        saveButton = this.findViewById(R.id.saveButton);    }
 
     @Override
     public void onDestroy(){
@@ -227,7 +230,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
 
     }
 
-    private void clearState(boolean resetFile) {
+    protected void clearState(boolean resetFile) {
         rvlData = null;
         password = null;
         currentFile = resetFile ? null : currentFile;
@@ -317,6 +320,10 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
                 e.printStackTrace();
             }
         }
+    }
+
+    protected void openAskPasswordDialog() {
+        openAskPasswordDialog(this.currentFile);
     }
 
     protected void openAskPasswordDialog(String file) {
@@ -458,6 +465,11 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
 
                             AskPasswordDialog.this.dismiss();
                             getActivity().findViewById(R.id.fab).setVisibility(View.VISIBLE);
+
+                            int preferenceAutoLock = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("preference_auto_lock", "-1"));
+                            if (preferenceAutoLock > 0) {
+                                Toast.makeText(getActivity(), getResources().getQuantityString(R.plurals.auto_lock_time_left, preferenceAutoLock, preferenceAutoLock), Toast.LENGTH_LONG).show();
+                            }
                         } else {
                             TextView t = getDialog().findViewById(R.id.message);
                             String message = s.exception.getMessage();
@@ -508,7 +520,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
         }
     }
 
-    private void openStartScreenFragment(){
+    protected void openStartScreenFragment(){
         getFragmentManager()
                 .beginTransaction()
                 .replace(R.id.mainContainer, new StartScreenFragment())

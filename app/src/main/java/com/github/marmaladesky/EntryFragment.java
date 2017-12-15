@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.marmaladesky.data.Entry;
 import com.github.marmaladesky.data.Field;
@@ -23,19 +25,20 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class EntryFragment extends Fragment {
 
+    private static final String LOG_TAG = EntryFragment.class.getSimpleName();
     private static final String ROW_HEADER_IDENTIFIER = "First Line";
     private static final String ROW_DATA_IDENTIFIER = "Second Line";
     private static final String ROW_DATA_IMAGE = "Image View";
-
     private static final String ARGUMENT_ENTRY_ID = "entryId";
 
-
     private Entry entry;
-
     private ListView simple;
+
 
     public static EntryFragment newInstance(String entryId) {
         EntryFragment f = new EntryFragment();
@@ -46,6 +49,7 @@ public class EntryFragment extends Fragment {
 
         return f;
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
@@ -134,6 +138,7 @@ public class EntryFragment extends Fragment {
         simple.setAdapter(itemsAdapter);
         simple.setOnItemClickListener(new PasswordOnClickListener());
         ((ARevelation) getActivity()).checkButton();
+
         return v;
     }
 

@@ -11,7 +11,7 @@
     <string name="ask_password_message">Passwort eingeben</string>
     <string name="self_testing_warning">Warnung! Editieren und speichern kann unter Umständen zu einem Datenverlust führen! Obacht!</string>
     <string name="self_testing_super_warning">Warnung! Editieren und speichern führt zum Datenverlust! Vorsicht!</string>
-    <string name="self_testing_passed_message">Integritätstest erfolgreich.</string>
+    <string name="self_testing_passed_message">Integritätstest erfolgreich</string>
     <string name="self_testing_internal_error">Unbehandelter interner Fehler während des Integritätstests. Vorsichtig vorgehen.</string>
     <string name="decrypt_label">Entschlüsseln…</string>
     <string name="decrypt_canceled_label">Vorgang abgebrochen!</string>
@@ -70,7 +70,7 @@
         <item>5 Minuten</item>
         <item>10 Minuten</item>
         <item>15 Minuten</item>
-        <item>Never</item>
+        <item>Nicht sperren</item>
     </string-array>
     <string-array name="pref_lock_in_background_values">
         <item>0</item>
@@ -84,7 +84,13 @@
 
     <string name="pref_title_auto_lock">Datei automatisch sperren</string>
     <string name="pref_description_auto_lock">Sperrt die Datei autmatisch nach eine bestimmten Zeit.</string>
+    <string name="auto_lock_file_locked">Datei gesperrt</string>
+    <plurals name="auto_lock_time_left">
+        <item quantity="one">Sperren in %d Minute</item>
+        <item quantity="other">Sperren in %d Minuten</item>
+    </plurals>
     <string-array name="pref_auto_lock_titles">
+        <item>1 Minute</item>
         <item>5 Minuten</item>
         <item>10 Minuten</item>
         <item>15 Minuten</item>
@@ -92,9 +98,10 @@
         <item>30 Minuten</item>
         <item>45 Minuten</item>
         <item>1 Stunde</item>
-        <item>Never</item>
+        <item>Nicht sperren</item>
     </string-array>
     <string-array name="pref_auto_lock_values">
+        <item>1</item>
         <item>5</item>
         <item>10</item>
         <item>15</item>
