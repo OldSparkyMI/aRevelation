@@ -6,7 +6,7 @@ android {
         applicationId "de.igloffstein.maik.aRevelation"
         minSdkVersion 22
         targetSdkVersion 26
-        versionCode 6
+        versionCode 7
         versionName "1.0RC3-SNAPSHOT"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
