@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -45,8 +44,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.text.DateFormat;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import de.igloffstein.maik.aRevelation.ARevelationSettingsActivity;
 import de.igloffstein.maik.aRevelation.Fragment.AboutFragment;
@@ -105,36 +102,24 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
     /**
      * After https://developer.android.com/guide/components/activities/activity-lifecycle.html this
      * is the latest call before the acitivity is displayed to the user
-     *
+     * <p>
      * lets check, if the user has to enter his password again
      */
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
 
         int preferenceLockInBackground = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("preference_lock_in_background", "0"));
         long preferenceLockInBackgroundNextSeconds = onPauseSystemMillis + preferenceLockInBackground * 60 * 1000;
 
-        if (
-                preferenceLockInBackground == 0 || preferenceLockInBackgroundNextSeconds < System.currentTimeMillis()
+        if (preferenceLockInBackground == 0 || preferenceLockInBackgroundNextSeconds < System.currentTimeMillis()) {
 
-                ) {
-
-            // clear everything besides the file
-            clearState(false);
-
-            // set start screen
-            openStartScreenFragment();
-
-            if (currentFile != null && !"".equals(currentFile)) {
-                // lets reenter the password to the current file
-                openAskPasswordDialog();
-            }
+            clearStateResetUi(false);
         }
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
         this.onPauseSystemMillis = System.currentTimeMillis();
     }
@@ -190,10 +175,11 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
         }
 
         dateFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.MEDIUM, ARevelationHelper.getLocale(getResources()));
-        saveButton = this.findViewById(R.id.saveButton);    }
+        saveButton = this.findViewById(R.id.saveButton);
+    }
 
     @Override
-    public void onDestroy(){
+    public void onDestroy() {
         super.onDestroy();
     }
 
@@ -224,10 +210,35 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
         super.onBackPressed();
         checkButton();
         if (getFragmentManager().getBackStackEntryCount() < 1) {
-            clearState();
-            openStartScreenFragment();
+            clearStateResetUi();
         }
 
+    }
+
+    protected void clearStateResetUi() {
+        clearStateResetUi(true);
+    }
+
+    protected void clearStateResetUi(boolean clearFile) {
+        if (rvlData != null) {
+            Log.d(LOG_TAG, "clearing state ...");
+            clearState(clearFile);
+            resetUI();
+        } else {
+            Log.d(LOG_TAG, "state already cleared");
+        }
+    }
+
+    protected void resetUI() {
+        try {
+            openStartScreenFragment();
+            if (currentFile != null && !"".equals(currentFile)) {
+                openAskPasswordDialog();
+            }
+        }catch (IllegalStateException e) {
+            Log.e(LOG_TAG, e.getMessage());
+            Log.getStackTraceString(e);
+        }
     }
 
     protected void clearState(boolean resetFile) {
@@ -237,7 +248,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
         ((ViewGroup) findViewById(R.id.mainContainer)).removeAllViews();
     }
 
-    private void clearState() {
+    protected void clearState() {
         clearState(true);
     }
 
@@ -520,7 +531,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
         }
     }
 
-    protected void openStartScreenFragment(){
+    protected void openStartScreenFragment() {
         getFragmentManager()
                 .beginTransaction()
                 .replace(R.id.mainContainer, new StartScreenFragment())

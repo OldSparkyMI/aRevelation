@@ -23,56 +23,61 @@ import de.igloffstein.maik.aRevelation.Adapter.RevelationStructureBrowserAdapter
 public class RevelationBrowserFragment extends Fragment {
 	private static final String LOG_TAG = RevelationBrowserFragment.class.getSimpleName();
 	private static final String ARGUMENT_UUID_LIST = "uuidList";
-	private static final int oneMinute = 6000;
+	private static final int oneMinute = 60000;
 	private static int minuteCounter;
+	private static boolean timerInitialized = false;
 
 	protected static Timer timer;
 	private String groupUuid;
 
-	protected void cancelTimer(){
+	protected static void cancelTimer(){
 		if (timer != null) {
 			timer.cancel();
 			timer.purge();
+			timerInitialized=false;
+			Log.d(LOG_TAG, "Timer canceled");
 		}
 	}
 
 	protected void newTimer(){
-		cancelTimer();
-		Log.d(LOG_TAG, "Creating new timer ...");
-        final int preferenceAutoLock = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("preference_auto_lock", "-1"));
-		minuteCounter = 0;
-		timer = new Timer();
-		timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        int minutesLeft = preferenceAutoLock - ++minuteCounter;
-                        Log.d(LOG_TAG, "Sperren in: "+minutesLeft);
-                        if (minutesLeft > 0) {
-                            Toast.makeText(getActivity(), getResources().getQuantityString(R.plurals.auto_lock_time_left, minutesLeft, minutesLeft), Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(getActivity(), getResources().getString(R.string.auto_lock_file_locked), Toast.LENGTH_LONG).show();
-                            try{
-                                ((ARevelation) getActivity()).openStartScreenFragment();
-                                ((ARevelation) getActivity()).clearState(false);
-                                ((ARevelation) getActivity()).openAskPasswordDialog();
-                                timer.cancel();
-                            }catch (IllegalStateException e){
-                                Log.e(LOG_TAG, e.getMessage());
-                                Log.getStackTraceString(e);
-                            }
-                        }
-                    };
-                });
-            }
-        }, oneMinute, oneMinute);
+		if (!timerInitialized) {
+			Log.d(LOG_TAG, "Creating new timer ...");
+			final int preferenceAutoLock = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("preference_auto_lock", "-1"));
+			minuteCounter = 0;
+			timer = new Timer();
+			timer.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					getActivity().runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							int minutesLeft = preferenceAutoLock - ++minuteCounter;
+							Log.d(LOG_TAG, "lock in: " + minutesLeft);
+							if (minutesLeft > 0) {
+								Toast.makeText(getActivity(), getResources().getQuantityString(R.plurals.auto_lock_time_left, minutesLeft, minutesLeft), Toast.LENGTH_LONG).show();
+							} else {
+								Toast.makeText(getActivity(), getResources().getString(R.string.auto_lock_file_locked), Toast.LENGTH_LONG).show();
+								try {
+									((ARevelation) getActivity()).clearStateResetUi(false);
+								} catch (IllegalStateException e) {
+									Log.e(LOG_TAG, e.getMessage());
+									Log.getStackTraceString(e);
+								} finally {
+									timerInitialized=false;
+									cancel();
+								}
+							}
+						}
+					});
+				}
+			}, oneMinute, oneMinute);
+			timerInitialized = true;
+		}
 	}
 
 	@Override
-	public void onDestroyView() {
-		super.onDestroyView();
+	public void onDetach() {
+		super.onDetach();
 		cancelTimer();
 	}
 
@@ -83,6 +88,8 @@ public class RevelationBrowserFragment extends Fragment {
 		args.putString(ARGUMENT_UUID_LIST, uuidList);
 		f.setArguments(args);
 
+		cancelTimer();
+		timerInitialized = false;
 		return f;
 	}
 
@@ -110,15 +117,21 @@ public class RevelationBrowserFragment extends Fragment {
 		}
 		((ARevelation) getActivity()).checkButton();
 
-        if (Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("preference_auto_lock", "-1")) > 0) {
-            // woran erkenne ich, dass der Timer läuft, ich möchte keinen neuen Timer erstellen
-            // wenn der alte noch läuft, ansonsten hab ich Probleme wenn ich ein Entry anschaue
-            // dann wird immer ein neuer Timer gestartet
-            newTimer();
-        }
-
+		if (Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("preference_auto_lock", "-1")) > 0) {
+			newTimer();
+		}
 
         return v;
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		if (((ARevelation) getActivity()).rvlData == null){
+			// if no data, just go back to the start fragment
+			((ARevelation) getActivity()).resetUI();
+		}
+
 	}
 
 	@Override
