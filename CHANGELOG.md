@@ -1,3 +1,8 @@
+## 1.1
+- Ability to change the password for the file
+- Backup-function before every save
+  - with auto restore if something went wrong
+
 ## 1.0RC2
 - Removed useless permission
   - android.permission.MANAGE_DOCUMENTS

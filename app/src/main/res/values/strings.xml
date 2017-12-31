@@ -2,12 +2,20 @@
 <resources>
     <string name="app_name">aRevelation</string>
     <string name="app_slogan">a secure password manager for android</string>
+    <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="open">Open</string>
     <string name="save">Save</string>
     <string name="about">About</string>
     <string name="createNew">New</string>
     <string name="add_entry">Add Entry</string>
+    <string name="change_password">Change password</string>
+    <string name="current_password">Current password</string>
+    <string name="new_password">New password</string>
+    <string name="confirm_new_password">Confirm new password</string>
+    <string name="password_changed">Password changed</string>
+    <string name="passwords_do_not_match">Passwords do not match</string>
+    <string name="backup">Backup</string>
     <string name="ask_password_message">Input password</string>
     <string name="self_testing_warning">Warning! Editing and saving could cause data lost! Be careful.</string>
     <string name="self_testing_super_warning">Super Warning! Editing and saving will cause data lost! Be careful.</string>
@@ -16,7 +24,8 @@
     <string name="decrypt_label">Decrypting…</string>
     <string name="decrypt_canceled_label">Decrypting canceled!</string>
     <string name="decrypt_invalid_password_label">Invalid password</string>
-    <string name="decrypt_empty_passwort_label">No password entered</string>
+    <string name="decrypt_empty_password_label">No password entered</string>
+    <string name="backup_restored">Restored old file, new changes are lost</string>
     <!--Field names-->
     <string name="name">Name</string>
     <string name="description">Description</string>
@@ -48,6 +57,11 @@
     <string name="vnc">VNC</string>
     <string name="website">Website</string>
     <string name="folder">Folder</string>
+    <!-- Errors -->
+    <string name="error">Error</string>
+    <string name="error_cannot_save">Error: Can\'t save to file</string>
+    <string name="error_cannot_restore">Error: Can\'t restore original from backup</string>
+    <string name="error_cannot_backup">Error: Can\'t create backup file, won\'t save</string>
     <!-- Temporarily -->
     <string name="new_folder_currently_not_supported">Creating a new folder is currently not supported.</string>
     <string name="title_activity_arevelation_settings">Settings</string>

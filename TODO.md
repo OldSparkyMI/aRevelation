@@ -54,15 +54,23 @@ W/System.err:     at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:779
 ```
 
 # Features
+* Warning:(532, 23) This AsyncTask class should be static or leaks might occur
 * Change: Remove build warnings
 * Add: search/filter for passwords
   * Add: highlighting
 * Add: password generation
 * Add: create a new file
-* Maybe: nicer graphics
+* Add: able to add a folder
 * Secure Share (Share passwords and credentials on two different ways (E-Mail, WhatsApp, Signal, ...))
 
+# Very optional
+* nicer graphics
+
 # Done
+* Add: change password
+* Add: backup before saving a file
+  * with auto restore
+  * binary copy before saving
 * Add: FloatingActionButton
   * Creating new items now possible
 * Add: Show icons for every entry in the list view

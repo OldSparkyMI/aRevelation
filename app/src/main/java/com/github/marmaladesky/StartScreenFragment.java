@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.*;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -12,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 public class StartScreenFragment extends Fragment {
+
+    private static final String LOG_TAG = StartScreenFragment.class.getSimpleName();
 
     @TargetApi(19)
     @Override

@@ -2,21 +2,30 @@
 <resources>
     <string name="app_name">aRevelation</string>
     <string name="app_slogan">ein sicherer Passwortmanager für Android</string>
+    <string name="ok">Weiter</string>
     <string name="cancel">Abbrechen</string>
     <string name="open">Öffnen</string>
     <string name="save">Speichern</string>
     <string name="about">Über</string>
     <string name="createNew">Neu</string>
     <string name="add_entry">Eintrag hinzufügen</string>
+    <string name="change_password">Passwort ändern</string>
+    <string name="current_password">Aktuelles Passwort</string>
+    <string name="new_password">Neues Passwort</string>
+    <string name="confirm_new_password">Passwort wiederholen</string>
+    <string name="password_changed">Passwort geändert</string>
+    <string name="passwords_do_not_match">Passwörter stimmen nicht überein</string>
+    <string name="backup">Sicherung</string>
     <string name="ask_password_message">Passwort eingeben</string>
-    <string name="self_testing_warning">Warnung! Editieren und speichern kann unter Umständen zu einem Datenverlust führen! Obacht!</string>
-    <string name="self_testing_super_warning">Warnung! Editieren und speichern führt zum Datenverlust! Vorsicht!</string>
+    <string name="self_testing_warning">Warnung! Editieren und speichern kann unter Umständen zu einem Datenverlust führen, obacht</string>
+    <string name="self_testing_super_warning">Warnung! Editieren und speichern führt zum Datenverlust, vorsicht</string>
     <string name="self_testing_passed_message">Integritätstest erfolgreich</string>
-    <string name="self_testing_internal_error">Unbehandelter interner Fehler während des Integritätstests. Vorsichtig vorgehen.</string>
+    <string name="self_testing_internal_error">Unbehandelter interner Fehler während des Integritätstests, vorsichtig vorgehen</string>
     <string name="decrypt_label">Entschlüsseln…</string>
     <string name="decrypt_canceled_label">Vorgang abgebrochen!</string>
     <string name="decrypt_invalid_password_label">Passwort ungültig</string>
-    <string name="decrypt_empty_passwort_label">Kein Passwort eingegeben</string>
+    <string name="decrypt_empty_password_label">Kein Passwort eingegeben</string>
+    <string name="backup_restored">Backup wiederhergestellt, bisherige Änderungen sind verloren</string>
     <!--Field names-->
     <string name="name">Name</string>
     <string name="description">Beschreibung</string>
@@ -48,6 +57,11 @@
     <string name="vnc">VNC</string>
     <string name="website">Webseite</string>
     <string name="folder">Verzeichnis</string>
+    <!-- Errors -->
+    <string name="error">Fehler</string>
+    <string name="error_cannot_save">Fehler: Datei konnte nicht gespeichert werden</string>
+    <string name="error_cannot_restore">Datei konnte nicht wiederhergestellt werden</string>
+    <string name="error_cannot_backup">Fehler beim Erstellen eines Backups, Änderungen werden nicht gespeichert</string>
     <!-- Temporarily -->
     <string name="new_folder_currently_not_supported">Das Erstellen eines neuen Verzeichnisses wird momentan nicht unterstützt.</string>
     <string name="title_activity_arevelation_settings">Einstellungen</string>

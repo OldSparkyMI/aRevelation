@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,6 +25,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,11 +40,17 @@ import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import de.igloffstein.maik.aRevelation.ARevelationSettingsActivity;
@@ -51,6 +59,7 @@ import de.igloffstein.maik.aRevelation.EntryType;
 import de.igloffstein.maik.aRevelation.Helper.ARevelationHelper;
 import de.igloffstein.maik.aRevelation.Helper.EntryHelper;
 
+import static com.github.marmaladesky.R.string.folder;
 import static com.github.marmaladesky.R.string.new_folder_currently_not_supported;
 
 public class ARevelation extends AppCompatActivity implements AboutFragment.OnFragmentInteractionListener {
@@ -60,6 +69,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
     private static final String ARGUMENT_RVLDATA = "rvlData";
     private static final String ARGUMENT_PASSWORD = "password";
     private static final String ARGUMENT_FILE = "file";
+    public static final String BACKUP_FILE_ENDING = ".arvlbak";
     private static int sessionDepth = 0;
 
 
@@ -184,8 +194,40 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
     }
 
     public void saveChanges(View view) throws Exception {
-        rvlData.save(currentFile, password, getContentResolver());
-        checkButton();
+
+        String backupFile = null;
+
+        try {
+            // backup old file
+            backupFile = ARevelationHelper.backupFile(getApplicationContext(), currentFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (backupFile != null && !"".equals(backupFile)) {
+            try {
+                // save file
+                rvlData.save(getApplicationContext(), currentFile, password);
+                checkButton();
+            } catch (Exception e) {
+                Toast.makeText(getApplicationContext(), R.string.error_cannot_save, Toast.LENGTH_LONG).show();
+
+                try {
+                    // can't save / error during save, restore old file
+                    ARevelationHelper.restoreFile(getApplicationContext(), currentFile, backupFile);
+                    Toast.makeText(getApplicationContext(), R.string.backup_restored, Toast.LENGTH_LONG).show();
+                } catch (IOException e1) {
+                    Toast.makeText(getApplicationContext(), R.string.error_cannot_restore, Toast.LENGTH_LONG).show();
+                    e1.printStackTrace();
+                }
+
+                throw e;
+            }
+        } else {
+            Toast.makeText(getApplicationContext(), R.string.error_cannot_backup, Toast.LENGTH_LONG).show();
+            throw new IOException(getString(R.string.error_cannot_backup));
+        }
+
     }
 
     public void addEntry(View view) {
@@ -235,7 +277,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
             if (currentFile != null && !"".equals(currentFile)) {
                 openAskPasswordDialog();
             }
-        }catch (IllegalStateException e) {
+        } catch (IllegalStateException e) {
             Log.e(LOG_TAG, e.getMessage());
             Log.getStackTraceString(e);
         }
@@ -267,6 +309,17 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (currentFile != null && !"".equals(currentFile)) {
+            menu.findItem(R.id.menu_change_password).setEnabled(true);
+        } else {
+            menu.findItem(R.id.menu_change_password).setEnabled(false);
+        }
+
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
@@ -275,6 +328,9 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
                 break;
             case R.id.menu_open:
                 optionItemSelectedOpen();
+                break;
+            case R.id.menu_change_password:
+                changePassword();
                 break;
             case R.id.menu_settings:
                 Intent intent = new Intent(this, ARevelationSettingsActivity.class);
@@ -288,6 +344,75 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
         }
 
         return true;
+    }
+
+    /**
+     * This works, but this will save the changes too.
+     * Because we have only one instance of rvlData
+     * Better is to store all changes in an other rvlData variable
+     *
+     * ToDo: Fix this some day
+     */
+    private void changePassword() {
+        // reenter old password
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        // view of the alert dialog
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        final EditText reenterCurrentPassword = new EditText(this);
+        reenterCurrentPassword.setHint(R.string.current_password);
+        reenterCurrentPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        layout.addView(reenterCurrentPassword);
+
+        final EditText enterNewPassword = new EditText(this);
+        enterNewPassword.setHint(R.string.new_password);
+        enterNewPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        layout.addView(enterNewPassword);
+
+        final EditText confirmNewPassword = new EditText(this);
+        confirmNewPassword.setHint(R.string.confirm_new_password);
+        confirmNewPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        layout.addView(confirmNewPassword);
+
+        final String oldPassword = password;
+
+        builder.setTitle(R.string.change_password);
+        builder.setCancelable(false);
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (password != null && !"".equals(password.trim())) {
+                    if (password.equals(reenterCurrentPassword.getText().toString())) {
+                        if ( enterNewPassword.getText() != null
+                                && !"".equals(enterNewPassword.getText().toString())
+                                && enterNewPassword.getText().toString().equals(confirmNewPassword.getText().toString())) {
+                            try {
+                                password = enterNewPassword.getText().toString();
+                                saveChanges(getCurrentFocus());
+                                Toast.makeText(getApplicationContext(), R.string.password_changed, Toast.LENGTH_LONG).show();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                password = oldPassword;
+                                Toast.makeText(getApplicationContext(), getString(R.string.backup) + ": " + ARevelationHelper.backupFile, Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            Toast.makeText(getApplicationContext(), R.string.passwords_do_not_match, Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        Toast.makeText(getApplicationContext(), R.string.decrypt_invalid_password_label, Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), R.string.decrypt_empty_password_label, Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, null);
+
+
+        builder.setView(layout);
+        builder.create().show();
     }
 
     public void optionItemSelectedOpen() {
@@ -489,7 +614,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
                                 t.setText(R.string.decrypt_invalid_password_label);
                             } else {
                                 if (("Could not generate secret key").equals(message)) {
-                                    t.setText(R.string.decrypt_empty_passwort_label);
+                                    t.setText(R.string.decrypt_empty_password_label);
                                 } else {
                                     t.setText(s.exception.getMessage());
                                 }
