@@ -557,14 +557,20 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
 
                     try {
                         SelfTestingResult testing = ARevelation.testData(result);
-                        if (testing == SelfTestingResult.Different) {
-                            res.toastMessage = R.string.self_testing_super_warning;
-                        } else if (testing == SelfTestingResult.Similar) {
-                            res.toastMessage = R.string.self_testing_warning;
-                        } else if (BuildConfig.DEBUG && testing == SelfTestingResult.Identical) {
-                            res.toastMessage = R.string.self_testing_passed_message;
-                        } else
-                            res.toastMessage = R.string.self_testing_internal_error;
+                        switch (testing) {
+                            case Different:
+                                res.toastMessage = R.string.self_testing_super_warning;
+                                break;
+                            case Similar:
+                                res.toastMessage = R.string.self_testing_warning;
+                                break;
+                            case Identical:
+                                res.toastMessage = R.string.self_testing_passed_message;
+                                break;
+                            default:
+                                // a "this should never ever happen" case ;)
+                                res.toastMessage = R.string.self_testing_internal_error;
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
