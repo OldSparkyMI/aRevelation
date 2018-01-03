@@ -1,6 +1,5 @@
 package com.github.marmaladesky.data;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
 
@@ -8,12 +7,12 @@ import com.github.marmaladesky.Cryptographer;
 
 import org.simpleframework.xml.*;
 import org.simpleframework.xml.core.Persister;
+import org.simpleframework.xml.stream.Format;
 
 import java.io.*;
 import java.util.List;
 import java.util.UUID;
 
-import de.igloffstein.maik.aRevelation.Helper.ARevelationHelper;
 import lombok.Getter;
 
 @Root(name = "revelationdata")
@@ -136,7 +135,8 @@ public class RevelationData implements Serializable {
     }
 
     public void save(Context context, String file, String password) throws Exception {
-        Serializer serializer = new Persister();
+        // Revelation 0.4.14 (Desktop version) needs the xml header declaration
+        Serializer serializer = new Persister(new Format("<?xml version=\"1.0\" encoding= \"UTF-8\" ?>"));
         Writer writer = new StringWriter();
         serializer.write(this, writer);
         byte[] encrypted = Cryptographer.encrypt(writer.toString(), password);

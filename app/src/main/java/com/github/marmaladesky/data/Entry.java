@@ -53,7 +53,7 @@ public class Entry implements Serializable {
                  @ElementList(inline = true, required = false) List<Field> fields,
                  @Element(name = PROPERTY_UPDATED) long updated,
                  @ElementList(name = "entry", inline = true, required = false) List<Entry> list) {
-        this.type = type;
+        this.type = type.toLowerCase(); // Revelation 0.4.14 (Desktop version) understands only lowercase types
         this.name = name;
         this.description = description != null ? description : "";
         this.notes = notes != null ? notes : "";
