@@ -2,8 +2,6 @@
 <resources>
     <string name="app_name">aRevelation</string>
     <string name="app_slogan">a secure password manager for android</string>
-    <string name="ok">OK</string>
-    <string name="cancel">Cancel</string>
     <string name="open">Open</string>
     <string name="save">Save</string>
     <string name="about">About</string>

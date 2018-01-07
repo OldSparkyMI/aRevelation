@@ -45,11 +45,11 @@ public class EditFieldDialog extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View v = inflater.inflate(R.layout.edit_field_dialog, null);
         builder.setView(v);
-        value = (EditText) v.findViewById(R.id.edit_field_value);
+        value = v.findViewById(R.id.edit_field_value);
         value.setText(field.getFieldValue());
 
         builder
-                .setPositiveButton(R.string.open,
+                .setPositiveButton(android.R.string.ok,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 try {
@@ -70,7 +70,7 @@ public class EditFieldDialog extends DialogFragment {
                             }
                         })
 
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
                     }

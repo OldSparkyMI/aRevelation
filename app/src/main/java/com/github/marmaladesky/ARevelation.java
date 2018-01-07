@@ -380,7 +380,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
 
         builder.setTitle(R.string.change_password);
         builder.setCancelable(false);
-        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (password != null && !"".equals(password.trim())) {
@@ -408,7 +408,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
                 }
             }
         });
-        builder.setNegativeButton(R.string.cancel, null);
+        builder.setNegativeButton(android.R.string.cancel, null);
 
 
         builder.setView(layout);
@@ -496,7 +496,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
                                 public void onClick(DialogInterface dialog, int which) { /* See onStart() */ }
                             })
 
-                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             dialog.cancel();
                         }
