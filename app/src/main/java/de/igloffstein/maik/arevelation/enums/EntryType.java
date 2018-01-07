@@ -1,8 +1,10 @@
-package de.igloffstein.maik.aRevelation;
+package de.igloffstein.maik.arevelation.enums;
 
 import android.content.Context;
 
 /**
+ * Enum for available entry types in revelation and aRevelation
+ *
  * Created by OldSparkyMI on 21.11.17.
  */
 

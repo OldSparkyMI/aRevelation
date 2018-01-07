@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="de.igloffstein.maik.aRevelation.ARevelationSettingsActivity"
+            android:name="de.igloffstein.maik.arevelation.activities.ARevelationSettingsActivity"
             android:label="@string/title_activity_arevelation_settings"
             android:parentActivityName=".ARevelation"
             android:theme="@style/AppTheme">

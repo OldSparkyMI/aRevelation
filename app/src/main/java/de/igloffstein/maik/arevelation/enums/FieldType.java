@@ -1,7 +1,9 @@
-package de.igloffstein.maik.aRevelation;
+package de.igloffstein.maik.arevelation.enums;
 
 /**
- * Created by maik on 22.11.17.
+ * Enum for available fields in revelation and aRevelation
+ *
+ * Created by OldSparkyMI on 22.11.17.
  */
 
 public enum FieldType {

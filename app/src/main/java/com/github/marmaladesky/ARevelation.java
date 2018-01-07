@@ -1,32 +1,24 @@
 package com.github.marmaladesky;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.marmaladesky.data.Entry;
@@ -39,28 +31,21 @@ import org.custommonkey.xmlunit.XMLUnit;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
-import de.igloffstein.maik.aRevelation.ARevelationSettingsActivity;
-import de.igloffstein.maik.aRevelation.Fragment.AboutFragment;
-import de.igloffstein.maik.aRevelation.EntryType;
-import de.igloffstein.maik.aRevelation.Helper.ARevelationHelper;
-import de.igloffstein.maik.aRevelation.Helper.EntryHelper;
-
-import static com.github.marmaladesky.R.string.folder;
-import static com.github.marmaladesky.R.string.new_folder_currently_not_supported;
+import de.igloffstein.maik.arevelation.activities.ARevelationSettingsActivity;
+import de.igloffstein.maik.arevelation.fragments.AboutFragment;
+import de.igloffstein.maik.arevelation.enums.EntryType;
+import de.igloffstein.maik.arevelation.helpers.ARevelationHelper;
+import de.igloffstein.maik.arevelation.helpers.EntryHelper;
+import de.igloffstein.maik.arevelation.dialogs.AskPasswordDialog;
+import lombok.Getter;
+import lombok.Setter;
 
 public class ARevelation extends AppCompatActivity implements AboutFragment.OnFragmentInteractionListener {
 
@@ -70,13 +55,20 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
     private static final String ARGUMENT_PASSWORD = "password";
     private static final String ARGUMENT_FILE = "file";
     public static final String BACKUP_FILE_ENDING = ".arvlbak";
+    @Getter
+    private LinkedList<Entry> currentEntryState = new LinkedList<>();
     private static int sessionDepth = 0;
-
 
     DateFormat dateFormatter;
 
+    @Setter
+    @Getter
     protected RevelationData rvlData;
+    @Setter
+    @Getter
     protected String password;
+    @Setter
+    @Getter
     protected String currentFile;
     protected Button saveButton;
     protected long onPauseSystemMillis = 0;
@@ -86,26 +78,23 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
         public void onClick(DialogInterface dialog, int which) {
 
             Entry entry = EntryHelper.newEntry(EntryType.getFromPosition(which));
+            // get id from language values
+            int id = getResources()
+                    .getIdentifier(EntryType.getFromPosition(which).toString().toLowerCase(),"string", getPackageName());
+            entry.setName(getString(id));
 
-            if (EntryType.getFromPosition(which) == EntryType.FOLDER) {
-                // folder is currently not supported
-                Toast.makeText(getApplicationContext(), new_folder_currently_not_supported, Toast.LENGTH_LONG).show();
-            } else {
-
-                // get id from language values
-                int id = getResources().getIdentifier(
-                        EntryType.getFromPosition(which).toString().toLowerCase(),
-                        "string", getPackageName()
-                );
-                entry.setName(getString(id));
-
+            // add new element
+            if (currentEntryState.size() <= 0) {
                 rvlData.addEntry(entry);
-
-                getFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.mainContainer, EntryFragment.newInstance(entry.getUuid()))
-                        .addToBackStack(null).commit();
+            }else{
+                currentEntryState.getLast().list.add(entry);
             }
+
+            // go directly in detail view mode for editing
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.mainContainer, RevelationEntryFragment.newInstance(entry.getUuid()))
+                    .addToBackStack(null).commit();
         }
     };
 
@@ -230,6 +219,10 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
 
     }
 
+    /**
+     * FAB Handler
+     * @param view
+     */
     public void addEntry(View view) {
         // nice from: https://stackoverflow.com/questions/15762905/how-can-i-display-a-list-view-in-an-android-alert-dialog
         new AlertDialog.Builder(view.getContext())
@@ -425,14 +418,13 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
 
     public void optionItemSelectedAbout() {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.mainContainer, AboutFragment.newInstance(null, null)); // give your fragment container id in first parameter
+        transaction.replace(R.id.mainContainer, AboutFragment.newInstance()); // give your fragment container id in first parameter
         transaction.addToBackStack(null);  // if written, this transaction will be added to backstack
         transaction.commit();
     }
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-
     }
 
     @Override
@@ -464,202 +456,6 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
 
     protected void openAskPasswordDialog(String file) {
         AskPasswordDialog.newInstance(file).show(getFragmentManager(), "Tag");
-    }
-
-    public static class AskPasswordDialog extends DialogFragment {
-
-        public String file;
-
-        public static AskPasswordDialog newInstance(String file) {
-            AskPasswordDialog f = new AskPasswordDialog();
-            Bundle args = new Bundle();
-            args.putString("file", file);
-            f.setArguments(args);
-            f.setCancelable(false);
-            return f;
-        }
-
-        @SuppressLint("InflateParams") // Passing null is normal for dialogs
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            if (savedInstanceState != null && savedInstanceState.getString("file") != null)
-                file = savedInstanceState.getString("file");
-            else
-                file = getArguments().getString("file");
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            final LayoutInflater inflater = getActivity().getLayoutInflater();
-            builder.setView(inflater.inflate(R.layout.ask_password_dialog, null));
-            builder
-                    .setPositiveButton(R.string.open,
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) { /* See onStart() */ }
-                            })
-
-                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.cancel();
-                        }
-                    });
-            return builder.create();
-        }
-
-        @Override
-        public void onStart() {
-            super.onStart();
-            AlertDialog d = (AlertDialog) getDialog();
-            if (d != null) {
-                Button positiveButton = d.getButton(Dialog.BUTTON_POSITIVE);
-                positiveButton.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        EditText passwordEdit = getDialog().findViewById(R.id.password);
-
-                        // Hide keyboard
-                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
-                                Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(passwordEdit.getWindowToken(), 0);
-
-                        (new DecryptTask(v.getContext())).execute(passwordEdit.getText().toString(), file, v.getContext());
-                    }
-                });
-            }
-        }
-
-        @Override
-        public void onSaveInstanceState(Bundle outState) {
-            super.onSaveInstanceState(outState);
-            outState.putString("file", file);
-        }
-
-        private class DecryptTask extends AsyncTask<Object, Void, DecryptTask.DecryptTaskResult> {
-
-            private Context context;
-            private String password;
-
-            DecryptTask(Context context) {
-                this.context = context;
-            }
-
-            @Override
-            protected DecryptTask.DecryptTaskResult doInBackground(Object... params) {
-                final String password = (String) params[0];
-                final String file = (String) params[1];
-                try {
-                    DecryptTaskResult res = new DecryptTaskResult();
-                    InputStream iStream = AskPasswordDialog.this.getActivity().getContentResolver().openInputStream(Uri.parse(file));
-                    byte[] inputData = getBytes(iStream);
-
-                    this.password = password;
-
-                    String result = Cryptographer.decrypt(inputData, password);
-                    Serializer serializer = new Persister();
-                    res.data = serializer.read(RevelationData.class, result, false);
-
-                    try {
-                        SelfTestingResult testing = ARevelation.testData(result);
-                        switch (testing) {
-                            case Different:
-                                res.toastMessage = R.string.self_testing_super_warning;
-                                break;
-                            case Similar:
-                                res.toastMessage = R.string.self_testing_warning;
-                                break;
-                            case Identical:
-                                res.toastMessage = R.string.self_testing_passed_message;
-                                break;
-                            default:
-                                // a "this should never ever happen" case ;)
-                                res.toastMessage = R.string.self_testing_internal_error;
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    return res;
-                } catch (Exception e) {
-                    return new DecryptTaskResult(e);
-                }
-            }
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                TextView t = getDialog().findViewById(R.id.message);
-                t.setText(R.string.decrypt_label);
-            }
-
-            @Override
-            protected void onPostExecute(DecryptTaskResult s) {
-                super.onPostExecute(s);
-
-                if (!isCancelled()) {
-                    if (getActivity() != null) {    // need if user hits back or touches somewhere the screen.
-                        if (!s.isFail) {
-                            Toast.makeText(context, getActivity().getString(s.toastMessage), Toast.LENGTH_LONG).show();
-                            ((ARevelation) getActivity()).rvlData = s.data;
-
-                            RevelationBrowserFragment nextFrag = RevelationBrowserFragment.newInstance(((ARevelation) getActivity()).rvlData.getUuid());
-                            ((ARevelation) getActivity()).password = password;
-                            ((ARevelation) getActivity()).currentFile = file;
-
-                            getActivity().getFragmentManager().beginTransaction()
-                                    .replace(R.id.mainContainer, nextFrag)
-                                    .addToBackStack(null).commit();
-
-                            AskPasswordDialog.this.dismiss();
-                            getActivity().findViewById(R.id.fab).setVisibility(View.VISIBLE);
-
-                            int preferenceAutoLock = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("preference_auto_lock", "-1"));
-                            if (preferenceAutoLock > 0) {
-                                Toast.makeText(getActivity(), getResources().getQuantityString(R.plurals.auto_lock_time_left, preferenceAutoLock, preferenceAutoLock), Toast.LENGTH_LONG).show();
-                            }
-                        } else {
-                            TextView t = getDialog().findViewById(R.id.message);
-                            String message = s.exception.getMessage();
-
-                            if (message.endsWith(":BAD_DECRYPT")) {
-                                t.setText(R.string.decrypt_invalid_password_label);
-                            } else {
-                                if (("Could not generate secret key").equals(message)) {
-                                    t.setText(R.string.decrypt_empty_password_label);
-                                } else {
-                                    t.setText(s.exception.getMessage());
-                                }
-                            }
-                        }
-                    } else {
-                        Toast.makeText(context, R.string.decrypt_canceled_label, Toast.LENGTH_LONG).show();
-                    }
-                }
-            }
-
-            private byte[] getBytes(InputStream inputStream) throws IOException {
-                ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
-                int bufferSize = 1024;
-                byte[] buffer = new byte[bufferSize];
-
-                int len;
-                while ((len = inputStream.read(buffer)) != -1) {
-                    byteBuffer.write(buffer, 0, len);
-                }
-                return byteBuffer.toByteArray();
-            }
-
-            class DecryptTaskResult {
-
-                Integer toastMessage;
-                RevelationData data;
-                boolean isFail;
-                Throwable exception;
-
-                DecryptTaskResult() {
-                }
-
-                DecryptTaskResult(Throwable e) {
-                    exception = e;
-                    isFail = true;
-                }
-            }
-        }
     }
 
     protected void openStartScreenFragment() {

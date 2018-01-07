@@ -1,6 +1,4 @@
-package de.igloffstein.maik.aRevelation.Helper;
-
-import android.content.Context;
+package de.igloffstein.maik.arevelation.helpers;
 
 import com.github.marmaladesky.data.Entry;
 import com.github.marmaladesky.data.Field;
@@ -9,19 +7,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import de.igloffstein.maik.aRevelation.EntryType;
-import de.igloffstein.maik.aRevelation.FieldType;
+import de.igloffstein.maik.arevelation.enums.EntryType;
+import de.igloffstein.maik.arevelation.enums.FieldType;
 
 /**
- * Created by maik on 22.11.17.
+ * Class with miscellaneous functions
+ *
+ * Created by OldSparkyMI on 22.11.17.
  */
 
 public class EntryHelper {
 
-    public static Entry newEntry(EntryType entryType){
-
-
-
+    public static Entry newEntry(EntryType entryType) {
         List<Field> fields = new ArrayList<>(); //switch case which to fill this
         List<Entry> list = new ArrayList<>();   //in case of directory
 
@@ -38,7 +35,7 @@ public class EntryHelper {
         return entry;
     }
 
-    protected static List<Field> addFields(EntryType entryType, List<Field> fields){
+    private static void addFields(EntryType entryType, List<Field> fields) {
 
         if (fields != null) {
             switch (entryType) {
@@ -112,7 +109,5 @@ public class EntryHelper {
                     break;
             }
         }
-
-        return fields;
     }
 }

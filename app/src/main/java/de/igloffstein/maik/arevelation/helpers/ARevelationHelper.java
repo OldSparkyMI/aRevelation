@@ -1,4 +1,4 @@
-package de.igloffstein.maik.aRevelation.Helper;
+package de.igloffstein.maik.arevelation.helpers;
 
 import android.content.ContentResolver;
 import android.content.Context;

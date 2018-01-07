@@ -39,7 +39,7 @@ public class CryptographerTest {
     }
 
     private String readFileAsString(String filePath) throws IOException {
-        StringBuffer fileData = new StringBuffer();
+        StringBuilder fileData = new StringBuilder();
         BufferedReader reader = new BufferedReader(
                 new FileReader(filePath));
         char[] buf = new char[1024];

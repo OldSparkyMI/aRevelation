@@ -5,7 +5,6 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.marmaladesky.data.Entry;
 import com.github.marmaladesky.data.Field;
@@ -25,12 +23,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
-public class EntryFragment extends Fragment {
+public class RevelationEntryFragment extends Fragment {
 
-    private static final String LOG_TAG = EntryFragment.class.getSimpleName();
+    private static final String LOG_TAG = RevelationEntryFragment.class.getSimpleName();
     private static final String ROW_HEADER_IDENTIFIER = "First Line";
     private static final String ROW_DATA_IDENTIFIER = "Second Line";
     private static final String ROW_DATA_IMAGE = "Image View";
@@ -40,8 +36,8 @@ public class EntryFragment extends Fragment {
     private ListView simple;
 
 
-    public static EntryFragment newInstance(String entryId) {
-        EntryFragment f = new EntryFragment();
+    public static RevelationEntryFragment newInstance(String entryId) {
+        RevelationEntryFragment f = new RevelationEntryFragment();
 
         Bundle args = new Bundle();
         args.putString(ARGUMENT_ENTRY_ID, entryId);
@@ -50,14 +46,13 @@ public class EntryFragment extends Fragment {
         return f;
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
+
         if (savedInstanceState == null || savedInstanceState.getString(ARGUMENT_ENTRY_ID) == null)
             entry = ((ARevelation) getActivity()).rvlData.getEntryById(getArguments().getString(ARGUMENT_ENTRY_ID));
         else
             entry = ((ARevelation) getActivity()).rvlData.getEntryById(savedInstanceState.getString(ARGUMENT_ENTRY_ID));
-
 
         View v = inflater.inflate(R.layout.revelation_entry_browser, container, false);
 
@@ -70,28 +65,32 @@ public class EntryFragment extends Fragment {
         values.put(ROW_HEADER_IDENTIFIER, getString(R.string.name));
         values.put(ROW_DATA_IDENTIFIER, entry.getName() == null ? "" : entry.getName());
         data.add(values);
-        values = new HashMap<>();
-        values.put(ROW_HEADER_IDENTIFIER, getString(R.string.description));
-        values.put(ROW_DATA_IDENTIFIER, entry.getDescription() == null ? "" : entry.getDescription());
-        data.add(values);
 
-        for (Field f : entry.fields) {
+        if (!Entry.TYPE_FOLDER.toLowerCase().equals(entry.type)) {
             values = new HashMap<>();
-            values.put(ROW_HEADER_IDENTIFIER, getGenericHeader(f.id));
-            values.put(ROW_DATA_IDENTIFIER, f);
+            values.put(ROW_HEADER_IDENTIFIER, getString(R.string.description));
+            values.put(ROW_DATA_IDENTIFIER, entry.getDescription() == null ? "" : entry.getDescription());
+            data.add(values);
+
+            for (Field f : entry.fields) {
+                values = new HashMap<>();
+                values.put(ROW_HEADER_IDENTIFIER, getGenericHeader(f.id));
+                values.put(ROW_DATA_IDENTIFIER, f);
+                data.add(values);
+            }
+
+            values = new HashMap<>();
+            values.put(ROW_HEADER_IDENTIFIER, getString(R.string.notes));
+            values.put(ROW_DATA_IDENTIFIER, entry.getNotes() == null ? "" : entry.getNotes());
             data.add(values);
         }
-
-        values = new HashMap<>();
-        values.put(ROW_HEADER_IDENTIFIER, getString(R.string.notes));
-        values.put(ROW_DATA_IDENTIFIER, entry.getNotes() == null ? "" : entry.getNotes());
-        data.add(values);
 
         DateFormat dateFormatter = ((ARevelation) getActivity()).dateFormatter;
         values = new HashMap<>();
         values.put(ROW_HEADER_IDENTIFIER, getString(R.string.updated));
         values.put(ROW_DATA_IDENTIFIER, dateFormatter.format(new Date(entry.updated * 1000L))); // In python world it is seconds
         data.add(values);
+
 
         SimpleAdapter itemsAdapter = new SimpleAdapter(
                 this.getActivity(), data,
@@ -179,14 +178,14 @@ public class EntryFragment extends Fragment {
                     } else if (h.equals(getString(R.string.notes))) {
                         prop = Entry.PROPERTY_NOTES;
                     }
-                    fw = new FieldWrapper(prop, EntryFragment.this.entry);
+                    fw = new FieldWrapper(prop, RevelationEntryFragment.this.entry);
                 } else if (v instanceof Field)
                     fw = new FieldWrapper((Field) v);
                 else {
                     throw new Exception("Unknown data in list");
                 }
                 DialogFragment dial = ItemDialogFragment.newInstance(header, fw.getUuid());
-                dial.setTargetFragment(EntryFragment.this, 0); // Amazing piece of shit, but I don't know how to do it in another way
+                dial.setTargetFragment(RevelationEntryFragment.this, 0); // Amazing piece of shit, but I don't know how to do it in another way
                 dial.show(getFragmentManager(), "Tag");
             } catch (Exception e) {
                 e.printStackTrace();

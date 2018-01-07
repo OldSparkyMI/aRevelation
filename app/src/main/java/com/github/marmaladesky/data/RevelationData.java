@@ -5,11 +5,18 @@ import android.net.Uri;
 
 import com.github.marmaladesky.Cryptographer;
 
-import org.simpleframework.xml.*;
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.ElementList;
+import org.simpleframework.xml.Order;
+import org.simpleframework.xml.Root;
+import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 import org.simpleframework.xml.stream.Format;
 
-import java.io.*;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.List;
 import java.util.UUID;
 
@@ -112,13 +119,15 @@ public class RevelationData implements Serializable {
     }
 
     private static List<Entry> getEntryGroupById(List<Entry> entries, String uuid) {
-        for (Entry e : entries) {
-            if (e.type.equals(Entry.TYPE_FOLDER)) {
-                if (e.getUuid().equals(uuid)) {
-                    return e.list;
-                } else {
-                    List<Entry> l = getEntryGroupById(e.list, uuid);
-                    if (l != null) return l;
+        if (entries != null) {  // empty folder
+            for (Entry e : entries) {
+                if (e.type.equals(Entry.TYPE_FOLDER)) {
+                    if (e.getUuid().equals(uuid)) {
+                        return e.list;
+                    } else {
+                        List<Entry> l = getEntryGroupById(e.list, uuid);
+                        if (l != null) return l;
+                    }
                 }
             }
         }
