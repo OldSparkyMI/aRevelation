@@ -74,8 +74,8 @@
     <string name="pref_title_toggle_password">Quick unlock Passwords</string>
     <string name="pref_description_toggle_password">Displays passwords and secrets directly after clicking a button.</string>
 
-    <string name="pref_title_lock_in_background">App to background -> lock file</string>
-    <string name="pref_description_lock_in_background">Reenter the revelation file password to display your secrets after moving the password view into the background. Unsaved changes are lost.</string>
+    <string name="pref_title_lock_in_background">Lock when invisible</string>
+    <string name="pref_description_lock_in_background">Reenter the revelation file password to display your secrets after moving the password view into the background or turning screen off. Unsaved changes are lost.</string>
     <string-array name="pref_lock_in_background_titles">
         <item>Instant</item>
         <item>1 minutes</item>

@@ -19,8 +19,8 @@
         android:entries="@array/pref_lock_in_background_titles"
         android:entryValues="@array/pref_lock_in_background_values"
         android:key="preference_lock_in_background"
-        android:summary="@string/pref_title_lock_in_background"
-        android:title="@string/pref_description_lock_in_background"
+        android:summary="@string/pref_description_lock_in_background"
+        android:title="@string/pref_title_lock_in_background"
         />
 
     <ListPreference

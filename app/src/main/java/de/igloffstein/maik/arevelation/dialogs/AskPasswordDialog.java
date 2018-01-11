@@ -1,6 +1,7 @@
 package de.igloffstein.maik.arevelation.dialogs;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -39,15 +40,18 @@ import java.io.InputStream;
  */
 public class AskPasswordDialog extends DialogFragment {
 
+    public static AskPasswordDialog askPasswordDialog = null;
     public String file;
 
-    public static AskPasswordDialog newInstance(String file) {
-        AskPasswordDialog f = new AskPasswordDialog();
-        Bundle args = new Bundle();
-        args.putString("file", file);
-        f.setArguments(args);
-        f.setCancelable(false);
-        return f;
+    public static AskPasswordDialog getInstance(String file) {
+        if (askPasswordDialog == null) {
+            askPasswordDialog = new AskPasswordDialog();
+            Bundle args = new Bundle();
+            args.putString("file", file);
+            askPasswordDialog.setArguments(args);
+            askPasswordDialog.setCancelable(false);
+        }
+        return askPasswordDialog;
     }
 
     @SuppressLint("InflateParams") // Passing null is normal for dialogs
@@ -61,17 +65,24 @@ public class AskPasswordDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         final LayoutInflater inflater = getActivity().getLayoutInflater();
         builder.setView(inflater.inflate(R.layout.ask_password_dialog, null));
-        builder
-                .setPositiveButton(R.string.open,
+
+        // always show OK button
+        builder.setPositiveButton(R.string.open,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) { /* See onStart() */ }
-                        })
+                        });
 
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
+        // don't show cancel button, if changes are made
+        RevelationData rvlData = ((ARevelation) getActivity()).getRvlData();
+        if (rvlData == null || !rvlData.isEdited()) {
+            builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    ((ARevelation)getActivity()).clearState(true);
+                    ((ARevelation)getActivity()).openStartScreenFragment();
+                    dialog.cancel();
+                }
+            });
+        }
         return builder.create();
     }
 

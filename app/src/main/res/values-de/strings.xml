@@ -74,7 +74,7 @@
     <string name="pref_description_toggle_password">Zeigt ein Icon hinter dem Passwort um dieses in Klartext anzuzeigen.</string>
 
     <string name="pref_title_lock_in_background">Im Hintergrund sperren</string>
-    <string name="pref_description_lock_in_background">Sperrt automatisch die Datei sobald die Passwortansicht nicht mehr angezeigt wird. Ungespeicherte Änderungen gehen verloren.</string>
+    <string name="pref_description_lock_in_background">Sperrt automatisch die Datei sobald die Passwortansicht nicht mehr angezeigt wird, z.B wenn der Bildschirm ausgeschaltet wird. Ungespeicherte Änderungen gehen verloren.</string>
     <string-array name="pref_lock_in_background_titles">
         <item>Sofort</item>
         <item>1 Minute</item>

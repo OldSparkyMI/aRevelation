@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.github.marmaladesky.ARevelation;
@@ -27,6 +28,17 @@ public class ARevelationHelper {
 
     private static final String LOG_TAG = ARevelationHelper.class.getSimpleName();
     public static String backupFile = null;
+
+    /**
+     * Returns the settings time for
+     * R.string.pref_title_lock_in_background: App to background -> lock file
+     *
+     * @param context the application context
+     * @return the value
+     */
+    public static Integer preferenceLockInBackground(Context context){
+        return Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(context).getString("preference_lock_in_background", "0"));
+    }
 
     public static Locale getLocale(Resources resources) {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N

@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
@@ -108,12 +107,25 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
     public void onResume() {
         super.onResume();
 
-        int preferenceLockInBackground = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("preference_lock_in_background", "0"));
-        long preferenceLockInBackgroundNextSeconds = onPauseSystemMillis + preferenceLockInBackground * 60 * 1000;
+        // we have user input
+        if (currentFile != null){
+            // do we already displayed something?
+            if (((ViewGroup) findViewById(R.id.mainContainer)).getChildCount() <= 0){
+                // empty view
+                openAskPasswordDialog();
+            }else{
+                // full view, shall we hide the view?
+                int preferenceLockInBackground = ARevelationHelper.preferenceLockInBackground(getApplicationContext());
+                long preferenceLockInBackgroundNextSeconds = onPauseSystemMillis + preferenceLockInBackground * 60 * 1000;
 
-        if (preferenceLockInBackground == 0 || preferenceLockInBackgroundNextSeconds < System.currentTimeMillis()) {
-
-            clearStateResetUi(false);
+                if (preferenceLockInBackground == 0 || preferenceLockInBackgroundNextSeconds <= System.currentTimeMillis()) {
+                    clearUI();
+                    openAskPasswordDialog();
+                }
+            }
+        } else {
+            // we have nothing, start!
+            openStartScreenFragment();
         }
     }
 
@@ -121,6 +133,17 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
     public void onPause() {
         super.onPause();
         this.onPauseSystemMillis = System.currentTimeMillis();
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        int preferenceLockInBackground = ARevelationHelper.preferenceLockInBackground(getApplicationContext());
+        if (preferenceLockInBackground == 0) {
+            Log.d(LOG_TAG, "clearing state in: ARevelation.onStop()");
+            clearUI();
+        }
     }
 
     public static SelfTestingResult testData(String xmlData) throws Exception {
@@ -167,11 +190,6 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
-        // Only at the startup
-        if (getFragmentManager().getBackStackEntryCount() < 1) {
-            openStartScreenFragment();
-        }
 
         dateFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.MEDIUM, ARevelationHelper.getLocale(getResources()));
         saveButton = this.findViewById(R.id.saveButton);
@@ -245,42 +263,36 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
         super.onBackPressed();
         checkButton();
         if (getFragmentManager().getBackStackEntryCount() < 1) {
-            clearStateResetUi();
-        }
-
-    }
-
-    protected void clearStateResetUi() {
-        clearStateResetUi(true);
-    }
-
-    protected void clearStateResetUi(boolean clearFile) {
-        if (rvlData != null) {
-            Log.d(LOG_TAG, "clearing state ...");
-            clearState(clearFile);
-            resetUI();
-        } else {
-            Log.d(LOG_TAG, "state already cleared");
-        }
-    }
-
-    protected void resetUI() {
-        try {
+            clearState(true);
+            clearUI();
             openStartScreenFragment();
-            if (currentFile != null && !"".equals(currentFile)) {
-                openAskPasswordDialog();
-            }
-        } catch (IllegalStateException e) {
-            Log.e(LOG_TAG, e.getMessage());
-            Log.getStackTraceString(e);
         }
     }
 
-    protected void clearState(boolean resetFile) {
+    /**
+     * Just hides the view. This functions won't destroy the rvlData object.
+     * But you have to redraw the whole view.
+     *
+     * This is only allowed, when we show the revelation data!
+     */
+    public void clearUI() {
+        Log.d(LOG_TAG, "clearing UI state ...");
+        // cancel the timer, because the view is destroyed
+        RevelationListViewFragment.cancelTimer();
+        // destroy the whole view, remove every child!
+        ((ViewGroup) findViewById(R.id.mainContainer)).removeAllViews();
+    }
+
+    /**
+     * Resets the rvlData state to null, but won't change the UI
+     * @param resetFile clear the user input?
+     */
+    public void clearState(boolean resetFile) {
+        Log.d(LOG_TAG, "clearing state ...");
         rvlData = null;
         password = null;
         currentFile = resetFile ? null : currentFile;
-        ((ViewGroup) findViewById(R.id.mainContainer)).removeAllViews();
+        RevelationListViewFragment.cancelTimer();
     }
 
     protected void clearState() {
@@ -450,15 +462,33 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
         }
     }
 
+    protected boolean isAskPasswordDialogOpen(String file){
+        return AskPasswordDialog.getInstance(file).isVisible();
+    }
+
+    /**
+     * opens the ask password dialog
+     */
     protected void openAskPasswordDialog() {
         openAskPasswordDialog(this.currentFile);
     }
 
     protected void openAskPasswordDialog(String file) {
-        AskPasswordDialog.newInstance(file).show(getFragmentManager(), "Tag");
+        final String tag = "Tag";
+
+        AskPasswordDialog askPasswordDialog = AskPasswordDialog.getInstance(file);
+        if (!isAskPasswordDialogOpen(file) && file != null && !"".equals(file)){
+            if (getFragmentManager().findFragmentByTag(tag) == null) {
+                // only show / put on the fragment stack, if not already shown
+                // turn phone off when askPasswordDialog is shown and:
+                // java.lang.RuntimeException: Unable to resume activity {de.igloffstein.maik.aRevelation/com.github.marmaladesky.ARevelation}: java.lang.IllegalStateException: Fragment already added: AskPasswordDialog{af66224 #2 Tag}
+                // so beware!
+                askPasswordDialog.show(getFragmentManager(), tag);
+            }
+        }
     }
 
-    protected void openStartScreenFragment() {
+    public void openStartScreenFragment() {
         getFragmentManager()
                 .beginTransaction()
                 .replace(R.id.mainContainer, new StartScreenFragment())
