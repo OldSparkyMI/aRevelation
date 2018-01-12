@@ -1,3 +1,25 @@
+## 1.2
+- Change: Lint improvements 
+- Change: Moved inner classes to normal classes (AskPasswordDialog)
+- Add: partially folder support
+  - ability add folder
+  - ability add subentries for folders
+  - ability add subfolders for folders
+  - rename folder
+- fix: the display of multiple encoding dialogs and other bugs related to this issue
+- fix: https://github.com/OldSparkyMI/aRevelation/issues/7
+- fix: several bug fixes
+
+## 1.1.3
+- Bugfix: https://github.com/OldSparkyMI/aRevelation/issues/6
+- Change: using android.R.string.ok and android.R.string.cancel instead of own strings
+
+## 1.1.2
+- Bugfix: https://github.com/OldSparkyMI/aRevelation/issues/2
+
+## 1.1.1
+- Bugfix: Revelation can't read aRevelations files
+
 ## 1.1
 - Ability to change the password for the file
 - Backup-function before every save
