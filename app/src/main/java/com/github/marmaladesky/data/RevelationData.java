@@ -78,11 +78,11 @@ public class RevelationData implements Serializable {
 
     private static FieldWrapper getFieldById(String uuid, List<Entry> entries) {
         for (Entry e : entries) {
-            if (e.list != null) {
+            if (e.list != null && e.list.size() > 0) {
                 FieldWrapper fw = getFieldById(uuid, e.list);
                 if (fw != null) return fw;
             }
-            if (e.fields != null) {
+            if (e.fields != null && e.fields.size() > 0) {
                 for (Field f : e.fields) {
                     if (e.getUuidName().equals(uuid)) {
                         return new FieldWrapper(Entry.PROPERTY_NAME, e);

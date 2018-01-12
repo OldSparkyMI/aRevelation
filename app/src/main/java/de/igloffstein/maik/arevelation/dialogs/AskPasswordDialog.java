@@ -1,7 +1,6 @@
 package de.igloffstein.maik.arevelation.dialogs;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -48,11 +47,13 @@ public class AskPasswordDialog extends DialogFragment {
     public static AskPasswordDialog getInstance(String file) {
         if (askPasswordDialog == null) {
             askPasswordDialog = new AskPasswordDialog();
-            Bundle args = new Bundle();
-            args.putString("file", file);
-            askPasswordDialog.setArguments(args);
-            askPasswordDialog.setCancelable(false);
         }
+
+        Bundle args = new Bundle();
+        args.putString("file", file);
+        askPasswordDialog.setArguments(args);
+        askPasswordDialog.setCancelable(false);
+
         return askPasswordDialog;
     }
 
@@ -173,7 +174,7 @@ public class AskPasswordDialog extends DialogFragment {
             t.setText(R.string.decrypt_label);
         }
 
-        protected void doStuff(){
+        private void openRevelationView(){
             RevelationListViewFragment nextFrag = RevelationListViewFragment.newInstance(((ARevelation) getActivity()).getRvlData().getUuid());
             getActivity().getFragmentManager().beginTransaction()
                     .replace(R.id.mainContainer, nextFrag)
@@ -194,44 +195,46 @@ public class AskPasswordDialog extends DialogFragment {
 
             ARevelation aRevelation = (ARevelation) getActivity();
 
-            if (!isCancelled()) {
-                if (aRevelation != null) {    // need if user hits back or touches somewhere the screen.
-                    if (!s.isFail || aRevelation.getRvlData() != null && aRevelation.getPassword() != null && aRevelation.getPassword().equals(password)) {
-                        if (aRevelation.getRvlData() != null && aRevelation.getPassword() != null && aRevelation.getPassword().equals(password)) {
-                            // use from memory
-                            // attention: I am aware that I throw away the result of the DecryptTaskResult
-                            // It is a simple and good way, the rvlData in memory is newer (e.g. unsaved changes)
-                            // but, nevertheless I let the smartphone decrypt the file, so it looks "realer"
-                            // and you can't so easily brute force the password
-                            // may be, some day I will change this behavior, but currently it is an very easy and save way to go!
-                            doStuff();
+            if (!isCancelled() && aRevelation != null) { // need if user hits back or touches somewhere the screen.
+                if (!s.isFail || aRevelation.getRvlData() != null && aRevelation.getPassword() != null && aRevelation.getPassword().equals(password)) {
+                    if (aRevelation.getRvlData() != null && aRevelation.getPassword() != null && aRevelation.getPassword().equals(password)) {
+                        // use from memory
+                        // THIS FIRST! than isFail!!!!!!
+                        // attention: I am aware that I throw away the result of the DecryptTaskResult
+                        // It is a simple and good way, the rvlData in memory is newer (e.g. unsaved changes)
+                        // but, nevertheless I let the smartphone decrypt the file, so it looks "realer"
+                        // and you can't so easily brute force the password
+                        // may be, some day I will change this behavior, but currently it is an very easy and save way to go!
+                        openRevelationView();
+                    }
+
+                    // load from file
+                    if (!s.isFail) {
+                        Toast.makeText(context, getActivity().getString(s.toastMessage), Toast.LENGTH_LONG).show();
+                        aRevelation.setRvlData(s.data);
+                        aRevelation.setPassword(password);
+                        aRevelation.setCurrentFile(file);
+
+                        openRevelationView();
+                    }
+
+                } else {
+                    TextView t = getDialog().findViewById(R.id.message);
+                    String message = s.exception.getMessage();
+
+                    if (message.endsWith(":BAD_DECRYPT")) {
+                        t.setText(R.string.decrypt_invalid_password_label);
+                    } else {
+                        if (("Could not generate secret key").equals(message)) {
+                            t.setText(R.string.decrypt_empty_password_label);
                         } else {
-                            // load from file
-                            if (!s.isFail) {
-                                Toast.makeText(context, getActivity().getString(s.toastMessage), Toast.LENGTH_LONG).show();
-                                aRevelation.setRvlData(s.data);
-                                aRevelation.setPassword(password);
-                                aRevelation.setCurrentFile(file);
-
-                                doStuff();
-                            } else {
-                                TextView t = getDialog().findViewById(R.id.message);
-                                String message = s.exception.getMessage();
-
-                                if (message.endsWith(":BAD_DECRYPT")) {
-                                    t.setText(R.string.decrypt_invalid_password_label);
-                                } else {
-                                    if (("Could not generate secret key").equals(message)) {
-                                        t.setText(R.string.decrypt_empty_password_label);
-                                    } else {
-                                        t.setText(s.exception.getMessage());
-                                    }
-                                }
-                            }
+                            t.setText(s.exception.getMessage());
                         }
                     }
-                } else {
-                    Toast.makeText(context, R.string.decrypt_canceled_label, Toast.LENGTH_LONG).show();
+                }
+            } else {
+                Toast.makeText(context, R.string.decrypt_canceled_label, Toast.LENGTH_LONG).show();
+                if (aRevelation != null) {
                     aRevelation.clearUI();
                     aRevelation.clearState(true);
                 }

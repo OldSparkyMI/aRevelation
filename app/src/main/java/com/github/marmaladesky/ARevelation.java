@@ -340,6 +340,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
                 // currently not implementet
                 break;
             case R.id.menu_open:
+                clearState(true);
                 optionItemSelectedOpen();
                 break;
             case R.id.menu_change_password:

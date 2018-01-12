@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import com.github.marmaladesky.data.FieldWrapper;
+import com.github.marmaladesky.data.RevelationData;
 
 public class ItemDialogFragment extends DialogFragment {
 
@@ -33,7 +34,9 @@ public class ItemDialogFragment extends DialogFragment {
         try {
             if (savedInstanceState == null && getArguments() != null) {
                 header = getArguments().getString(HEADER_KEY);
-                field = ((ARevelation) getActivity()).rvlData.getFieldById(getArguments().getString(FIELD_KEY));
+                String string = getArguments().getString(FIELD_KEY);
+                RevelationData rvlData = ((ARevelation) getActivity()).rvlData;
+                field = rvlData.getFieldById(string);
             } else if (savedInstanceState != null) {
                 header = savedInstanceState.getString(HEADER_KEY);
                 field = ((ARevelation) getActivity()).rvlData.getFieldById(savedInstanceState.getString(FIELD_KEY));

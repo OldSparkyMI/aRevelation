@@ -22,13 +22,6 @@ import android.widget.Toast;
 
 import de.igloffstein.maik.arevelation.adapters.RevelationStructureBrowserAdapter;
 
-/**
- * ToDo: URGEND: Every time we go into a folder, a new timer will be created!
- * try it, removed cancelTime from create instance
- * ToDo: Test directory add
- * ToDo: Test subdirectory add
- * ToDo: Test in Revelation!
- */
 public class RevelationListViewFragment extends Fragment {
     private static final String LOG_TAG = RevelationListViewFragment.class.getSimpleName();
     private static final String ARGUMENT_UUID_LIST = "uuidList";
