@@ -192,5 +192,4 @@ public class RevelationEntryFragment extends Fragment {
             }
         }
     }
-
 }

@@ -50,9 +50,9 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
 
     private static final String LOG_TAG = ARevelation.class.getSimpleName();
     private static final int REQUEST_FILE_OPEN = 1;
-    private static final String ARGUMENT_RVLDATA = "rvlData";
-    private static final String ARGUMENT_PASSWORD = "password";
-    private static final String ARGUMENT_FILE = "file";
+    public static final String ARGUMENT_RVLDATA = "rvlData";
+    public static final String ARGUMENT_PASSWORD = "password";
+    public static final String ARGUMENT_FILE = "file";
     public static final String BACKUP_FILE_ENDING = ".arvlbak";
     @Getter
     private LinkedList<Entry> currentEntryState = new LinkedList<>();
@@ -133,7 +133,6 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
     public void onPause() {
         super.onPause();
         this.onPauseSystemMillis = System.currentTimeMillis();
-
     }
 
     @Override
@@ -143,6 +142,15 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
         if (preferenceLockInBackground == 0) {
             Log.d(LOG_TAG, "clearing state in: ARevelation.onStop()");
             clearUI();
+        }
+    }
+
+    private void restoreRvlDataStateFromBundle(Bundle savedInstanceState){
+        if (savedInstanceState != null) {
+            Log.d(LOG_TAG, "restoreRvlDataStateFromBundle() ...");
+            rvlData = (RevelationData) savedInstanceState.getSerializable(ARGUMENT_RVLDATA);
+            password = savedInstanceState.getString(ARGUMENT_PASSWORD);
+            currentFile = savedInstanceState.getString(ARGUMENT_FILE);
         }
     }
 
@@ -182,17 +190,25 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            rvlData = (RevelationData) savedInstanceState.getSerializable(ARGUMENT_RVLDATA);
-            password = savedInstanceState.getString(ARGUMENT_PASSWORD);
-            currentFile = savedInstanceState.getString(ARGUMENT_FILE);
-        }
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        // restore state!
+        restoreRvlDataStateFromBundle(savedInstanceState);
+
         dateFormatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.MEDIUM, ARevelationHelper.getLocale(getResources()));
         saveButton = this.findViewById(R.id.saveButton);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable(ARGUMENT_RVLDATA, rvlData);
+        outState.putString(ARGUMENT_PASSWORD, password);
+        outState.putString(ARGUMENT_FILE, currentFile);
+
+        // call superclass to save any view hierarchy
+        // this should be the last call: https://developer.android.com/guide/components/activities/activity-lifecycle.html#oncreate
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -248,14 +264,6 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
                 .setItems(EntryType.getTranslatedEntryTypes(getApplicationContext()), onClickListener)
                 .create()
                 .show();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putSerializable(ARGUMENT_RVLDATA, rvlData);
-        outState.putString(ARGUMENT_PASSWORD, password);
-        outState.putString(ARGUMENT_FILE, currentFile);
     }
 
     @Override

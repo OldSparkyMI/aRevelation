@@ -24,6 +24,7 @@
     <string name="decrypt_invalid_password_label">Passwort ungültig</string>
     <string name="decrypt_empty_password_label">Kein Passwort eingegeben</string>
     <string name="backup_restored">Backup wiederhergestellt, bisherige Änderungen sind verloren</string>
+    <string name="unsaved_changes">Abbrechen wegen ungespeicherter Änderungen deaktiviert</string>
     <!--Field names-->
     <string name="name">Name</string>
     <string name="description">Beschreibung</string>
@@ -37,6 +38,8 @@
     <string name="generic_email">E-Mail</string>
     <string name="generic_url">Url</string>
     <string name="generic_pin">PIN</string>
+    <string name="generic_certificate">Zertifikat</string>
+    <string name="generic_keyfile">Schlüsseldatei</string>
     <string name="creditcard_cardtype">Kreditkarten Typ</string>
     <string name="creditcard_cardnumber">Kreditkarten Nummer</string>
     <string name="creditcard_expirydate">Ablaufdatum</string>

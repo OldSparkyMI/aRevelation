@@ -6,6 +6,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.github.marmaladesky.data.Entry;
+import com.github.marmaladesky.data.RevelationData;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -45,17 +46,6 @@ public class RevelationListViewFragment extends Fragment {
             timerInitialized = false;
             Log.d(LOG_TAG, "Timer canceled");
         }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        try {
-            ((ARevelation) getActivity()).getCurrentEntryState().removeLast();
-        } catch (NoSuchElementException e) {
-            // ignore
-        }
-        getActivity().findViewById(R.id.fab).setVisibility(View.INVISIBLE);
     }
 
     protected void newTimer() {
@@ -150,17 +140,28 @@ public class RevelationListViewFragment extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        Log.d(LOG_TAG, "onPause");
+        super.onPause();
+        try {
+            ((ARevelation) getActivity()).getCurrentEntryState().removeLast();
+        } catch (NoSuchElementException e) {
+            // ignore
+        }
+        getActivity().findViewById(R.id.fab).setVisibility(View.INVISIBLE);
+    }
+
+    @Override
     public void onResume() {
+        Log.d(LOG_TAG, "onResume");
         super.onResume();
 
-        Log.d(LOG_TAG, "onResume");
-
-        // show fab
         getActivity().findViewById(R.id.fab).setVisibility(View.VISIBLE);
 
-        if (((ARevelation) getActivity()).rvlData != null) {
+        RevelationData rvlData = ((ARevelation) getActivity()).rvlData;
+        if (rvlData != null) {
             // add the current folder element - if there to the entry state
-            Entry entry = ((ARevelation) getActivity()).rvlData.getEntryById(groupUuid);
+            Entry entry = rvlData.getEntryById(groupUuid);
             if (entry != null) {
                 ((ARevelation) getActivity()).getCurrentEntryState().add(entry);
             }

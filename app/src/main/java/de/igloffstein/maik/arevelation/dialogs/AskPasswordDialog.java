@@ -33,6 +33,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static com.github.marmaladesky.ARevelation.ARGUMENT_FILE;
+
 /**
  * Dialog for password inputs and decrypting revelation files
  *
@@ -57,10 +59,10 @@ public class AskPasswordDialog extends DialogFragment {
     @SuppressLint("InflateParams") // Passing null is normal for dialogs
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        if (savedInstanceState != null && savedInstanceState.getString("file") != null)
-            file = savedInstanceState.getString("file");
+        if (savedInstanceState != null && savedInstanceState.getString(ARGUMENT_FILE) != null)
+            file = savedInstanceState.getString(ARGUMENT_FILE);
         else
-            file = getArguments().getString("file");
+            file = getArguments().getString(ARGUMENT_FILE);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         final LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -82,6 +84,8 @@ public class AskPasswordDialog extends DialogFragment {
                     dialog.cancel();
                 }
             });
+        }else{
+            builder.setMessage(R.string.unsaved_changes);
         }
         return builder.create();
     }
@@ -110,7 +114,7 @@ public class AskPasswordDialog extends DialogFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("file", file);
+        outState.putString(ARGUMENT_FILE, file);
     }
 
     private class DecryptTask extends AsyncTask<Object, Void, DecryptTask.DecryptTaskResult> {
@@ -169,47 +173,67 @@ public class AskPasswordDialog extends DialogFragment {
             t.setText(R.string.decrypt_label);
         }
 
+        protected void doStuff(){
+            RevelationListViewFragment nextFrag = RevelationListViewFragment.newInstance(((ARevelation) getActivity()).getRvlData().getUuid());
+            getActivity().getFragmentManager().beginTransaction()
+                    .replace(R.id.mainContainer, nextFrag)
+                    .addToBackStack(null).commit();
+
+            getActivity().findViewById(R.id.fab).setVisibility(View.VISIBLE);
+
+            int preferenceAutoLock = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("preference_auto_lock", "-1"));
+            if (preferenceAutoLock > 0) {
+                Toast.makeText(getActivity(), getResources().getQuantityString(R.plurals.auto_lock_time_left, preferenceAutoLock, preferenceAutoLock), Toast.LENGTH_LONG).show();
+            }
+            AskPasswordDialog.this.dismiss();
+        }
+
         @Override
         protected void onPostExecute(DecryptTask.DecryptTaskResult s) {
             super.onPostExecute(s);
 
+            ARevelation aRevelation = (ARevelation) getActivity();
+
             if (!isCancelled()) {
-                if (getActivity() != null) {    // need if user hits back or touches somewhere the screen.
-                    if (!s.isFail) {
-                        Toast.makeText(context, getActivity().getString(s.toastMessage), Toast.LENGTH_LONG).show();
-                        ((ARevelation) getActivity()).setRvlData(s.data);
-
-                        RevelationListViewFragment nextFrag = RevelationListViewFragment.newInstance(((ARevelation) getActivity()).getRvlData().getUuid());
-                        ((ARevelation) getActivity()).setPassword(password);
-                        ((ARevelation) getActivity()).setCurrentFile(file);
-
-                        getActivity().getFragmentManager().beginTransaction()
-                                .replace(R.id.mainContainer, nextFrag)
-                                .addToBackStack(null).commit();
-
-                        AskPasswordDialog.this.dismiss();
-                        getActivity().findViewById(R.id.fab).setVisibility(View.VISIBLE);
-
-                        int preferenceAutoLock = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("preference_auto_lock", "-1"));
-                        if (preferenceAutoLock > 0) {
-                            Toast.makeText(getActivity(), getResources().getQuantityString(R.plurals.auto_lock_time_left, preferenceAutoLock, preferenceAutoLock), Toast.LENGTH_LONG).show();
-                        }
-                    } else {
-                        TextView t = getDialog().findViewById(R.id.message);
-                        String message = s.exception.getMessage();
-
-                        if (message.endsWith(":BAD_DECRYPT")) {
-                            t.setText(R.string.decrypt_invalid_password_label);
+                if (aRevelation != null) {    // need if user hits back or touches somewhere the screen.
+                    if (!s.isFail || aRevelation.getRvlData() != null && aRevelation.getPassword() != null && aRevelation.getPassword().equals(password)) {
+                        if (aRevelation.getRvlData() != null && aRevelation.getPassword() != null && aRevelation.getPassword().equals(password)) {
+                            // use from memory
+                            // attention: I am aware that I throw away the result of the DecryptTaskResult
+                            // It is a simple and good way, the rvlData in memory is newer (e.g. unsaved changes)
+                            // but, nevertheless I let the smartphone decrypt the file, so it looks "realer"
+                            // and you can't so easily brute force the password
+                            // may be, some day I will change this behavior, but currently it is an very easy and save way to go!
+                            doStuff();
                         } else {
-                            if (("Could not generate secret key").equals(message)) {
-                                t.setText(R.string.decrypt_empty_password_label);
+                            // load from file
+                            if (!s.isFail) {
+                                Toast.makeText(context, getActivity().getString(s.toastMessage), Toast.LENGTH_LONG).show();
+                                aRevelation.setRvlData(s.data);
+                                aRevelation.setPassword(password);
+                                aRevelation.setCurrentFile(file);
+
+                                doStuff();
                             } else {
-                                t.setText(s.exception.getMessage());
+                                TextView t = getDialog().findViewById(R.id.message);
+                                String message = s.exception.getMessage();
+
+                                if (message.endsWith(":BAD_DECRYPT")) {
+                                    t.setText(R.string.decrypt_invalid_password_label);
+                                } else {
+                                    if (("Could not generate secret key").equals(message)) {
+                                        t.setText(R.string.decrypt_empty_password_label);
+                                    } else {
+                                        t.setText(s.exception.getMessage());
+                                    }
+                                }
                             }
                         }
                     }
                 } else {
                     Toast.makeText(context, R.string.decrypt_canceled_label, Toast.LENGTH_LONG).show();
+                    aRevelation.clearUI();
+                    aRevelation.clearState(true);
                 }
             }
         }

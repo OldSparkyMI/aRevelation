@@ -3,6 +3,7 @@ package com.github.marmaladesky.data;
 import org.simpleframework.xml.*;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -57,9 +58,9 @@ public class Entry implements Serializable {
         this.name = name;
         this.description = description != null ? description : "";
         this.notes = notes != null ? notes : "";
-        this.fields = fields;
+        this.fields = fields != null ? fields : new ArrayList<Field>();
         this.updated = updated;
-        this.list = list;
+        this.list = list != null ? list : new ArrayList<Entry>();
     }
 
     public String getDescription() {

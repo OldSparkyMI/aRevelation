@@ -24,6 +24,7 @@
     <string name="decrypt_invalid_password_label">Invalid password</string>
     <string name="decrypt_empty_password_label">No password entered</string>
     <string name="backup_restored">Restored old file, new changes are lost</string>
+    <string name="unsaved_changes">Cancel deactivated because of unsaved changes.</string>
     <!--Field names-->
     <string name="name">Name</string>
     <string name="description">Description</string>
@@ -37,6 +38,8 @@
     <string name="generic_email">Email</string>
     <string name="generic_url">Url</string>
     <string name="generic_pin">PIN</string>
+    <string name="generic_certificate">Certificate</string>
+    <string name="generic_keyfile">Keyfile</string>
     <string name="creditcard_cardtype">Card type</string>
     <string name="creditcard_cardnumber">Card number</string>
     <string name="creditcard_expirydate">Expiry date</string>

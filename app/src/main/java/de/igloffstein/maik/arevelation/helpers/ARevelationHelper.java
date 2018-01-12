@@ -1,5 +1,6 @@
 package de.igloffstein.maik.arevelation.helpers;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
@@ -9,6 +10,8 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.github.marmaladesky.ARevelation;
+import com.github.marmaladesky.R;
+import com.github.marmaladesky.RevelationListViewFragment;
 
 import java.io.File;
 import java.io.FileInputStream;
