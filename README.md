@@ -68,3 +68,8 @@ https://dribbble.com/shots/2888226-1800-Free-Minimal-Icon-Pack-20x20
 https://revelation.olasagasti.info/
 * Current developer  
 https://github.com/OldSparkyMI
+
+# Thanks to
+* IzzySoft   
+https://github.com/IzzySoft  
+https://android.izzysoft.de
