@@ -41,19 +41,17 @@ import static com.github.marmaladesky.ARevelation.ARGUMENT_FILE;
  */
 public class AskPasswordDialog extends DialogFragment {
 
-    public static AskPasswordDialog askPasswordDialog = null;
+    protected static AskPasswordDialog askPasswordDialog = null;
     public String file;
 
     public static AskPasswordDialog getInstance(String file) {
         if (askPasswordDialog == null) {
             askPasswordDialog = new AskPasswordDialog();
+            Bundle args = new Bundle();
+            args.putString("file", file);
+            askPasswordDialog.setArguments(args);
+            askPasswordDialog.setCancelable(false);
         }
-
-        Bundle args = new Bundle();
-        args.putString("file", file);
-        askPasswordDialog.setArguments(args);
-        askPasswordDialog.setCancelable(false);
-
         return askPasswordDialog;
     }
 
@@ -187,6 +185,7 @@ public class AskPasswordDialog extends DialogFragment {
                 Toast.makeText(getActivity(), getResources().getQuantityString(R.plurals.auto_lock_time_left, preferenceAutoLock, preferenceAutoLock), Toast.LENGTH_LONG).show();
             }
             AskPasswordDialog.this.dismiss();
+            AskPasswordDialog.askPasswordDialog = null;
         }
 
         @Override
@@ -206,16 +205,16 @@ public class AskPasswordDialog extends DialogFragment {
                         // and you can't so easily brute force the password
                         // may be, some day I will change this behavior, but currently it is an very easy and save way to go!
                         openRevelationView();
-                    }
+                    } else {
+                        // load from file
+                        if (!s.isFail) {
+                            Toast.makeText(context, getActivity().getString(s.toastMessage), Toast.LENGTH_LONG).show();
+                            aRevelation.setRvlData(s.data);
+                            aRevelation.setPassword(password);
+                            aRevelation.setCurrentFile(file);
 
-                    // load from file
-                    if (!s.isFail) {
-                        Toast.makeText(context, getActivity().getString(s.toastMessage), Toast.LENGTH_LONG).show();
-                        aRevelation.setRvlData(s.data);
-                        aRevelation.setPassword(password);
-                        aRevelation.setCurrentFile(file);
-
-                        openRevelationView();
+                            openRevelationView();
+                        }
                     }
 
                 } else {
@@ -239,6 +238,7 @@ public class AskPasswordDialog extends DialogFragment {
                     aRevelation.clearState(true);
                 }
             }
+            AskPasswordDialog.askPasswordDialog = null;
         }
 
         private byte[] getBytes(InputStream inputStream) throws IOException {

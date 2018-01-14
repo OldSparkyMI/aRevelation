@@ -340,7 +340,6 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
                 // currently not implementet
                 break;
             case R.id.menu_open:
-                clearState(true);
                 optionItemSelectedOpen();
                 break;
             case R.id.menu_change_password:
@@ -430,6 +429,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
     }
 
     public void optionItemSelectedOpen() {
+        clearState(true);
         String action = Build.VERSION.SDK_INT >= 19 ? Intent.ACTION_OPEN_DOCUMENT : Intent.ACTION_GET_CONTENT;
         Intent intent = new Intent(action);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
