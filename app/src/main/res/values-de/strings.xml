@@ -7,6 +7,8 @@
     <string name="about">Über</string>
     <string name="createNew">Neu</string>
     <string name="delete">Entfernen</string>
+    <string name="copy">Kopieren</string>
+    <string name="edit">Editieren</string>
     <string name="add_entry">Eintrag hinzufügen</string>
     <string name="change_password">Passwort ändern</string>
     <string name="current_password">Aktuelles Passwort</string>
@@ -24,6 +26,7 @@
     <string name="decrypt_canceled_label">Vorgang abgebrochen!</string>
     <string name="decrypt_invalid_password_label">Passwort ungültig</string>
     <string name="decrypt_empty_password_label">Kein Passwort eingegeben</string>
+    <string name="generated_empty_password_label">Kein Passwort generiert, bitte Einstellungen anpassen</string>
     <string name="backup_restored">Backup wiederhergestellt, bisherige Änderungen sind verloren</string>
     <string name="unsaved_changes">Abbrechen wegen ungespeicherter Änderungen deaktiviert</string>
     <!--Field names-->
@@ -70,6 +73,7 @@
     <!-- Strings related to Settings -->
     <!-- password settings -->
     <string name="pref_header_security">Sicherheitseinstellungen</string>
+    <string name="pref_header_password">Passworteinstellungen</string>
 
     <string name="pref_title_hide_password_and_secrets">Passwörter verstecken</string>
     <string name="pref_description_hide_passwords_and_secrets">Passwörter verschlüsselt (*******) auf dem Bildschirm wiedergeben.</string>
@@ -127,4 +131,24 @@
         <item>60</item>
         <item>-1</item>
     </string-array>
+
+    <!-- Password settings -->
+    <string name="pref_title_enable_characters">Passwörter mit Buchstaben</string>
+    <string name="pref_description_enable_characters">Buchstaben (a-Z) sind Bestandteil neu generierter Passwörter</string>
+    <string name="pref_description_disable_characters">Neue Passwörter beinhalten keine Buchstaben</string>
+
+    <string name="pref_title_enable_numbers">Passwörter mit Zahlen</string>
+    <string name="pref_description_enable_numbers">Zahlen (0-9) sind Bestandteil neu generierter Passwörter</string>
+    <string name="pref_description_disable_numbers">Neue Passwörter beinhalten keine Zahlen</string>
+
+    <string name="pref_title_special_characters">Passwörter mit Sonderzeichen</string>
+    <string name="pref_description_special_characters">Sonderzeichen (z.B.: #, @, ", =, ...) sind Bestandteil neu generierter Passwörter</string>
+    <string name="pref_description_disable_special_characters">Neue Passwörter beinhalten keine Sonderzeichen (wie beispielsweise: #, @, ", =, ...)</string>
+
+    <string name="pref_title_auto_incrementation">Automatische Verlängerung des Passwortes</string>
+    <string name="pref_description_auto_incrementation">Bei erneuter Passwortgenerierung, erhöht sich die Passwortlänge um zwei Zeichen</string>
+    <string name="pref_description_disable_auto_incrementation">Passwörter werden mit der Standardlänge generiert</string>
+
+    <string name="pref_title_password_size">Standard Passwortlänge</string>
+    <string name="pref_description_password_size">Neu generierte Passwörter haben initial diese Länge</string>
 </resources>

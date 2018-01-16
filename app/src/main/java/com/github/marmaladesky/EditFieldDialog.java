@@ -4,24 +4,37 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+
 import com.github.marmaladesky.data.FieldWrapper;
+
+import de.igloffstein.maik.arevelation.helpers.ARevelationHelper;
+import de.igloffstein.maik.arevelation.helpers.PasswordGenerationHelper;
 
 public class EditFieldDialog extends DialogFragment {
 
     private static final String ARGUMENT_FIELD_UUID = "fieldUuid";
+    private static final String ARGUMENT_FIELD_PASSWORD = "isPassword";
 
     private EditText value;
     private FieldWrapper field;
+    private boolean isPassword = false;
 
     public static EditFieldDialog newInstance(String fieldUuid) {
+        return newInstance(fieldUuid, false);
+    }
+
+    public static EditFieldDialog newInstance(String fieldUuid, boolean isPassword) {
         EditFieldDialog d = new EditFieldDialog();
         Bundle args = new Bundle();
         args.putString(ARGUMENT_FIELD_UUID, fieldUuid);
+        args.putBoolean(ARGUMENT_FIELD_PASSWORD, isPassword);
         d.setArguments(args);
         return d;
     }
@@ -32,8 +45,10 @@ public class EditFieldDialog extends DialogFragment {
         try {
             if (savedInstanceState == null && getArguments() != null) {
                 field = ((ARevelation) getActivity()).rvlData.getFieldById(getArguments().getString(ARGUMENT_FIELD_UUID));
+                isPassword = getArguments().getBoolean(ARGUMENT_FIELD_PASSWORD);
             } else if (savedInstanceState != null) {
                 field = ((ARevelation) getActivity()).rvlData.getFieldById(savedInstanceState.getString(ARGUMENT_FIELD_UUID));
+                isPassword = savedInstanceState.getBoolean(ARGUMENT_FIELD_PASSWORD);
             } else {
                 throw new IllegalArgumentException("Need saved state.");
             }
@@ -58,15 +73,7 @@ public class EditFieldDialog extends DialogFragment {
                                     e.printStackTrace();
                                 }
 
-                                // Amazing piece of shit, but I don't know how to do it in another way
-                                getFragmentManager()
-                                        .beginTransaction()
-                                        .detach(getTargetFragment())
-                                        .commit();
-                                getFragmentManager()
-                                        .beginTransaction()
-                                        .attach(getTargetFragment())
-                                        .commit();
+                                ARevelationHelper.redrawRevelationListViewFragment(getFragmentManager(), getTargetFragment());
                             }
                         })
 
@@ -75,7 +82,21 @@ public class EditFieldDialog extends DialogFragment {
                         dialog.cancel();
                     }
                 });
+        if (isPassword) {
+            builder.setNeutralButton(R.string.new_password,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            try {
+                                field.setFieldValue(PasswordGenerationHelper.getRandomPassword(getActivity()));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
 
+                            ARevelationHelper.redrawRevelationListViewFragment(getFragmentManager(), getTargetFragment());
+                        }
+                    });
+        }
         return builder.create();
     }
 
@@ -84,6 +105,7 @@ public class EditFieldDialog extends DialogFragment {
         super.onSaveInstanceState(outState);
         try {
             outState.putString(ARGUMENT_FIELD_UUID, field.getUuid());
+            outState.putBoolean(ARGUMENT_FIELD_PASSWORD, isPassword);
         } catch (Exception e) {
             e.printStackTrace();
         }

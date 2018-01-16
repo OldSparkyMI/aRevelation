@@ -1,5 +1,6 @@
 # Releases
 ## 1.3
+- Add: Password generation
 
 ## 1.2
 - Change: Lint improvements 

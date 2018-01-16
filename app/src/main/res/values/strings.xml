@@ -7,6 +7,8 @@
     <string name="about">About</string>
     <string name="createNew">New</string>
     <string name="delete">Delete</string>
+    <string name="copy">Copy</string>
+    <string name="edit">Edit</string>
     <string name="add_entry">Add Entry</string>
     <string name="change_password">Change password</string>
     <string name="current_password">Current password</string>
@@ -24,6 +26,7 @@
     <string name="decrypt_canceled_label">Decrypting canceled!</string>
     <string name="decrypt_invalid_password_label">Invalid password</string>
     <string name="decrypt_empty_password_label">No password entered</string>
+    <string name="generated_empty_password_label">No password generated, change settings</string>
     <string name="backup_restored">Restored old file, new changes are lost</string>
     <string name="unsaved_changes">Cancel deactivated because of unsaved changes.</string>
     <!--Field names-->
@@ -71,6 +74,7 @@
     <!-- Strings related to Settings -->
     <!-- password settings -->
     <string name="pref_header_security">Security settings</string>
+    <string name="pref_header_password">Password settings</string>
 
     <string name="pref_title_hide_password_and_secrets">Hide passwords and secrets</string>
     <string name="pref_description_hide_passwords_and_secrets">Displays ****** instead of the passwords or secrets.</string>
@@ -128,4 +132,24 @@
         <item>60</item>
         <item>-1</item>
     </string-array>
+
+    <!-- Password settings -->
+    <string name="pref_title_enable_characters">Generate passwords with characters</string>
+    <string name="pref_description_enable_characters">Include characters a-Z in password generation</string>
+    <string name="pref_description_disable_characters">Don\'t include characters a-Z in new passwords</string>
+
+    <string name="pref_title_enable_numbers">Generate passwords with numbers</string>
+    <string name="pref_description_enable_numbers">Include numbers 0-9 in password generation</string>
+    <string name="pref_description_disable_numbers">Don\'t include numbers 0-9 in new passwords</string>
+
+    <string name="pref_title_enable_special_characters">Generate passwords with special characters</string>
+    <string name="pref_description_enable_special_characters">Include special characters e.g. #, @, ", =, ... in password generation</string>
+    <string name="pref_description_disable_special_characters">Don\'t include special characters e.g. #, @, ", =, ... in new passwords</string>
+
+    <string name="pref_title_enable_auto_incrementation">Auto increment password size</string>
+    <string name="pref_description_enable_auto_incrementation">Clicking generate again and the new password has an increased size by two</string>
+    <string name="pref_description_disable_auto_incrementation">A new password will always have the default size</string>
+
+    <string name="pref_title_password_size">Default password size</string>
+    <string name="pref_description_password_size">New generates passwords will get this size</string>
 </resources>

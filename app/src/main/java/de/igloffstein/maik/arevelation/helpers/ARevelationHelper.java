@@ -1,6 +1,8 @@
 package de.igloffstein.maik.arevelation.helpers;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
@@ -109,5 +111,20 @@ public class ARevelationHelper {
                 os.write(buffer, 0, length);
             }
         }
+    }
+
+    /**
+     * Detach the target fragmentManager and reattach it instantly
+     * @param fragmentManager
+     * @param targetFragment
+     */
+    public static void redrawRevelationListViewFragment(FragmentManager fragmentManager, Fragment targetFragment){
+        // Amazing piece of shit, but I don't know how to do it in another way
+        fragmentManager.beginTransaction()
+                .detach(targetFragment)
+                .commit();
+        fragmentManager.beginTransaction()
+                .attach(targetFragment)
+                .commit();
     }
 }

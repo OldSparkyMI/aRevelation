@@ -8,8 +8,12 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+
 import com.github.marmaladesky.data.FieldWrapper;
 import com.github.marmaladesky.data.RevelationData;
+
+import de.igloffstein.maik.arevelation.helpers.ARevelationHelper;
+import de.igloffstein.maik.arevelation.helpers.PasswordGenerationHelper;
 
 public class ItemDialogFragment extends DialogFragment {
 
@@ -43,25 +47,39 @@ public class ItemDialogFragment extends DialogFragment {
             } else {
                 throw new IllegalArgumentException("Need saved state.");
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new IllegalArgumentException("Need saved state.", e);
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setItems(new String[]{"Copy", "Edit"}, new DialogInterface.OnClickListener() {
+        String[] buttons = (header.equals(getString(R.string.generic_password)))
+                ? new String[]{getString(R.string.copy), getString(R.string.edit), getString(R.string.new_password)}
+                : new String[]{getString(R.string.copy), getString(R.string.edit)};
+        builder.setItems(buttons, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                if (which == 0) {
-                    ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText("aRevelation copied data", field.getFieldValue());
-                    clipboard.setPrimaryClip(clip);
-                } else if (which == 1) {
-                    try {
-                        DialogFragment dial = EditFieldDialog.newInstance(field.getUuid());
-                        dial.setTargetFragment(ItemDialogFragment.this.getTargetFragment(), 0); // Amazing piece of shit, but I don't know how to do it in another way
-                        dial.show(getFragmentManager(), "ItemDialogFragment");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                switch (which) {
+                    case 0:
+                        ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("aRevelation copied data", field.getFieldValue());
+                        clipboard.setPrimaryClip(clip);
+                        break;
+                    case 1:
+                        try {
+                            DialogFragment dial = EditFieldDialog.newInstance(field.getUuid(), (header.equals(getString(R.string.generic_password))) ? true : false);
+                            dial.setTargetFragment(ItemDialogFragment.this.getTargetFragment(), 0); // Amazing piece of shit, but I don't know how to do it in another way
+                            dial.show(getFragmentManager(), "ItemDialogFragment");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    case 2:
+                        try {
+                            field.setFieldValue(PasswordGenerationHelper.getRandomPassword(getActivity()));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        ARevelationHelper.redrawRevelationListViewFragment(getFragmentManager(), getTargetFragment());
+                        break;
                 }
             }
         });
@@ -72,7 +90,11 @@ public class ItemDialogFragment extends DialogFragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(HEADER_KEY, header);
-        try { outState.putString(FIELD_KEY, field.getUuid()); } catch (Exception e) { e.printStackTrace(); }
+        try {
+            outState.putString(FIELD_KEY, field.getUuid());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 }
