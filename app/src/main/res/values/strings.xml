@@ -6,6 +6,7 @@
     <string name="save">Save</string>
     <string name="about">About</string>
     <string name="createNew">New</string>
+    <string name="delete">Delete</string>
     <string name="add_entry">Add Entry</string>
     <string name="change_password">Change password</string>
     <string name="current_password">Current password</string>

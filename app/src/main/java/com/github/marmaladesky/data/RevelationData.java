@@ -27,6 +27,7 @@ import lombok.Getter;
 public class RevelationData implements Serializable {
 
     private final String uuid = UUID.randomUUID().toString();
+    private boolean edited = false;
 
     @Attribute(name = "version")
     private String version;
@@ -52,6 +53,29 @@ public class RevelationData implements Serializable {
 
     public void addEntry(Entry entry) {
         entries.add(entry);
+    }
+
+    /**
+     * Removes a given entry, specified by uuid
+     * @param uuid
+     * @return
+     */
+    public boolean removeEntryById(String uuid) {
+        if (entries != null)
+            for (Entry e : entries) {
+                if (e.type.equals(Entry.TYPE_FOLDER)) {
+                    Entry n = getEntryById(e.list, uuid);
+                    if (n != null) {
+                        this.edited = true;
+                        return entries.remove(n);
+                    }
+                }
+                if (e.getUuid().equals(uuid)) {
+                    this.edited = true;
+                    return entries.remove(e);
+                }
+            }
+        return false;
     }
 
     private static Entry getEntryById(List<Entry> list, String uuid) {
@@ -139,7 +163,18 @@ public class RevelationData implements Serializable {
     }
 
     public boolean isEdited() {
-        for (Entry e : entries) if (e.isEdited()) return true;
+
+        if (edited) {
+            // something is deleted
+            return true;
+        }
+
+        for (Entry e : entries) {
+            if (e.isEdited()) {
+                // something is modified
+                return true;
+            }
+        }
         return false;
     }
 
@@ -153,6 +188,7 @@ public class RevelationData implements Serializable {
         OutputStream fop = context.getContentResolver().openOutputStream(Uri.parse(file));
         fop.write(encrypted);
         fop.close();
+        edited = false;
         cleanUpdateStatus();
     }
 

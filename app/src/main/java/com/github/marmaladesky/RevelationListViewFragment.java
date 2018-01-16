@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -112,7 +113,6 @@ public class RevelationListViewFragment extends Fragment {
             } else {
                 groupUuid = savedInstanceState.getString(ARGUMENT_UUID_LIST);
             }
-
             List<Entry> group = ((ARevelation) getActivity()).rvlData.getEntryGroupById(groupUuid);
             RevelationStructureBrowserAdapter revelationStructureBrowserAdapter
                     = new RevelationStructureBrowserAdapter(this.getActivity(), group);

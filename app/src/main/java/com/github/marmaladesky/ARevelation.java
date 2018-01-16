@@ -69,6 +69,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
     @Setter
     @Getter
     protected String currentFile;
+    @Getter
     protected Button saveButton;
     protected long onPauseSystemMillis = 0;
     protected DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {

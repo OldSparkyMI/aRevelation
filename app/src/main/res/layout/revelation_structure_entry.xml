@@ -6,7 +6,7 @@
 
     <ImageView
         android:id="@+id/imageIdentifier"
-        android:contentDescription=""
+        android:contentDescription="Type Button"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:padding="20dp"
@@ -20,5 +20,23 @@
         android:orientation="vertical"
         android:gravity="center_vertical"
         />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:minHeight="?attr/listPreferredItemHeight"
+        android:gravity="end"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/deleteImageView"
+            android:contentDescription="Delete Button"
+            android:src="@drawable/ic_delete_1487"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:padding="20dp"
+            />
+
+    </LinearLayout>
 
 </LinearLayout>

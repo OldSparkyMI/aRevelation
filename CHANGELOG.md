@@ -9,6 +9,7 @@
 - fix: the display of multiple encoding dialogs and other bugs related to this issue
 - fix: https://github.com/OldSparkyMI/aRevelation/issues/7
 - fix: several bug fixes
+- Add: ability to delete entries
 
 ## 1.1.3
 - Bugfix: https://github.com/OldSparkyMI/aRevelation/issues/6

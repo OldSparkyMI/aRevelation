@@ -6,6 +6,7 @@
     <string name="save">Speichern</string>
     <string name="about">Über</string>
     <string name="createNew">Neu</string>
+    <string name="delete">Entfernen</string>
     <string name="add_entry">Eintrag hinzufügen</string>
     <string name="change_password">Passwort ändern</string>
     <string name="current_password">Aktuelles Passwort</string>

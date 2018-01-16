@@ -3,7 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:context="de.igloffstein.maik.arevelation.fragments.AboutFragment"
+    tools:activity="de.igloffstein.maik.arevelation.fragments.AboutFragment"
     tools:ignore="NestedWeights">
 
     <ImageView
