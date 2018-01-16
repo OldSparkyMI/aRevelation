@@ -1,3 +1,6 @@
+# Releases
+## 1.3
+
 ## 1.2
 - Change: Lint improvements 
 - Change: Moved inner classes to normal classes (AskPasswordDialog)
