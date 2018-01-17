@@ -1,13 +1,11 @@
 package de.igloffstein.maik.arevelation.helpers;
 
 import android.app.Activity;
-import android.content.Context;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 import com.github.marmaladesky.R;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -21,10 +19,10 @@ public class PasswordGenerationHelper {
     private static String specialCharacters = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 
     public static String getRandomPassword(Activity activity) {
-        int defaultSize = PreferenceManager.getDefaultSharedPreferences(activity).getInt("preference_hide_passwords", 6);
-        boolean useCharacters = PreferenceManager.getDefaultSharedPreferences(activity).getBoolean("preference_hide_passwords", true);
-        boolean useNumbers = PreferenceManager.getDefaultSharedPreferences(activity).getBoolean("preference_hide_passwords", true);
-        boolean userSpecialChars = PreferenceManager.getDefaultSharedPreferences(activity).getBoolean("preference_hide_passwords", true);
+        int defaultSize = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(activity).getString("preference_password_size", "6"));
+        boolean useCharacters = PreferenceManager.getDefaultSharedPreferences(activity).getBoolean("preference_enable_characters", true);
+        boolean useNumbers = PreferenceManager.getDefaultSharedPreferences(activity).getBoolean("preference_enable_numbers", true);
+        boolean userSpecialChars = PreferenceManager.getDefaultSharedPreferences(activity).getBoolean("preference_enable_special_characters", true);
 
         return getRandomPassword(activity, defaultSize, useCharacters, useNumbers, userSpecialChars);
     }
@@ -43,7 +41,7 @@ public class PasswordGenerationHelper {
 
         if (availableCharacters.length() > 0) {
             for (int idx = 0; idx < passwordSize; idx++) {
-                password.append(availableCharacters.charAt(random.nextInt() % availableCharacters.length()));
+                password.append(availableCharacters.charAt(Math.abs(random.nextInt()) % availableCharacters.length()));
             }
         } else {
             Toast.makeText(activity, R.string.generated_empty_password_label, Toast.LENGTH_LONG).show();
