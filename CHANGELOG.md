@@ -1,4 +1,6 @@
 # Releases
+## 1.4
+
 ## 1.3
 - Add: Password generation
 - Improvement: Settings description
