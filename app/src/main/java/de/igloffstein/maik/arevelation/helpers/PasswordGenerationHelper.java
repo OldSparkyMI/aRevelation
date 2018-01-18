@@ -9,7 +9,8 @@ import com.github.marmaladesky.R;
 import java.util.Random;
 
 /**
- * Created by OldSparkyMI on 16.01.18.
+ * Helper class to create passwords with a given length
+ * ToDo [Improvement]: force use of characters, numbers or specialCharacters
  */
 
 public class PasswordGenerationHelper {
