@@ -9,7 +9,7 @@ import com.github.marmaladesky.R;
 import java.util.Random;
 
 /**
- * Created by maik on 16.01.18.
+ * Created by OldSparkyMI on 16.01.18.
  */
 
 public class PasswordGenerationHelper {
@@ -18,8 +18,9 @@ public class PasswordGenerationHelper {
     private static String numbers = "0123456789";
     private static String specialCharacters = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 
-    public static String getRandomPassword(Activity activity) {
+    public static String getRandomPassword(Activity activity, int passwordSize) {
         int defaultSize = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(activity).getString("preference_password_size", "6"));
+        defaultSize = Math.max(defaultSize, passwordSize);
         boolean useCharacters = PreferenceManager.getDefaultSharedPreferences(activity).getBoolean("preference_enable_characters", true);
         boolean useNumbers = PreferenceManager.getDefaultSharedPreferences(activity).getBoolean("preference_enable_numbers", true);
         boolean userSpecialChars = PreferenceManager.getDefaultSharedPreferences(activity).getBoolean("preference_enable_special_characters", true);
@@ -38,6 +39,9 @@ public class PasswordGenerationHelper {
 
         Random random = new Random();
         StringBuilder password = new StringBuilder();
+
+        boolean incPasswordSize = PreferenceManager.getDefaultSharedPreferences(activity).getBoolean("preference_enable_auto_incrementation", true);
+        passwordSize = incPasswordSize ? passwordSize +2 : passwordSize;
 
         if (availableCharacters.length() > 0) {
             for (int idx = 0; idx < passwordSize; idx++) {

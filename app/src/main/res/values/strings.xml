@@ -77,10 +77,12 @@
     <string name="pref_header_password">Password settings</string>
 
     <string name="pref_title_hide_password_and_secrets">Hide passwords and secrets</string>
-    <string name="pref_description_hide_passwords_and_secrets">Displays ****** instead of the passwords or secrets.</string>
+    <string name="pref_description_enable_hide_passwords_and_secrets">Displays ****** instead of the passwords or secrets.</string>
+    <string name="pref_description_disable_hide_passwords_and_secrets">Displays your password without any obfuscation.</string>
 
     <string name="pref_title_toggle_password">Quick unlock Passwords</string>
-    <string name="pref_description_toggle_password">Displays passwords and secrets directly after clicking a button.</string>
+    <string name="pref_description_enable_toggle_password">Displays passwords and secrets directly after clicking a button.</string>
+    <string name="pref_description_disable_toggle_password">Displays passwords and secrets only in edit mode.</string>
 
     <string name="pref_title_lock_in_background">Lock when invisible</string>
     <string name="pref_description_lock_in_background">Reenter the revelation file password to display your secrets after moving the password view into the background or turning screen off. Unsaved changes are lost.</string>
@@ -139,12 +141,12 @@
     <string name="pref_description_disable_characters">Don\'t include characters a-Z in new passwords</string>
 
     <string name="pref_title_enable_numbers">Generate passwords with numbers</string>
-    <string name="pref_description_enable_numbers">Include numbers 0-9 in password generation</string>
-    <string name="pref_description_disable_numbers">Don\'t include numbers 0-9 in new passwords</string>
+    <string name="pref_description_enable_numbers">Include numbers 0&#8211;9 in password generation</string>
+    <string name="pref_description_disable_numbers">Don\'t include numbers 0&#8211;9 in new passwords</string>
 
     <string name="pref_title_enable_special_characters">Generate passwords with special characters</string>
-    <string name="pref_description_enable_special_characters">Include special characters e.g. #, @, ", =, ... in password generation</string>
-    <string name="pref_description_disable_special_characters">Don\'t include special characters e.g. #, @, ", =, ... in new passwords</string>
+    <string name="pref_description_enable_special_characters">Include special characters e.g. #, @, ", =, &#8230; in password generation</string>
+    <string name="pref_description_disable_special_characters">Don\'t include special characters e.g. #, @, ", =, &#8230; in new passwords</string>
 
     <string name="pref_title_enable_auto_incrementation">Auto increment password size</string>
     <string name="pref_description_enable_auto_incrementation">Clicking generate again and the new password has an increased size by two</string>

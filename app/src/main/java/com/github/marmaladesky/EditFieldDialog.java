@@ -4,10 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -88,7 +86,8 @@ public class EditFieldDialog extends DialogFragment {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             try {
-                                field.setFieldValue(PasswordGenerationHelper.getRandomPassword(getActivity()));
+                                int passwordSize = (field != null && field.getFieldValue() != null) ? field.getFieldValue().length() : 0;
+                                field.setFieldValue(PasswordGenerationHelper.getRandomPassword(getActivity(), passwordSize));
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }

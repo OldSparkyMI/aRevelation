@@ -65,7 +65,7 @@ public class ItemDialogFragment extends DialogFragment {
                         break;
                     case 1:
                         try {
-                            DialogFragment dial = EditFieldDialog.newInstance(field.getUuid(), (header.equals(getString(R.string.generic_password))) ? true : false);
+                            DialogFragment dial = EditFieldDialog.newInstance(field.getUuid(), header.equals(getString(R.string.generic_password)));
                             dial.setTargetFragment(ItemDialogFragment.this.getTargetFragment(), 0); // Amazing piece of shit, but I don't know how to do it in another way
                             dial.show(getFragmentManager(), "ItemDialogFragment");
                         } catch (Exception e) {
@@ -74,7 +74,8 @@ public class ItemDialogFragment extends DialogFragment {
                         break;
                     case 2:
                         try {
-                            field.setFieldValue(PasswordGenerationHelper.getRandomPassword(getActivity()));
+                            int passwordSize = (field != null && field.getFieldValue() != null) ? field.getFieldValue().length() : 0;
+                            field.setFieldValue(PasswordGenerationHelper.getRandomPassword(getActivity(), passwordSize));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

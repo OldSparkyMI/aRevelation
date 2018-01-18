@@ -76,10 +76,12 @@
     <string name="pref_header_password">Passworteinstellungen</string>
 
     <string name="pref_title_hide_password_and_secrets">Passwörter verstecken</string>
-    <string name="pref_description_hide_passwords_and_secrets">Passwörter verschlüsselt (*******) auf dem Bildschirm wiedergeben.</string>
+    <string name="pref_description_enable_hide_passwords_and_secrets">Passwörter verschlüsselt (*******) auf dem Bildschirm wiedergeben.</string>
+    <string name="pref_description_disable_hide_passwords_and_secrets">Passwörter unverschlüsselt und für jedermann lesbar auf dem Bildschirm wiedergeben.</string>
 
     <string name="pref_title_toggle_password">Schnell entsperren</string>
-    <string name="pref_description_toggle_password">Zeigt ein Icon hinter dem Passwort um dieses in Klartext anzuzeigen.</string>
+    <string name="pref_description_enable_toggle_password">Zeigt ein Icon hinter dem Passwort um dieses in Klartext anzuzeigen.</string>
+    <string name="pref_description_disable_toggle_password">Zeigt Passwörter nur im Editiervorgang im Klartext an.</string>
 
     <string name="pref_title_lock_in_background">Im Hintergrund sperren</string>
     <string name="pref_description_lock_in_background">Sperrt automatisch die Datei sobald die Passwortansicht nicht mehr angezeigt wird, z.B wenn der Bildschirm ausgeschaltet wird. Ungespeicherte Änderungen gehen verloren.</string>
@@ -134,21 +136,21 @@
 
     <!-- Password settings -->
     <string name="pref_title_enable_characters">Passwörter mit Buchstaben</string>
-    <string name="pref_description_enable_characters">Buchstaben (a-Z) sind Bestandteil neu generierter Passwörter</string>
+    <string name="pref_description_enable_characters">Buchstaben (a&#8211;Z) sind Bestandteil neu generierter Passwörter</string>
     <string name="pref_description_disable_characters">Neue Passwörter beinhalten keine Buchstaben</string>
 
     <string name="pref_title_enable_numbers">Passwörter mit Zahlen</string>
-    <string name="pref_description_enable_numbers">Zahlen (0-9) sind Bestandteil neu generierter Passwörter</string>
+    <string name="pref_description_enable_numbers">Zahlen (0&#8211;9) sind Bestandteil neu generierter Passwörter</string>
     <string name="pref_description_disable_numbers">Neue Passwörter beinhalten keine Zahlen</string>
 
     <string name="pref_title_special_characters">Passwörter mit Sonderzeichen</string>
-    <string name="pref_description_special_characters">Sonderzeichen (z.B.: #, @, ", =, ...) sind Bestandteil neu generierter Passwörter</string>
-    <string name="pref_description_disable_special_characters">Neue Passwörter beinhalten keine Sonderzeichen (wie beispielsweise: #, @, ", =, ...)</string>
+    <string name="pref_description_special_characters">Sonderzeichen (z.B.: #, @, ", =, &#8230;) sind Bestandteil neu generierter Passwörter</string>
+    <string name="pref_description_disable_special_characters">Neue Passwörter beinhalten keine Sonderzeichen (wie beispielsweise: #, @, ", =, &#8230;)</string>
 
     <string name="pref_title_auto_incrementation">Automatische Verlängerung des Passwortes</string>
     <string name="pref_description_auto_incrementation">Bei erneuter Passwortgenerierung, erhöht sich die Passwortlänge um zwei Zeichen</string>
     <string name="pref_description_disable_auto_incrementation">Passwörter werden mit der Standardlänge generiert</string>
 
     <string name="pref_title_password_size">Standard Passwortlänge</string>
-    <string name="pref_description_password_size">Neu generierte Passwörter haben initial diese Länge</string>
+    <string name="pref_description_password_size">Neu generierte Passwörter %s haben initial diese Länge</string>
 </resources>
