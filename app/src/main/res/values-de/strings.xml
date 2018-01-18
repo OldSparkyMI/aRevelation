@@ -143,12 +143,12 @@
     <string name="pref_description_enable_numbers">Zahlen (0&#8211;9) sind Bestandteil neu generierter Passwörter</string>
     <string name="pref_description_disable_numbers">Neue Passwörter beinhalten keine Zahlen</string>
 
-    <string name="pref_title_special_characters">Passwörter mit Sonderzeichen</string>
-    <string name="pref_description_special_characters">Sonderzeichen (z.B.: #, @, ", =, &#8230;) sind Bestandteil neu generierter Passwörter</string>
+    <string name="pref_title_enable_special_characters">Passwörter mit Sonderzeichen</string>
+    <string name="pref_description_enable_special_characters">Sonderzeichen (z.B.: #, @, ", =, &#8230;) sind Bestandteil neu generierter Passwörter</string>
     <string name="pref_description_disable_special_characters">Neue Passwörter beinhalten keine Sonderzeichen (wie beispielsweise: #, @, ", =, &#8230;)</string>
 
-    <string name="pref_title_auto_incrementation">Automatische Verlängerung des Passwortes</string>
-    <string name="pref_description_auto_incrementation">Bei erneuter Passwortgenerierung, erhöht sich die Passwortlänge um zwei Zeichen</string>
+    <string name="pref_title_enable_auto_incrementation">Automatische Verlängerung des Passwortes</string>
+    <string name="pref_description_enable_auto_incrementation">Bei erneuter Passwortgenerierung, erhöht sich die Passwortlänge um zwei Zeichen</string>
     <string name="pref_description_disable_auto_incrementation">Passwörter werden mit der Standardlänge generiert</string>
 
     <string name="pref_title_password_size">Standard Passwortlänge</string>
