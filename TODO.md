@@ -1,5 +1,4 @@
 # Features
-* Add: password generation
 * Add: create a new file
 * Change: handle different time in python and in java (currently wrong update time after adding something)
 * Warning:(532, 23) This AsyncTask class should be static or leaks might occur
@@ -51,6 +50,7 @@
   ```
 
 # Done
+* Add: password generation
 * Add: delete entries
 * Add: able to add a folder
 * Add: change password
