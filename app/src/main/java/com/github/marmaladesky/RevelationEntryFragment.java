@@ -180,7 +180,7 @@ public class RevelationEntryFragment extends Fragment {
                     }
                     fw = new FieldWrapper(prop, RevelationEntryFragment.this.entry);
                 } else if (v instanceof Field)
-                    fw = new FieldWrapper((Field) v);
+                    fw = new FieldWrapper((Field) v, RevelationEntryFragment.this.entry);
                 else {
                     throw new Exception("Unknown data in list");
                 }

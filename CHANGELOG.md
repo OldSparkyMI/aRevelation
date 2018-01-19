@@ -1,5 +1,7 @@
 # Releases
 ## 1.4
+- Change: correct presentation of date (in aRevelation and in Revelation)
+- Fix: update status will now be updated after changes are made 
 
 ## 1.3
 - Add: Password generation

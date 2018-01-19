@@ -57,8 +57,8 @@ public class RevelationData implements Serializable {
 
     /**
      * Removes a given entry, specified by uuid
-     * @param uuid
-     * @return
+     * @param uuid unique identifier of an entry
+     * @return element successfully removed?
      */
     public boolean removeEntryById(String uuid) {
         if (entries != null)
@@ -115,7 +115,7 @@ public class RevelationData implements Serializable {
                     } else if (e.getUuidNotes().equals(uuid)) {
                         return new FieldWrapper(Entry.PROPERTY_NOTES, e);
                     } else if (f != null && f.getUuid().equals(uuid))
-                        return new FieldWrapper(f);
+                        return new FieldWrapper(f, e);
                 }
             } else {
                 if (e.getUuidName().equals(uuid)) {
