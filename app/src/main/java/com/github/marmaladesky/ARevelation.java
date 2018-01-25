@@ -1,12 +1,14 @@
 package com.github.marmaladesky;
 
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.provider.DocumentFile;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
@@ -30,14 +32,19 @@ import org.custommonkey.xmlunit.XMLUnit;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import de.igloffstein.maik.arevelation.activities.ARevelationSettingsActivity;
+import de.igloffstein.maik.arevelation.dialogs.ChangePasswordDialogBuilder;
+import de.igloffstein.maik.arevelation.dialogs.NewFilenameDialogBuilder;
 import de.igloffstein.maik.arevelation.fragments.AboutFragment;
 import de.igloffstein.maik.arevelation.enums.EntryType;
 import de.igloffstein.maik.arevelation.helpers.ARevelationHelper;
@@ -49,11 +56,17 @@ import lombok.Setter;
 public class ARevelation extends AppCompatActivity implements AboutFragment.OnFragmentInteractionListener {
 
     private static final String LOG_TAG = ARevelation.class.getSimpleName();
+    private static final String DEFAULT_REVELATION_VERSION="0.4.14";
+    private static final String DEFAULT_REVELATION_DATA_VERSION="1";
     private static final int REQUEST_FILE_OPEN = 1;
+    private static final int REQUEST_CHOOSE_DIRECTORY = 2;
     public static final String ARGUMENT_RVLDATA = "rvlData";
     public static final String ARGUMENT_PASSWORD = "password";
     public static final String ARGUMENT_FILE = "file";
     public static final String BACKUP_FILE_ENDING = ".arvlbak";
+    public static final String NEW_FILE = "revelation://newFile";
+    @Getter
+    private static String backupFile = null;// string contains the path
     @Getter
     private LinkedList<Entry> currentEntryState = new LinkedList<>();
     private static int sessionDepth = 0;
@@ -219,39 +232,41 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
 
     public void saveChanges(View view) throws Exception {
 
-        String backupFile = null;
-
-        try {
-            // backup old file
-            backupFile = ARevelationHelper.backupFile(getApplicationContext(), currentFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        if (backupFile != null && !"".equals(backupFile)) {
-            try {
-                // save file
-                rvlData.save(getApplicationContext(), currentFile, password);
-                checkButton();
-            } catch (Exception e) {
-                Toast.makeText(getApplicationContext(), R.string.error_cannot_save, Toast.LENGTH_LONG).show();
-
-                try {
-                    // can't save / error during save, restore old file
-                    ARevelationHelper.restoreFile(getApplicationContext(), currentFile, backupFile);
-                    Toast.makeText(getApplicationContext(), R.string.backup_restored, Toast.LENGTH_LONG).show();
-                } catch (IOException e1) {
-                    Toast.makeText(getApplicationContext(), R.string.error_cannot_restore, Toast.LENGTH_LONG).show();
-                    e1.printStackTrace();
-                }
-
-                throw e;
-            }
+        if (currentFile.equals(NEW_FILE)) {
+            Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+            i.addCategory(Intent.CATEGORY_DEFAULT);
+            startActivityForResult(Intent.createChooser(i, getString(R.string.choose_directory)), REQUEST_CHOOSE_DIRECTORY);
         } else {
-            Toast.makeText(getApplicationContext(), R.string.error_cannot_backup, Toast.LENGTH_LONG).show();
-            throw new IOException(getString(R.string.error_cannot_backup));
-        }
+            try {
+                // backup old file
+                backupFile = ARevelationHelper.backupFile(getApplicationContext(), currentFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
+            if (backupFile != null && !"".equals(backupFile)) {
+                try {
+                    // save file
+                    rvlData.save(getApplicationContext(), currentFile, password);
+                    checkButton();
+                } catch (Exception e) {
+                    Toast.makeText(getApplicationContext(), R.string.error_cannot_save, Toast.LENGTH_LONG).show();
+
+                    try {
+                        // can't save / error during save, restore old file
+                        ARevelationHelper.restoreFile(getApplicationContext(), currentFile, backupFile);
+                        Toast.makeText(getApplicationContext(), R.string.backup_restored, Toast.LENGTH_LONG).show();
+                    } catch (IOException e1) {
+                        Toast.makeText(getApplicationContext(), R.string.error_cannot_restore, Toast.LENGTH_LONG).show();
+                        e1.printStackTrace();
+                    }
+
+                    throw e;
+                }
+            } else {
+                Toast.makeText(getApplicationContext(), R.string.error_cannot_backup, Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     /**
@@ -324,11 +339,29 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (currentFile != null && !"".equals(currentFile)) {
+
+        /**
+         * Change password
+         */
+        if (currentFile != null) {
             menu.findItem(R.id.menu_change_password).setEnabled(true);
         } else {
             menu.findItem(R.id.menu_change_password).setEnabled(false);
         }
+
+        /**
+         * If we can write, disable new and open, display discard
+         */
+        if (rvlData != null && rvlData.isEdited()){
+            menu.findItem(R.id.menu_new).setEnabled(false);
+            menu.findItem(R.id.menu_open).setEnabled(false);
+            menu.findItem(R.id.menu_dismiss).setEnabled(true);
+        } else {
+            menu.findItem(R.id.menu_new).setEnabled(true);
+            menu.findItem(R.id.menu_open).setEnabled(true);
+            menu.findItem(R.id.menu_dismiss).setEnabled(false);
+        }
+
 
         return true;
     }
@@ -338,7 +371,16 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.menu_new:
-                // currently not implementet
+                clearState();
+
+                rvlData = new RevelationData(DEFAULT_REVELATION_VERSION, DEFAULT_REVELATION_DATA_VERSION, new ArrayList<Entry>());
+                currentFile = NEW_FILE;
+
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.mainContainer, RevelationListViewFragment.newInstance(rvlData.getUuid())); // give your fragment container id in first parameter
+                transaction.addToBackStack(null);  // if written, this transaction will be added to backstack
+                transaction.commit();
+
                 break;
             case R.id.menu_open:
                 optionItemSelectedOpen();
@@ -365,68 +407,10 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
      * Because we have only one instance of rvlData
      * Better is to store all changes in an other rvlData variable
      *
-     * ToDo: Fix this some day
+     * ToDo: Fix this some day || say save first! || or create a dialog and ask whether we shall save
      */
     private void changePassword() {
-        // reenter old password
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        // view of the alert dialog
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
-
-        final EditText reenterCurrentPassword = new EditText(this);
-        reenterCurrentPassword.setHint(R.string.current_password);
-        reenterCurrentPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        layout.addView(reenterCurrentPassword);
-
-        final EditText enterNewPassword = new EditText(this);
-        enterNewPassword.setHint(R.string.new_password);
-        enterNewPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        layout.addView(enterNewPassword);
-
-        final EditText confirmNewPassword = new EditText(this);
-        confirmNewPassword.setHint(R.string.confirm_new_password);
-        confirmNewPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        layout.addView(confirmNewPassword);
-
-        final String oldPassword = password;
-
-        builder.setTitle(R.string.change_password);
-        builder.setCancelable(false);
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (password != null && !"".equals(password.trim())) {
-                    if (password.equals(reenterCurrentPassword.getText().toString())) {
-                        if ( enterNewPassword.getText() != null
-                                && !"".equals(enterNewPassword.getText().toString())
-                                && enterNewPassword.getText().toString().equals(confirmNewPassword.getText().toString())) {
-                            try {
-                                password = enterNewPassword.getText().toString();
-                                saveChanges(getCurrentFocus());
-                                Toast.makeText(getApplicationContext(), R.string.password_changed, Toast.LENGTH_LONG).show();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                password = oldPassword;
-                                Toast.makeText(getApplicationContext(), getString(R.string.backup) + ": " + ARevelationHelper.backupFile, Toast.LENGTH_LONG).show();
-                            }
-                        } else {
-                            Toast.makeText(getApplicationContext(), R.string.passwords_do_not_match, Toast.LENGTH_LONG).show();
-                        }
-                    } else {
-                        Toast.makeText(getApplicationContext(), R.string.decrypt_invalid_password_label, Toast.LENGTH_LONG).show();
-                    }
-                } else {
-                    Toast.makeText(getApplicationContext(), R.string.decrypt_empty_password_label, Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-        builder.setNegativeButton(android.R.string.cancel, null);
-
-
-        builder.setView(layout);
-        builder.create().show();
+        new ChangePasswordDialogBuilder(this, password).create().show();
     }
 
     public void optionItemSelectedOpen() {
@@ -470,6 +454,10 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
                 e.printStackTrace();
             }
         }
+
+        if (requestCode == REQUEST_CHOOSE_DIRECTORY && data != null && resultCode == RESULT_OK) {
+            new NewFilenameDialogBuilder(this, data).create().show();
+        }
     }
 
     protected boolean isAskPasswordDialogOpen(String file){
@@ -487,7 +475,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
         final String tag = "Tag";
 
         AskPasswordDialog askPasswordDialog = AskPasswordDialog.getInstance(file);
-        if (!isAskPasswordDialogOpen(file) && file != null && !"".equals(file)){
+        if (!isAskPasswordDialogOpen(file) && file != null){
             if (getFragmentManager().findFragmentByTag(tag) == null) {
                 // only show / put on the fragment stack, if not already shown
                 // turn phone off when askPasswordDialog is shown and:

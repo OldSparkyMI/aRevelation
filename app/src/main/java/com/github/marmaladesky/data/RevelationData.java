@@ -2,6 +2,7 @@ package com.github.marmaladesky.data;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 
 import com.github.marmaladesky.Cryptographer;
 
@@ -13,6 +14,8 @@ import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 import org.simpleframework.xml.stream.Format;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.io.StringWriter;
@@ -185,11 +188,20 @@ public class RevelationData implements Serializable {
         serializer.write(this, writer);
         byte[] encrypted = Cryptographer.encrypt(writer.toString(), password);
 
-        OutputStream fop = context.getContentResolver().openOutputStream(Uri.parse(file));
-        fop.write(encrypted);
-        fop.close();
-        edited = false;
-        cleanUpdateStatus();
+        if (file != null && file != "") {
+            try (OutputStream fop = context.getContentResolver().openOutputStream(Uri.parse(file))){
+                fop.write(encrypted);
+                edited = false;
+                cleanUpdateStatus();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }else{
+            Log.d("FILE: ", writer.toString());
+        }
     }
 
     private void cleanUpdateStatus() {

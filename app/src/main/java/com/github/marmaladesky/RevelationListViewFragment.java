@@ -22,6 +22,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import de.igloffstein.maik.arevelation.adapters.RevelationStructureBrowserAdapter;
+import de.igloffstein.maik.arevelation.helpers.ARevelationHelper;
 
 public class RevelationListViewFragment extends Fragment {
     private static final String LOG_TAG = RevelationListViewFragment.class.getSimpleName();
@@ -159,7 +160,6 @@ public class RevelationListViewFragment extends Fragment {
                 ((ARevelation) getActivity()).getCurrentEntryState().add(entry);
             }
         }
-
     }
 
     @Override

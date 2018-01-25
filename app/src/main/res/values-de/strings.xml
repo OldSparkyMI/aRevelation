@@ -9,7 +9,9 @@
     <string name="delete">Entfernen</string>
     <string name="copy">Kopieren</string>
     <string name="edit">Editieren</string>
+    <string name="dismiss">Änderungen verwerfen</string>
     <string name="add_entry">Eintrag hinzufügen</string>
+    <string name="choose_directory">Zielverzeichnis wählen</string>
     <string name="change_password">Passwort ändern</string>
     <string name="current_password">Aktuelles Passwort</string>
     <string name="new_password">Neues Passwort</string>
@@ -18,6 +20,7 @@
     <string name="passwords_do_not_match">Passwörter stimmen nicht überein</string>
     <string name="backup">Sicherung</string>
     <string name="ask_password_message">Passwort eingeben</string>
+    <string name="new_filename">Dateiname</string>
     <string name="self_testing_warning">Warnung! Editieren und speichern kann unter Umständen zu einem Datenverlust führen, obacht</string>
     <string name="self_testing_super_warning">Warnung! Editieren und speichern führt zum Datenverlust, vorsicht</string>
     <string name="self_testing_passed_message">Integritätstest erfolgreich</string>

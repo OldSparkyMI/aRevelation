@@ -9,7 +9,9 @@
     <string name="delete">Delete</string>
     <string name="copy">Copy</string>
     <string name="edit">Edit</string>
+    <string name="dismiss">Dismiss changes</string>
     <string name="add_entry">Add Entry</string>
+    <string name="choose_directory">Choose directory</string>
     <string name="change_password">Change password</string>
     <string name="current_password">Current password</string>
     <string name="new_password">New password</string>
@@ -18,6 +20,7 @@
     <string name="passwords_do_not_match">Passwords do not match</string>
     <string name="backup">Backup</string>
     <string name="ask_password_message">Input password</string>
+    <string name="new_filename">Filename</string>
     <string name="self_testing_warning">Warning! Editing and saving could cause data lost! Be careful.</string>
     <string name="self_testing_super_warning">Super Warning! Editing and saving will cause data lost! Be careful.</string>
     <string name="self_testing_passed_message">Self testing passed. Editing is safe</string>

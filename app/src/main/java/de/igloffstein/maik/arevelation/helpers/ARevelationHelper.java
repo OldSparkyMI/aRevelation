@@ -32,7 +32,6 @@ import java.util.Locale;
 public class ARevelationHelper {
 
     private static final String LOG_TAG = ARevelationHelper.class.getSimpleName();
-    public static String backupFile = null;
 
     /**
      * Returns the settings time for
@@ -90,8 +89,12 @@ public class ARevelationHelper {
     }
 
     public static String backupFile(Context context, String file) throws IOException {
-        backupFile = ARevelationHelper.getRevelationBackupFile(context, file);
-        ARevelationHelper.copyFileUsingStream(file, backupFile, context.getContentResolver());
+        String backupFile = null;
+        if (file != null && file != "") {
+            backupFile = ARevelationHelper.getRevelationBackupFile(context, file);
+            ARevelationHelper.copyFileUsingStream(file, backupFile, context.getContentResolver());
+        }
+
         return backupFile;
     }
 

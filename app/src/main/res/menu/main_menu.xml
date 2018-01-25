@@ -2,13 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/menu_new"
         android:icon="@drawable/ic_file_plus_1703"
-        android:enabled="false"
         android:title="@string/createNew"
-        android:visible="false"
         />
     <item android:id="@+id/menu_open"
         android:icon="@drawable/ic_directory_search_1623"
         android:title="@string/open"
+        />
+    <item android:id="@+id/menu_dismiss"
+        android:icon="@drawable/ic_directory_search_1623"
+        android:title="@string/dismiss"
+        android:enabled="false"
         />
     <item android:id="@+id/menu_change_password"
         android:icon="@drawable/ic_arrow_right_left_343"
