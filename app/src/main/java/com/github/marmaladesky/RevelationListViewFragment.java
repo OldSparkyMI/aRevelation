@@ -17,19 +17,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import de.igloffstein.maik.arevelation.adapters.RevelationStructureBrowserAdapter;
-import de.igloffstein.maik.arevelation.helpers.ARevelationHelper;
 
 public class RevelationListViewFragment extends Fragment {
     private static final String LOG_TAG = RevelationListViewFragment.class.getSimpleName();
     private static final String ARGUMENT_UUID_LIST = "uuidList";
     private static final int oneMinute = 60000;
+    private static RevelationStructureBrowserAdapter revelationStructureBrowserAdapter = null;
     private static int minuteCounter;
     private static boolean timerInitialized = false;
+    public static final String FRAGMENT_TAG = RevelationEntryFragment.class.getSimpleName();
 
     protected static Timer timer;
     private String groupUuid;
@@ -44,7 +44,8 @@ public class RevelationListViewFragment extends Fragment {
     }
 
     protected void newTimer() {
-        if (!timerInitialized) {
+        ARevelation aRevelation = (ARevelation) getActivity();
+        if (!timerInitialized && aRevelation.isLockingSave()) {
             Log.d(LOG_TAG, "Creating new timer ...");
             final int preferenceAutoLock = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("preference_auto_lock", "-1"));
             minuteCounter = 0;
@@ -82,6 +83,8 @@ public class RevelationListViewFragment extends Fragment {
                 }
             }, oneMinute, oneMinute);
             timerInitialized = true;
+        }else{
+            Log.d(LOG_TAG, "Won't start automatically file locking.");
         }
     }
 
@@ -104,6 +107,12 @@ public class RevelationListViewFragment extends Fragment {
         return f;
     }
 
+    public static void notifyDataSetChanged(){
+        if (revelationStructureBrowserAdapter != null) {
+            revelationStructureBrowserAdapter.notifyDataSetChanged();
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -115,12 +124,12 @@ public class RevelationListViewFragment extends Fragment {
                 groupUuid = savedInstanceState.getString(ARGUMENT_UUID_LIST);
             }
             List<Entry> group = ((ARevelation) getActivity()).rvlData.getEntryGroupById(groupUuid);
-            RevelationStructureBrowserAdapter revelationStructureBrowserAdapter
-                    = new RevelationStructureBrowserAdapter(this.getActivity(), group);
+            revelationStructureBrowserAdapter = new RevelationStructureBrowserAdapter(this.getActivity(), group);
 
             ListView simple = v.findViewById(R.id.rootList);
             simple.setOnItemClickListener(new ListListener());
             simple.setAdapter(revelationStructureBrowserAdapter);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -188,14 +188,12 @@ public class RevelationData implements Serializable {
         serializer.write(this, writer);
         byte[] encrypted = Cryptographer.encrypt(writer.toString(), password);
 
-        if (file != null && file != "") {
+        if (file != null && !"".equals(file)) {
             try (OutputStream fop = context.getContentResolver().openOutputStream(Uri.parse(file))){
                 fop.write(encrypted);
                 edited = false;
                 cleanUpdateStatus();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            } catch (IOException|NullPointerException e) {
                 e.printStackTrace();
             }
 

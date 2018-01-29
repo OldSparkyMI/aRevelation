@@ -12,21 +12,25 @@ import com.github.marmaladesky.ARevelation;
 import com.github.marmaladesky.R;
 
 /**
- * Created by maik on 25.01.18.
+ * A aialog to change the password for:
+ *  - saving a new file
+ *  - change the password of an existing file
+ *
+ * Created by OldSparkyMI on 25.01.18.
  */
 
 public class ChangePasswordDialogBuilder extends AlertDialog.Builder {
 
     private enum State{
-        NEW_PASSWORD,CHANGE_PASSWORD;
+        NEW_PASSWORD,CHANGE_PASSWORD
     }
 
-    final ARevelation aRevelation;
-    final EditText reenterCurrentPassword;
-    final EditText enterNewPassword;
-    final EditText confirmNewPassword;
-    final String oldPassword;
-    final State state;
+    private final ARevelation aRevelation;
+    private final EditText reenterCurrentPassword;
+    private final EditText enterNewPassword;
+    private final EditText confirmNewPassword;
+    private final String oldPassword;
+    private final State state;
 
     private LinearLayout getLayout(Context context) {
         // view of the alert dialog
@@ -77,7 +81,7 @@ public class ChangePasswordDialogBuilder extends AlertDialog.Builder {
                 if (state == State.NEW_PASSWORD) {
                     String _enterNewPassword = enterNewPassword.getText().toString();
                     String _confirmNewPassword = confirmNewPassword.getText().toString();
-                    if (_enterNewPassword != null && _enterNewPassword.equals(_confirmNewPassword)){
+                    if (_enterNewPassword.equals(_confirmNewPassword)){
                         aRevelation.setPassword(_enterNewPassword);
 
                         try {
@@ -92,7 +96,7 @@ public class ChangePasswordDialogBuilder extends AlertDialog.Builder {
                 }
 
                 if (state == State.CHANGE_PASSWORD) {
-                    if (password != null && !"".equals(password.trim())) {
+                    if (!"".equals(password.trim())) {
                         if (password.equals(reenterCurrentPassword.getText().toString())) {
                             if (enterNewPassword.getText() != null
                                     && !"".equals(enterNewPassword.getText().toString())
@@ -104,7 +108,7 @@ public class ChangePasswordDialogBuilder extends AlertDialog.Builder {
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                     aRevelation.setPassword(oldPassword);
-                                    Toast.makeText(aRevelation, aRevelation.getString(R.string.backup) + ": " + aRevelation.getBackupFile(), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(aRevelation, aRevelation.getString(R.string.backup) + ": " + ARevelation.getBackupFile(), Toast.LENGTH_LONG).show();
                                 }
                             } else {
                                 Toast.makeText(aRevelation, R.string.passwords_do_not_match, Toast.LENGTH_LONG).show();

@@ -23,8 +23,20 @@ public class StartScreenFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.start_screen, container, false);
 
+        Button btnNew = v.findViewById(R.id.btnNew);
         Button btnOpen = v.findViewById(R.id.btnOpen);
         Button btnAbout = v.findViewById(R.id.btnAbout);
+
+        btnNew.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                Activity activity = getActivity();
+                if (activity instanceof ARevelation) {
+                    ((ARevelation) activity).newFile();
+                } else {
+                    System.err.println("activity is instanceof: " + activity.toString() + " but should be instanceof: " + ARevelation.class.toString());
+                }
+            }
+        });
 
         btnOpen.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {

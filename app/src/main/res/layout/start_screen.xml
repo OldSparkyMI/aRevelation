@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textStyle="bold"
-        android:text="a secure password manager for android"
+        android:text="@string/app_slogan"
         />
 
     <LinearLayout
@@ -37,6 +37,7 @@
         style="?android:attr/buttonBarStyle">
 
         <Button
+            android:id="@+id/btnNew"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -44,7 +45,6 @@
             android:gravity="center"
             android:text="@string/createNew"
             android:drawableStart="@drawable/ic_file_plus_1703"
-            android:enabled="false"
             android:layout_gravity="bottom"
             android:textColor="#1bff92"
             style="?android:attr/buttonBarButtonStyle"/>

@@ -20,7 +20,7 @@
     <string name="passwords_do_not_match">Passwords do not match</string>
     <string name="backup">Backup</string>
     <string name="ask_password_message">Input password</string>
-    <string name="new_filename">Filename</string>
+    <string name="new_filename">Input Filename</string>
     <string name="self_testing_warning">Warning! Editing and saving could cause data lost! Be careful.</string>
     <string name="self_testing_super_warning">Super Warning! Editing and saving will cause data lost! Be careful.</string>
     <string name="self_testing_passed_message">Self testing passed. Editing is safe</string>
@@ -70,6 +70,7 @@
     <string name="error_cannot_save">Error: Can\'t save to file</string>
     <string name="error_cannot_restore">Error: Can\'t restore original from backup</string>
     <string name="error_cannot_backup">Error: Can\'t create backup file, won\'t save</string>
+    <string name="cannot_save_file">Can\'t write</string>
     <!-- Temporarily -->
     <string name="new_folder_currently_not_supported">Creating a new folder is currently not supported.</string>
     <string name="title_activity_arevelation_settings">Settings</string>

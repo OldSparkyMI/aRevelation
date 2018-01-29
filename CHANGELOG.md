@@ -1,7 +1,11 @@
 # Releases
 ## 1.4
 - Change: correct presentation of date (in aRevelation and in Revelation)
-- Fix: update status will now be updated after changes are made 
+- Fix: update status will now be updated after changes are made
+- Add: create a new file
+- Add: dismiss changes
+- Fix: wrong time after entry creation
+- Fix: minor bug fixes
 
 ## 1.3
 - Add: Password generation

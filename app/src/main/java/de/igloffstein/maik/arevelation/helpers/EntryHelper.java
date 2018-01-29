@@ -27,7 +27,7 @@ public class EntryHelper {
                 null,
                 null,
                 fields,
-                new Date().getTime(),
+                new Date().getTime()/1000,
                 list);
 
         addFields(entryType, fields);

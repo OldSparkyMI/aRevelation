@@ -53,11 +53,13 @@ import de.igloffstein.maik.arevelation.dialogs.AskPasswordDialog;
 import lombok.Getter;
 import lombok.Setter;
 
+import static com.github.marmaladesky.RevelationEntryFragment.FRAGMENT_TAG;
+
 public class ARevelation extends AppCompatActivity implements AboutFragment.OnFragmentInteractionListener {
 
     private static final String LOG_TAG = ARevelation.class.getSimpleName();
-    private static final String DEFAULT_REVELATION_VERSION="0.4.14";
-    private static final String DEFAULT_REVELATION_DATA_VERSION="1";
+    private static final String DEFAULT_REVELATION_VERSION = "0.4.14";
+    private static final String DEFAULT_REVELATION_DATA_VERSION = "1";
     private static final int REQUEST_FILE_OPEN = 1;
     private static final int REQUEST_CHOOSE_DIRECTORY = 2;
     public static final String ARGUMENT_RVLDATA = "rvlData";
@@ -93,53 +95,70 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
             Entry entry = EntryHelper.newEntry(EntryType.getFromPosition(which));
             // get id from language values
             int id = getResources()
-                    .getIdentifier(EntryType.getFromPosition(which).toString().toLowerCase(),"string", getPackageName());
+                    .getIdentifier(EntryType.getFromPosition(which).toString().toLowerCase(), "string", getPackageName());
             entry.setName(getString(id));
 
             // add new element
             if (currentEntryState.size() <= 0) {
                 rvlData.addEntry(entry);
-            }else{
+            } else {
                 currentEntryState.getLast().list.add(entry);
             }
 
             // go directly in detail view mode for editing
             getFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.mainContainer, RevelationEntryFragment.newInstance(entry.getUuid()))
+                    .replace(R.id.mainContainer, RevelationEntryFragment.newInstance(entry.getUuid()), FRAGMENT_TAG)
                     .addToBackStack(null).commit();
         }
     };
 
     /**
+     * is file locking save????
+     *
+     * TRUE = There is no reason why we should not lock the file when inactive
+     * FALSE = It is better not to lock the file, because the user created a new file and the file isn't saved to disk
+     *         ==> very likely, there is no password
+     *
+     * @return do we got a new file?
+     */
+    public boolean isLockingSave() {
+        return !NEW_FILE.equals(currentFile);
+    }
+
+    /**
      * After https://developer.android.com/guide/components/activities/activity-lifecycle.html this
      * is the latest call before the acitivity is displayed to the user
-     * <p>
+     *
      * lets check, if the user has to enter his password again
      */
     @Override
     public void onResume() {
         super.onResume();
 
-        // we have user input
-        if (currentFile != null){
-            // do we already displayed something?
-            if (((ViewGroup) findViewById(R.id.mainContainer)).getChildCount() <= 0){
-                // empty view
-                openAskPasswordDialog();
-            }else{
-                // full view, shall we hide the view?
-                int preferenceLockInBackground = ARevelationHelper.preferenceLockInBackground(getApplicationContext());
-                long preferenceLockInBackgroundNextSeconds = onPauseSystemMillis + preferenceLockInBackground * 60 * 1000;
-
-                if (preferenceLockInBackground == 0 || preferenceLockInBackgroundNextSeconds <= System.currentTimeMillis()) {
-                    clearUI();
+        if (isLockingSave()) {
+            // we have user input
+            if (currentFile != null) {
+                // do we already displayed something?
+                if (((ViewGroup) findViewById(R.id.mainContainer)).getChildCount() <= 0) {
+                    // empty view
                     openAskPasswordDialog();
+                } else {
+                    // full view, shall we hide the view?
+                    int preferenceLockInBackground = ARevelationHelper.preferenceLockInBackground(getApplicationContext());
+                    long preferenceLockInBackgroundNextSeconds = onPauseSystemMillis + preferenceLockInBackground * 60 * 1000;
+
+                    if (preferenceLockInBackground == 0 || preferenceLockInBackgroundNextSeconds <= System.currentTimeMillis()) {
+                        clearUI();
+                        openAskPasswordDialog();
+                    }
                 }
+            } else {
+                // we have nothing, start!
+                openStartScreenFragment();
             }
         } else {
-            // we have nothing, start!
-            openStartScreenFragment();
+            Log.d(LOG_TAG, "File locking not save()");
         }
     }
 
@@ -159,7 +178,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
         }
     }
 
-    private void restoreRvlDataStateFromBundle(Bundle savedInstanceState){
+    private void restoreRvlDataStateFromBundle(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             Log.d(LOG_TAG, "restoreRvlDataStateFromBundle() ...");
             rvlData = (RevelationData) savedInstanceState.getSerializable(ARGUMENT_RVLDATA);
@@ -232,46 +251,59 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
 
     public void saveChanges(View view) throws Exception {
 
+        if (password == null || "".equals(password)){
+            changePassword();
+            return;
+        }
+
         if (currentFile.equals(NEW_FILE)) {
             Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
             i.addCategory(Intent.CATEGORY_DEFAULT);
             startActivityForResult(Intent.createChooser(i, getString(R.string.choose_directory)), REQUEST_CHOOSE_DIRECTORY);
-        } else {
+            return;
+        }
+
+        try {
+            // backup old file
+            backupFile = ARevelationHelper.backupFile(getApplicationContext(), currentFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (backupFile != null && !"".equals(backupFile)) {
             try {
-                // backup old file
-                backupFile = ARevelationHelper.backupFile(getApplicationContext(), currentFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+                // save file
+                rvlData.save(getApplicationContext(), currentFile, password);
+                checkButton();
 
-            if (backupFile != null && !"".equals(backupFile)) {
+                RevelationListViewFragment nextFrag = RevelationListViewFragment.newInstance(rvlData.getUuid());
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.mainContainer, nextFrag)
+                        .addToBackStack(null).commit();
+
+            } catch (Exception e) {
+                Toast.makeText(getApplicationContext(), R.string.error_cannot_save, Toast.LENGTH_LONG).show();
+
                 try {
-                    // save file
-                    rvlData.save(getApplicationContext(), currentFile, password);
-                    checkButton();
-                } catch (Exception e) {
-                    Toast.makeText(getApplicationContext(), R.string.error_cannot_save, Toast.LENGTH_LONG).show();
-
-                    try {
-                        // can't save / error during save, restore old file
-                        ARevelationHelper.restoreFile(getApplicationContext(), currentFile, backupFile);
-                        Toast.makeText(getApplicationContext(), R.string.backup_restored, Toast.LENGTH_LONG).show();
-                    } catch (IOException e1) {
-                        Toast.makeText(getApplicationContext(), R.string.error_cannot_restore, Toast.LENGTH_LONG).show();
-                        e1.printStackTrace();
-                    }
-
-                    throw e;
+                    // can't save / error during save, restore old file
+                    ARevelationHelper.restoreFile(getApplicationContext(), currentFile, backupFile);
+                    Toast.makeText(getApplicationContext(), R.string.backup_restored, Toast.LENGTH_LONG).show();
+                } catch (IOException e1) {
+                    Toast.makeText(getApplicationContext(), R.string.error_cannot_restore, Toast.LENGTH_LONG).show();
+                    e1.printStackTrace();
                 }
-            } else {
-                Toast.makeText(getApplicationContext(), R.string.error_cannot_backup, Toast.LENGTH_LONG).show();
+
+                throw e;
             }
+        } else {
+            Toast.makeText(getApplicationContext(), R.string.error_cannot_backup, Toast.LENGTH_LONG).show();
         }
     }
 
     /**
      * FAB Handler
-     * @param view
+     *
+     * @param view the android view
      */
     public void addEntry(View view) {
         // nice from: https://stackoverflow.com/questions/15762905/how-can-i-display-a-list-view-in-an-android-alert-dialog
@@ -296,7 +328,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
     /**
      * Just hides the view. This functions won't destroy the rvlData object.
      * But you have to redraw the whole view.
-     *
+     * <p>
      * This is only allowed, when we show the revelation data!
      */
     public void clearUI() {
@@ -309,6 +341,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
 
     /**
      * Resets the rvlData state to null, but won't change the UI
+     *
      * @param resetFile clear the user input?
      */
     public void clearState(boolean resetFile) {
@@ -340,19 +373,13 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
 
-        /**
-         * Change password
-         */
         if (currentFile != null) {
             menu.findItem(R.id.menu_change_password).setEnabled(true);
         } else {
             menu.findItem(R.id.menu_change_password).setEnabled(false);
         }
 
-        /**
-         * If we can write, disable new and open, display discard
-         */
-        if (rvlData != null && rvlData.isEdited()){
+        if (rvlData != null && rvlData.isEdited()) {
             menu.findItem(R.id.menu_new).setEnabled(false);
             menu.findItem(R.id.menu_open).setEnabled(false);
             menu.findItem(R.id.menu_dismiss).setEnabled(true);
@@ -371,19 +398,23 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.menu_new:
-                clearState();
-
-                rvlData = new RevelationData(DEFAULT_REVELATION_VERSION, DEFAULT_REVELATION_DATA_VERSION, new ArrayList<Entry>());
-                currentFile = NEW_FILE;
-
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.mainContainer, RevelationListViewFragment.newInstance(rvlData.getUuid())); // give your fragment container id in first parameter
-                transaction.addToBackStack(null);  // if written, this transaction will be added to backstack
-                transaction.commit();
-
+                newFile();
                 break;
             case R.id.menu_open:
                 optionItemSelectedOpen();
+                break;
+            case R.id.menu_dismiss:
+
+                AlertDialog.Builder dismissDialog = new AlertDialog.Builder(this);
+                //dismissDialog.setTitle("--- Title ---");
+                dismissDialog.setMessage(R.string.dismiss);
+                dismissDialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        clearState();
+                        openStartScreenFragment();
+                    }});
+                dismissDialog.setNegativeButton(android.R.string.cancel, null);
+                dismissDialog.show();
                 break;
             case R.id.menu_change_password:
                 changePassword();
@@ -403,10 +434,25 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
     }
 
     /**
+     * Creates a new revelation file with the default current version number
+     */
+    public void newFile() {
+        clearState();
+
+        rvlData = new RevelationData(DEFAULT_REVELATION_VERSION, DEFAULT_REVELATION_DATA_VERSION, new ArrayList<Entry>());
+        currentFile = NEW_FILE;
+
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.mainContainer, RevelationListViewFragment.newInstance(rvlData.getUuid()), RevelationListViewFragment.FRAGMENT_TAG); // give your fragment container id in first parameter
+        transaction.addToBackStack(null);  // if written, this transaction will be added to backstack
+        transaction.commit();
+    }
+
+    /**
      * This works, but this will save the changes too.
      * Because we have only one instance of rvlData
      * Better is to store all changes in an other rvlData variable
-     *
+     * <p>
      * ToDo: Fix this some day || say save first! || or create a dialog and ask whether we shall save
      */
     private void changePassword() {
@@ -460,7 +506,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
         }
     }
 
-    protected boolean isAskPasswordDialogOpen(String file){
+    protected boolean isAskPasswordDialogOpen(String file) {
         return AskPasswordDialog.getInstance(file).isVisible();
     }
 
@@ -475,7 +521,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
         final String tag = "Tag";
 
         AskPasswordDialog askPasswordDialog = AskPasswordDialog.getInstance(file);
-        if (!isAskPasswordDialogOpen(file) && file != null){
+        if (!isAskPasswordDialogOpen(file) && file != null) {
             if (getFragmentManager().findFragmentByTag(tag) == null) {
                 // only show / put on the fragment stack, if not already shown
                 // turn phone off when askPasswordDialog is shown and:

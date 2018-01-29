@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ public class RevelationEntryFragment extends Fragment {
     private static final String ROW_DATA_IDENTIFIER = "Second Line";
     private static final String ROW_DATA_IMAGE = "Image View";
     private static final String ARGUMENT_ENTRY_ID = "entryId";
+    public static final String FRAGMENT_TAG = RevelationEntryFragment.class.getSimpleName();
 
     private Entry entry;
     private ListView simple;
@@ -191,5 +193,11 @@ public class RevelationEntryFragment extends Fragment {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        Log.d(LOG_TAG, "onResume");
     }
 }
