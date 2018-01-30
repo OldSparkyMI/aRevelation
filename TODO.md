@@ -1,13 +1,12 @@
 # Features
-* Add: create a new file
-* Warning:(532, 23) This AsyncTask class should be static or leaks might occur
-* Change: Remove build warnings
-
-# Optional
 * Add: Ask if user wanna leave after hits back button and isEdited==true
 * Add: Ask if user wanna delete the file after clicking the delete button
 * Add: Enable directory renaming
-* Add: Show in which directory you are
+* Add: Show the directory name, if in subelements
+
+# Optional
+* Warning:(532, 23) This AsyncTask class should be static or leaks might occur
+* Change: Remove build warnings
 
 # Very optional
 * nicer graphics
@@ -22,6 +21,7 @@
 
 # Done
 ## Features
+* Add: create a new file
 * Change: handle different time in python and in java (currently wrong update time after adding something)
 * Add: password generation
 * Add: delete entries
