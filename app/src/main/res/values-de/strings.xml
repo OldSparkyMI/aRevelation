@@ -71,6 +71,7 @@
     <string name="error_cannot_restore">Datei konnte nicht wiederhergestellt werden</string>
     <string name="error_cannot_backup">Fehler beim Erstellen eines Backups, Änderungen werden nicht gespeichert</string>
     <string name="cannot_save_file">keine Schreibrechte</string>
+    <string name="error_cannot_save_empty_file">Leere Datei kann nicht gespeichert werden</string>
     <!-- Temporarily -->
     <string name="new_folder_currently_not_supported">Das Erstellen eines neuen Verzeichnisses wird momentan nicht unterstützt.</string>
     <string name="title_activity_arevelation_settings">Einstellungen</string>

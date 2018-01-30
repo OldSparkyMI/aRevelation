@@ -29,6 +29,7 @@ import lombok.Getter;
 @Order(attributes = {"version", "dataversion"})
 public class RevelationData implements Serializable {
 
+    private final String LOG_TAG = RevelationData.class.getSimpleName();
     private final String uuid = UUID.randomUUID().toString();
     private boolean edited = false;
 
@@ -182,23 +183,25 @@ public class RevelationData implements Serializable {
     }
 
     public void save(Context context, String file, String password) throws Exception {
-        // Revelation 0.4.14 (Desktop version) needs the xml header declaration
-        Serializer serializer = new Persister(new Format("<?xml version=\"1.0\" encoding= \"UTF-8\" ?>"));
-        Writer writer = new StringWriter();
-        serializer.write(this, writer);
-        byte[] encrypted = Cryptographer.encrypt(writer.toString(), password);
+        if (entries.size() > 0) {
+            // Revelation 0.4.14 (Desktop version) needs the xml header declaration
+            Serializer serializer = new Persister(new Format("<?xml version=\"1.0\" encoding= \"UTF-8\" ?>"));
+            Writer writer = new StringWriter();
+            serializer.write(this, writer);
+            byte[] encrypted = Cryptographer.encrypt(writer.toString(), password);
 
-        if (file != null && !"".equals(file)) {
-            try (OutputStream fop = context.getContentResolver().openOutputStream(Uri.parse(file))){
-                fop.write(encrypted);
-                edited = false;
-                cleanUpdateStatus();
-            } catch (IOException|NullPointerException e) {
-                e.printStackTrace();
+            if (file != null && !"".equals(file)) {
+                try (OutputStream fop = context.getContentResolver().openOutputStream(Uri.parse(file))) {
+                    fop.write(encrypted);
+                    edited = false;
+                    cleanUpdateStatus();
+                } catch (IOException | NullPointerException e) {
+                    e.printStackTrace();
+                }
+
             }
-
-        }else{
-            Log.d("FILE: ", writer.toString());
+        } else {
+            Log.d(LOG_TAG, "No content to save");
         }
     }
 

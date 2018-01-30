@@ -18,40 +18,10 @@
 * Secure Share (Share passwords and credentials on two different ways (E-Mail, WhatsApp, Signal, ...))  
 
 # Bugs
-* not examined java.lang.IllegalStateException:
-  ```
-  E/AndroidRuntime: FATAL EXCEPTION: main
-                    Process: de.igloffstein.maik.aRevelation, PID: 14100
-                    java.lang.RuntimeException: Unable to resume activity {de.igloffstein.maik.aRevelation/com.github.marmaladesky.ARevelation}: java.lang.IllegalStateException: Fragment already active
-                        at android.app.ActivityThread.performResumeActivity(ActivityThread.java:3454)
-                        at android.app.ActivityThread.handleResumeActivity(ActivityThread.java:3494)
-                        at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1546)
-                        at android.os.Handler.dispatchMessage(Handler.java:102)
-                        at android.os.Looper.loop(Looper.java:154)
-                        at android.app.ActivityThread.main(ActivityThread.java:6186)
-                        at java.lang.reflect.Method.invoke(Native Method)
-                        at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:889)
-                        at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:779)
-                     Caused by: java.lang.IllegalStateException: Fragment already active
-                        at android.app.Fragment.setArguments(Fragment.java:728)
-                        at de.igloffstein.maik.arevelation.dialogs.AskPasswordDialog.getInstance(AskPasswordDialog.java:55)
-                        at com.github.marmaladesky.ARevelation.openAskPasswordDialog(ARevelation.java:488)
-                        at com.github.marmaladesky.ARevelation.openAskPasswordDialog(ARevelation.java:482)
-                        at com.github.marmaladesky.ARevelation.onResume(ARevelation.java:115)
-                        at android.app.Instrumentation.callActivityOnResume(Instrumentation.java:1270)
-                        at android.app.Activity.performResume(Activity.java:6788)
-                        at android.app.ActivityThread.performResumeActivity(ActivityThread.java:3431)
-                        at android.app.ActivityThread.handleResumeActivity(ActivityThread.java:3494) 
-                        at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1546) 
-                        at android.os.Handler.dispatchMessage(Handler.java:102) 
-                        at android.os.Looper.loop(Looper.java:154) 
-                        at android.app.ActivityThread.main(ActivityThread.java:6186) 
-                        at java.lang.reflect.Method.invoke(Native Method) 
-                        at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:889) 
-                        at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:779) 
-  ```
+* currently none known
 
 # Done
+## Features
 * Change: handle different time in python and in java (currently wrong update time after adding something)
 * Add: password generation
 * Add: delete entries
@@ -64,6 +34,9 @@
   * Creating new items now possible
 * Add: Show icons for every entry in the list view
 * Change: Wrong password message
+## Bugs
+* New File -> Add Something -> Delete Something -> Save File -> Open File --> ERROR
+  * Solution: Do not save empty files
 * During "encoding ..." click somewhere
   * Exception:
     ```

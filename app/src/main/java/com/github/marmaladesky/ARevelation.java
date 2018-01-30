@@ -253,46 +253,51 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
 
     public void saveChanges(View view) throws Exception {
 
-        if (password == null || "".equals(password)){
-            changePassword();
-            return;
-        }
+        if (rvlData.getEntries().size() > 0) {
 
-        if (currentFile.equals(NEW_FILE)) {
-            Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-            i.addCategory(Intent.CATEGORY_DEFAULT);
-            startActivityForResult(Intent.createChooser(i, getString(R.string.choose_directory)), REQUEST_CHOOSE_DIRECTORY);
-            return;
-        }
+            if (password == null || "".equals(password)){
+                changePassword();
+                return;
+            }
 
-        try {
-            // backup old file
-            backupFile = ARevelationHelper.backupFile(getApplicationContext(), currentFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            if (currentFile.equals(NEW_FILE)) {
+                Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                i.addCategory(Intent.CATEGORY_DEFAULT);
+                startActivityForResult(Intent.createChooser(i, getString(R.string.choose_directory)), REQUEST_CHOOSE_DIRECTORY);
+                return;
+            }
 
-        if (backupFile != null && !"".equals(backupFile)) {
             try {
-                // save file
-                rvlData.save(getApplicationContext(), currentFile, password);
-                checkButton();
-            } catch (Exception e) {
-                Toast.makeText(getApplicationContext(), R.string.error_cannot_save, Toast.LENGTH_LONG).show();
+                // backup old file
+                backupFile = ARevelationHelper.backupFile(getApplicationContext(), currentFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
+            if (backupFile != null && !"".equals(backupFile)) {
                 try {
-                    // can't save / error during save, restore old file
-                    ARevelationHelper.restoreFile(getApplicationContext(), currentFile, backupFile);
-                    Toast.makeText(getApplicationContext(), R.string.backup_restored, Toast.LENGTH_LONG).show();
-                } catch (IOException e1) {
-                    Toast.makeText(getApplicationContext(), R.string.error_cannot_restore, Toast.LENGTH_LONG).show();
-                    e1.printStackTrace();
-                }
+                    // save file
+                    rvlData.save(getApplicationContext(), currentFile, password);
+                    checkButton();
+                } catch (Exception e) {
+                    Toast.makeText(getApplicationContext(), R.string.error_cannot_save, Toast.LENGTH_LONG).show();
 
-                throw e;
+                    try {
+                        // can't save / error during save, restore old file
+                        ARevelationHelper.restoreFile(getApplicationContext(), currentFile, backupFile);
+                        Toast.makeText(getApplicationContext(), R.string.backup_restored, Toast.LENGTH_LONG).show();
+                    } catch (IOException e1) {
+                        Toast.makeText(getApplicationContext(), R.string.error_cannot_restore, Toast.LENGTH_LONG).show();
+                        e1.printStackTrace();
+                    }
+
+                    throw e;
+                }
+            } else {
+                Toast.makeText(getApplicationContext(), R.string.error_cannot_backup, Toast.LENGTH_LONG).show();
             }
         } else {
-            Toast.makeText(getApplicationContext(), R.string.error_cannot_backup, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), R.string.error_cannot_save_empty_file, Toast.LENGTH_LONG).show();
         }
     }
 

@@ -71,6 +71,7 @@
     <string name="error_cannot_restore">Error: Can\'t restore original from backup</string>
     <string name="error_cannot_backup">Error: Can\'t create backup file, won\'t save</string>
     <string name="cannot_save_file">Can\'t write</string>
+    <string name="error_cannot_save_empty_file">Can\'t save empty file</string>
     <!-- Temporarily -->
     <string name="new_folder_currently_not_supported">Creating a new folder is currently not supported.</string>
     <string name="title_activity_arevelation_settings">Settings</string>

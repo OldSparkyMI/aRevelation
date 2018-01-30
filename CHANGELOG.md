@@ -5,6 +5,7 @@
 - Add: create a new file
 - Add: dismiss changes
 - Fix: wrong time after entry creation
+- Fix: New File -> Add Something -> Delete Something -> Save File -> Open (empty) File --> ERROR
 - Fix: minor bug fixes
 
 ## 1.3
