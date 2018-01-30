@@ -105,6 +105,8 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
                 currentEntryState.getLast().list.add(entry);
             }
 
+            RevelationListViewFragment.notifyDataSetChanged();
+
             // go directly in detail view mode for editing
             getFragmentManager()
                     .beginTransaction()
@@ -275,12 +277,6 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
                 // save file
                 rvlData.save(getApplicationContext(), currentFile, password);
                 checkButton();
-
-                RevelationListViewFragment nextFrag = RevelationListViewFragment.newInstance(rvlData.getUuid());
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.mainContainer, nextFrag)
-                        .addToBackStack(null).commit();
-
             } catch (Exception e) {
                 Toast.makeText(getApplicationContext(), R.string.error_cannot_save, Toast.LENGTH_LONG).show();
 

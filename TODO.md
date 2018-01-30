@@ -4,7 +4,10 @@
 * Change: Remove build warnings
 
 # Optional
-* Add: Ask if user want to leave after hits back button and isEdited==true
+* Add: Ask if user wanna leave after hits back button and isEdited==true
+* Add: Ask if user wanna delete the file after clicking the delete button
+* Add: Enable directory renaming
+* Add: Show in which directory you are
 
 # Very optional
 * nicer graphics
