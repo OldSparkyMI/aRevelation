@@ -79,6 +79,7 @@
     <!-- password settings -->
     <string name="pref_header_security">Sicherheitseinstellungen</string>
     <string name="pref_header_password">Passworteinstellungen</string>
+    <string name="pref_header_general">Allgemeine Einstellungen</string>
 
     <string name="pref_title_hide_password_and_secrets">Passwörter verstecken</string>
     <string name="pref_description_enable_hide_passwords_and_secrets">Passwörter verschlüsselt (*******) auf dem Bildschirm wiedergeben.</string>
@@ -158,4 +159,8 @@
 
     <string name="pref_title_password_size">Standard Passwortlänge</string>
     <string name="pref_description_password_size">Neu generierte Passwörter %s haben initial diese Länge</string>
+    <string name="pref_enable_entry_deletion_confirmation_dialog">Zeigt vor jedem Löschen eines Eintrages einen Bestätigungsdialog</string>
+    <string name="pref_disable_entry_deletion_confirmation_dialog">Einträge werden ohne Rückfragen gelöscht</string>
+    <string name="pref_title_enable_entry_deletion_confirmation_dialog">Löschen bestätigen</string>
+    <string name="confirm_entry_deletion">Löschen bestätigen</string>
 </resources>

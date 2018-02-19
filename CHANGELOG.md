@@ -1,5 +1,6 @@
 # Releases
 ## 1.5
+https://github.com/OldSparkyMI/aRevelation/issues/10 - Added entry deletion confirmation dialog
 
 ## 1.4
 - Change: correct presentation of date (in aRevelation and in Revelation)

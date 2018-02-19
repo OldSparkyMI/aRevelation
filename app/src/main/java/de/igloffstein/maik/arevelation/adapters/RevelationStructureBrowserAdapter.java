@@ -1,6 +1,9 @@
 package de.igloffstein.maik.arevelation.adapters;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -48,6 +51,7 @@ public class RevelationStructureBrowserAdapter extends ArrayAdapter<String> {
     @Override
     @NonNull
     public View getView(final int position, View view, @NonNull ViewGroup parent) {
+
         LayoutInflater inflater = aRevelation.getLayoutInflater();
         final View rowView = inflater.inflate(R.layout.revelation_structure_entry, parent, false);
 
@@ -62,7 +66,6 @@ public class RevelationStructureBrowserAdapter extends ArrayAdapter<String> {
                 /**
                  * [TypeIcon] [EntryName]       [EntryDeleteIcon]
                  */
-                
                 // set the icon to display
                 entryTypeIcon.setImageResource(getIconForView(EntryType.valueOf(entry.type.toUpperCase())));
                
@@ -72,8 +75,7 @@ public class RevelationStructureBrowserAdapter extends ArrayAdapter<String> {
                 // set the delete function
                 entryDeleteIcon.setOnClickListener(new View.OnClickListener() {
 
-                    @Override
-                    public void onClick(View v) {
+                    private  void delete() {
                         Log.d(LOG_TAG, "Deleting: " + entry.getUuid());
                         // remove from the main data storage
                         ((ARevelation) aRevelation).getRvlData().removeEntryById(entry.getUuid());
@@ -84,9 +86,28 @@ public class RevelationStructureBrowserAdapter extends ArrayAdapter<String> {
                         // display save button
                         aRevelation.getSaveButton().setVisibility(View.VISIBLE);
                     }
-                });
 
-                
+                    @Override
+                    public void onClick(View v) {
+
+                        if (PreferenceManager.getDefaultSharedPreferences(rowView.getContext()).getBoolean("preference_enable_entry_deletion_confirmation_dialog", true)) {
+                            AlertDialog.Builder adb = new AlertDialog.Builder(v.getContext());
+                            adb.setTitle(R.string.confirm_entry_deletion);
+                            adb.setIcon(android.R.drawable.ic_dialog_alert);
+                            adb.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    delete();
+                                } });
+                            adb.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    //do nothing
+                                } });
+                            adb.show();
+                        } else {
+                            delete();
+                        }
+                    }
+                });
             }
         }
         return rowView;

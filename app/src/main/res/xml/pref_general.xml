@@ -1,0 +1,10 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="preference_enable_entry_deletion_confirmation_dialog"
+        android:summaryOn="@string/pref_enable_entry_deletion_confirmation_dialog"
+        android:summaryOff="@string/pref_disable_entry_deletion_confirmation_dialog"
+        android:title="@string/pref_title_enable_entry_deletion_confirmation_dialog" />
+
+</PreferenceScreen>

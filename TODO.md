@@ -1,6 +1,5 @@
 # Features
 * Add: Ask if user wanna leave after hits back button and isEdited==true
-* Add: Ask if user wanna delete the file after clicking the delete button
 * Add: Enable directory renaming
 * Add: Show the directory name, if in subelements
 
@@ -108,3 +107,4 @@
     W/System.err:     at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:889)
     W/System.err:     at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:779)
     ```  
+* Add: Ask if user wanna delete the entry after clicking the delete button

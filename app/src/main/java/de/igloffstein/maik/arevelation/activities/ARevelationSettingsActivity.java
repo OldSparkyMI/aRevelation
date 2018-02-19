@@ -123,7 +123,8 @@ public class ARevelationSettingsActivity extends AppCompatPreferenceActivity {
     protected boolean isValidFragment(String fragmentName) {
         return PreferenceFragment.class.getName().equals(fragmentName)
                 || SecurityPreferenceFragment.class.getName().equals(fragmentName)
-                || PasswordPreferenceFragment.class.getName().equals(fragmentName);
+                || PasswordPreferenceFragment.class.getName().equals(fragmentName)
+                || GeneralPreferenceFragment.class.getName().equals(fragmentName);
     }
 
     /**
@@ -160,6 +161,26 @@ public class ARevelationSettingsActivity extends AppCompatPreferenceActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_password);
+            setHasOptionsMenu(true);
+        }
+
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+            int id = item.getItemId();
+            if (id == android.R.id.home) {
+                startActivity(new Intent(getActivity(), ARevelationSettingsActivity.class));
+                return true;
+            }
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public static class GeneralPreferenceFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.pref_general);
             setHasOptionsMenu(true);
         }
 

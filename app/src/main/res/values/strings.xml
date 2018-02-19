@@ -80,6 +80,7 @@
     <!-- password settings -->
     <string name="pref_header_security">Security settings</string>
     <string name="pref_header_password">Password settings</string>
+    <string name="pref_header_general">General settings</string>
 
     <string name="pref_title_hide_password_and_secrets">Hide passwords and secrets</string>
     <string name="pref_description_enable_hide_passwords_and_secrets">Displays ****** instead of the passwords or secrets.</string>
@@ -159,4 +160,8 @@
 
     <string name="pref_title_password_size">Default password size</string>
     <string name="pref_description_password_size">New generates passwords will get this size</string>
+    <string name="pref_enable_entry_deletion_confirmation_dialog">Shows a confirm dialog after deleting an entry</string>
+    <string name="pref_disable_entry_deletion_confirmation_dialog">Deletes an entry right away, without any confirmation</string>
+    <string name="pref_title_enable_entry_deletion_confirmation_dialog">Confirm entry deletion</string>
+    <string name="confirm_entry_deletion">Confirm deletion</string>
 </resources>
