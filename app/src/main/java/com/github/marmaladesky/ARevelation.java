@@ -1,16 +1,13 @@
 package com.github.marmaladesky;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.provider.DocumentFile;
 import android.support.v7.app.AppCompatActivity;
-import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,8 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.github.marmaladesky.data.Entry;
@@ -32,9 +27,7 @@ import org.custommonkey.xmlunit.XMLUnit;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.text.DateFormat;
@@ -43,13 +36,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 import de.igloffstein.maik.arevelation.activities.ARevelationSettingsActivity;
+import de.igloffstein.maik.arevelation.dialogs.AskPasswordDialog;
 import de.igloffstein.maik.arevelation.dialogs.ChangePasswordDialogBuilder;
 import de.igloffstein.maik.arevelation.dialogs.NewFilenameDialogBuilder;
-import de.igloffstein.maik.arevelation.fragments.AboutFragment;
 import de.igloffstein.maik.arevelation.enums.EntryType;
+import de.igloffstein.maik.arevelation.fragments.AboutFragment;
 import de.igloffstein.maik.arevelation.helpers.ARevelationHelper;
 import de.igloffstein.maik.arevelation.helpers.EntryHelper;
-import de.igloffstein.maik.arevelation.dialogs.AskPasswordDialog;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -117,10 +110,10 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
 
     /**
      * is file locking save????
-     *
+     * <p>
      * TRUE = There is no reason why we should not lock the file when inactive
      * FALSE = It is better not to lock the file, because the user created a new file and the file isn't saved to disk
-     *         ==> very likely, there is no password
+     * ==> very likely, there is no password
      *
      * @return do we got a new file?
      */
@@ -131,7 +124,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
     /**
      * After https://developer.android.com/guide/components/activities/activity-lifecycle.html this
      * is the latest call before the acitivity is displayed to the user
-     *
+     * <p>
      * lets check, if the user has to enter his password again
      */
     @Override
@@ -255,7 +248,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
 
         if (rvlData.getEntries().size() > 0) {
 
-            if (password == null || "".equals(password)){
+            if (password == null || "".equals(password)) {
                 changePassword();
                 return;
             }
@@ -338,6 +331,11 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
         RevelationListViewFragment.cancelTimer();
         // destroy the whole view, remove every child!
         ((ViewGroup) findViewById(R.id.mainContainer)).removeAllViews();
+
+        // remove all views from the fragment manager!
+        while (getFragmentManager().getBackStackEntryCount() > 0) {
+            getFragmentManager().popBackStackImmediate();
+        }
     }
 
     /**
@@ -413,7 +411,8 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
                     public void onClick(DialogInterface arg0, int arg1) {
                         clearState();
                         openStartScreenFragment();
-                    }});
+                    }
+                });
                 dismissDialog.setNegativeButton(android.R.string.cancel, null);
                 dismissDialog.show();
                 break;
@@ -462,6 +461,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
 
     public void optionItemSelectedOpen() {
         clearState(true);
+        clearUI();
         String action = Build.VERSION.SDK_INT >= 19 ? Intent.ACTION_OPEN_DOCUMENT : Intent.ACTION_GET_CONTENT;
         Intent intent = new Intent(action);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -538,5 +538,6 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
                 .beginTransaction()
                 .replace(R.id.mainContainer, new StartScreenFragment())
                 .commit();
+
     }
 }
