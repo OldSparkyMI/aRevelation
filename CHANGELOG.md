@@ -1,7 +1,10 @@
 # Releases
+## 1.6
+- Fix: Open multiple files, multiple backs required to quit application
+- https://github.com/OldSparkyMI/aRevelation/issues/14 - Toast tip only showed when application in foreground
+
 ## 1.5
 - https://github.com/OldSparkyMI/aRevelation/issues/10 - Added entry deletion confirmation dialog
-- Fix: Open multiple files, multiple backs required to quit application
 
 ## 1.4
 - Change: correct presentation of date (in aRevelation and in Revelation)
