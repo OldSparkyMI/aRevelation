@@ -80,6 +80,8 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
     @Getter
     protected Button saveButton;
     protected long onPauseSystemMillis = 0;
+    @Getter
+    private static boolean activityVisible;
     protected DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
 
         @Override
@@ -122,6 +124,21 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
     }
 
     /**
+     * Sets a the boolean variable to true if application is on foreground
+     */
+    public static void activityResumed() {
+        activityVisible = true;
+    }
+
+    /**
+     * Sets a the boolean variable to false if application is in background
+     */
+    public static void activityPaused() {
+        activityVisible = false;
+    }
+
+
+    /**
      * After https://developer.android.com/guide/components/activities/activity-lifecycle.html this
      * is the latest call before the acitivity is displayed to the user
      * <p>
@@ -130,6 +147,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
     @Override
     public void onResume() {
         super.onResume();
+        activityResumed();
 
         if (isLockingSave()) {
             // we have user input
@@ -160,6 +178,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
     @Override
     public void onPause() {
         super.onPause();
+        activityPaused();
         this.onPauseSystemMillis = System.currentTimeMillis();
     }
 

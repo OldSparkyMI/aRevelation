@@ -48,6 +48,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:1.10.19'
 
-    provided "org.projectlombok:lombok:1.16.18"
+    compileOnly "org.projectlombok:lombok:1.16.18"
     annotationProcessor "org.projectlombok:lombok:1.16.18"
 }

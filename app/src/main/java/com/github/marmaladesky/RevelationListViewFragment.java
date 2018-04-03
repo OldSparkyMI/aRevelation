@@ -44,7 +44,7 @@ public class RevelationListViewFragment extends Fragment {
     }
 
     protected void newTimer() {
-        ARevelation aRevelation = (ARevelation) getActivity();
+        final ARevelation aRevelation = (ARevelation) getActivity();
         if (!timerInitialized && aRevelation.isLockingSave()) {
             Log.d(LOG_TAG, "Creating new timer ...");
             final int preferenceAutoLock = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("preference_auto_lock", "-1"));
@@ -57,15 +57,18 @@ public class RevelationListViewFragment extends Fragment {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                ARevelation aRevelation = (ARevelation) getActivity();
                                 int minutesLeft = preferenceAutoLock - ++minuteCounter;
                                 Log.d(LOG_TAG, "lock in: " + minutesLeft);
                                 if (minutesLeft > 0) {
-                                    Toast.makeText(getActivity(), getResources().getQuantityString(R.plurals.auto_lock_time_left, minutesLeft, minutesLeft), Toast.LENGTH_LONG).show();
+                                    if (aRevelation.isActivityVisible()) {
+                                        Toast.makeText(aRevelation, getResources().getQuantityString(R.plurals.auto_lock_time_left, minutesLeft, minutesLeft), Toast.LENGTH_LONG).show();
+                                    }
                                 } else {
-                                    Toast.makeText(getActivity(), getResources().getString(R.string.auto_lock_file_locked), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(aRevelation, getResources().getString(R.string.auto_lock_file_locked), Toast.LENGTH_LONG).show();
                                     try {
-                                        ((ARevelation) getActivity()).clearUI();
-                                        ((ARevelation) getActivity()).openAskPasswordDialog();
+                                        aRevelation.clearUI();
+                                        aRevelation.openAskPasswordDialog();
                                     } catch (IllegalStateException e) {
                                         Log.e(LOG_TAG, e.getMessage());
                                         Log.getStackTraceString(e);
