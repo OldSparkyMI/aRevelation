@@ -352,8 +352,13 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
         ((ViewGroup) findViewById(R.id.mainContainer)).removeAllViews();
 
         // remove all views from the fragment manager!
-        while (getFragmentManager().getBackStackEntryCount() > 0) {
-            getFragmentManager().popBackStackImmediate();
+        int count = getFragmentManager().getBackStackEntryCount();
+        for(int i = 0; i < count; ++i) {
+            try {
+                getFragmentManager().popBackStackImmediate();
+            } catch (IllegalStateException e){
+                Log.w(LOG_TAG, e.getMessage());
+            }
         }
     }
 

@@ -1,6 +1,24 @@
 # Releases
 ## 1.7
-
+- Fix: java.lang.RuntimeException: 
+         at android.app.ActivityThread.performStopActivityInner (ActivityThread.java:4035)
+         at android.app.ActivityThread.handleStopActivity (ActivityThread.java:4084)
+         at android.app.ActivityThread.-wrap24 (Unknown Source)
+         at android.app.ActivityThread$H.handleMessage (ActivityThread.java:1622)
+         at android.os.Handler.dispatchMessage (Handler.java:106)
+         at android.os.Looper.loop (Looper.java:164)
+         at android.app.ActivityThread.main (ActivityThread.java:6494)
+         at java.lang.reflect.Method.invoke (Native Method)
+         at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run (RuntimeInit.java:438)
+         at com.android.internal.os.ZygoteInit.main (ZygoteInit.java:807)
+       Caused by: java.lang.IllegalStateException: 
+         at android.app.FragmentManagerImpl.checkStateLoss (FragmentManager.java:1858)
+         at android.app.FragmentManagerImpl.popBackStackImmediate (FragmentManager.java:811)
+         at com.github.marmaladesky.ARevelation.clearUI (ARevelation.java:356)
+         at com.github.marmaladesky.ARevelation.onStop (ARevelation.java:191)
+         at android.app.Instrumentation.callActivityOnStop (Instrumentation.java:1375)
+         at android.app.Activity.performStop (Activity.java:7181)
+         at android.app.ActivityThread.performStopActivityInner (ActivityThread.java:4032)
 
 ## 1.6
 - Fix: Open multiple files, multiple backs required to quit application
