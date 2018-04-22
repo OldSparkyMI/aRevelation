@@ -1,6 +1,7 @@
 package com.github.marmaladesky;
 
 import android.app.AlertDialog;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -352,13 +353,10 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
         ((ViewGroup) findViewById(R.id.mainContainer)).removeAllViews();
 
         // remove all views from the fragment manager!
-        int count = getFragmentManager().getBackStackEntryCount();
-        for(int i = 0; i < count; ++i) {
-            try {
-                getFragmentManager().popBackStackImmediate();
-            } catch (IllegalStateException e){
-                Log.w(LOG_TAG, e.getMessage());
-            }
+        try {
+            getFragmentManager().popBackStackImmediate(R.id.mainContainer, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        } catch (IllegalStateException e){
+            Log.w(LOG_TAG, e.getMessage());
         }
     }
 
