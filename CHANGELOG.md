@@ -1,4 +1,6 @@
 # Releases
+## 1.7.1
+
 ## 1.7
 - Fix: java.lang.RuntimeException: 
          at android.app.ActivityThread.performStopActivityInner (ActivityThread.java:4035)

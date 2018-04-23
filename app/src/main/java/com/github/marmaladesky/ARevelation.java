@@ -332,11 +332,6 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
     public void onBackPressed() {
         super.onBackPressed();
         checkButton();
-        if (getFragmentManager().getBackStackEntryCount() < 1) {
-            clearState(true);
-            clearUI();
-            openStartScreenFragment();
-        }
     }
 
     /**
@@ -354,8 +349,8 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
 
         // remove all views from the fragment manager!
         try {
-            getFragmentManager().popBackStackImmediate(R.id.mainContainer, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        } catch (IllegalStateException e){
+            getFragmentManager().popBackStackImmediate(getFragmentManager().getBackStackEntryAt(0).getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        } catch (Exception e){
             Log.w(LOG_TAG, e.getMessage());
         }
     }
