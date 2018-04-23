@@ -1,5 +1,6 @@
 # Releases
 ## 1.7.1
+- Fix: java.lang.RuntimeException: like 1.7
 
 ## 1.7
 - Fix: java.lang.RuntimeException: 
