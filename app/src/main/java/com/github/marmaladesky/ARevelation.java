@@ -349,8 +349,10 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
 
         // remove all views from the fragment manager!
         try {
-            getFragmentManager().popBackStackImmediate(getFragmentManager().getBackStackEntryAt(0).getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        } catch (Exception e){
+            getFragmentManager().popBackStackImmediate(
+                    getFragmentManager().getBackStackEntryAt(0).getId(),
+                    FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        } catch (Exception e) {
             Log.w(LOG_TAG, e.getMessage());
         }
     }
