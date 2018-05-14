@@ -330,7 +330,22 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        try {
+            /*
+             * some android 6 devices can't call onBackPressed, e.g.: Huawei Y6II (HWCAM-H):
+             *    at android.app.FragmentManagerImpl.addFragment (FragmentManager.java:1228)
+             *    at android.app.BackStackRecord.popFromBackStack (BackStackRecord.java:1622)
+             *    at android.app.FragmentManagerImpl.popBackStackState (FragmentManager.java:1596)
+             *    at android.app.FragmentManagerImpl.popBackStackImmediate (FragmentManager.java:579)
+             *    at android.app.Activity.onBackPressed (Activity.java:2558)
+             *    at android.support.v4.app.FragmentActivity.onBackPressed (FragmentActivity.java:175)
+             *    at com.github.marmaladesky.ARevelation.onBackPressed (ARevelation.java:333)
+             * can't reproduce with my devices, so catch exception
+             */
+            super.onBackPressed();
+        } catch (java.lang.IllegalStateException e){
+            Log.w(e.getMessage(), e);
+        }
         checkButton();
     }
 
