@@ -8,7 +8,7 @@ public class FieldWrapper implements Serializable {
     private Field field;
 
     private String property;
-    private Entry entry;
+    private final Entry entry;
 
     public FieldWrapper(Field field, Entry entry) {
         this.field = field;

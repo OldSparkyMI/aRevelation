@@ -21,7 +21,7 @@ public class Entry implements Serializable {
     private final String uuid = UUID.randomUUID().toString();
 
     @Attribute(name="type")
-    public String type;
+    public final String type;
 
     @Element(name = PROPERTY_NAME)
     private String name;
@@ -42,7 +42,7 @@ public class Entry implements Serializable {
     private final String uuidNotes = UUID.randomUUID().toString();
 
     @ElementList(inline = true, required = false)
-    public List<Field> fields;
+    public final List<Field> fields;
 
     @ElementList(name = "entry", inline = true, required = false)
     public List<Entry> list;

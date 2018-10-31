@@ -14,7 +14,6 @@ import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 import org.simpleframework.xml.stream.Format;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
@@ -34,7 +33,7 @@ public class RevelationData implements Serializable {
     private boolean edited = false;
 
     @Attribute(name = "version")
-    private String version;
+    private final String version;
 
     @Attribute(name = "dataversion")
     private String dataversion;

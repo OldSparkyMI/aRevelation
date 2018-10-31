@@ -10,10 +10,10 @@ import java.util.UUID;
 @Root
 public class Field implements Serializable {
 
-    private String uuid = UUID.randomUUID().toString();
+    private final String uuid = UUID.randomUUID().toString();
 
     @Attribute(name="id")
-    public String id;
+    public final String id;
 
     @Text(required = false)
     private String value;

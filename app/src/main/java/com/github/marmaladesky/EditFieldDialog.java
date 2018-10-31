@@ -40,6 +40,7 @@ public class EditFieldDialog extends DialogFragment {
     @SuppressLint("InflateParams") // Passing null is normal for dialogs
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+
         try {
             if (savedInstanceState == null && getArguments() != null) {
                 field = ((ARevelation) getActivity()).rvlData.getFieldById(getArguments().getString(ARGUMENT_FIELD_UUID));
@@ -67,11 +68,10 @@ public class EditFieldDialog extends DialogFragment {
                             public void onClick(DialogInterface dialog, int which) {
                                 try {
                                     field.setFieldValue(value.getText().toString());
+                                    ARevelationHelper.redrawRevelationListViewFragment(getFragmentManager(), getTargetFragment());
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
-
-                                ARevelationHelper.redrawRevelationListViewFragment(getFragmentManager(), getTargetFragment());
                             }
                         })
 
@@ -88,11 +88,11 @@ public class EditFieldDialog extends DialogFragment {
                             try {
                                 int passwordSize = (field != null && field.getFieldValue() != null) ? field.getFieldValue().length() : 0;
                                 field.setFieldValue(PasswordGenerationHelper.getRandomPassword(getActivity(), passwordSize));
+                                System.out.println("EFD: "+ getTargetFragment().getTag());
+                                ARevelationHelper.redrawRevelationListViewFragment(getFragmentManager(), getTargetFragment());
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-
-                            ARevelationHelper.redrawRevelationListViewFragment(getFragmentManager(), getTargetFragment());
                         }
                     });
         }

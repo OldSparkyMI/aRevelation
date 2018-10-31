@@ -1,6 +1,10 @@
 # Releases
 ## 1.8
 - Fix: java.lang.IllegalStateException crashes for Huawei Y6II (HWCAM-H)
+- Fix: java.lang.NullPointerException crashes for A1 PRO
+- Minor bugfixes
+- Gradle update
+- Library updates
 
 ## 1.7.1
 - Fix: java.lang.RuntimeException: like 1.7

@@ -1,8 +1,8 @@
 package de.igloffstein.maik.arevelation.helpers;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
@@ -12,8 +12,6 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.github.marmaladesky.ARevelation;
-import com.github.marmaladesky.R;
-import com.github.marmaladesky.RevelationListViewFragment;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -62,18 +60,27 @@ public class ARevelationHelper {
         try {
             String fileName = Uri.parse(uri).getLastPathSegment();
             file = File.createTempFile(fileName, null, context.getCacheDir());
-        } catch (IOException e) {
-            Log.d(LOG_TAG, e.getLocalizedMessage());
+        } catch (IOException | NullPointerException e) {  // NullPointerException from UMIDIGI A1 Pro
+            try {
+                file = File.createTempFile("aRevelation", null, context.getCacheDir());
+            } catch (IOException ioe) {
+                Log.d(LOG_TAG, ioe.getLocalizedMessage());
+            }
         }
         return file;
     }
 
     private static String getFilenameFromRevelationFile(String url) {
         // I got something like: content://com.android.externalstorage.documents/document/primary%3AUser%2FPasswords%2Ftest
-        String fileName = Uri.parse(url).getLastPathSegment().contains("/") ? "/" + Uri.parse(url).getLastPathSegment() : url;
-        // now I got something like primary%3AUser%2FPasswords%2Ftest
-        // and to match an uri, we have to add some silly protocol
-        return Uri.parse("content://" + fileName).getLastPathSegment();
+        String lastPathSegment = Uri.parse(url).getLastPathSegment();
+        if (lastPathSegment != null) {
+            String fileName = lastPathSegment.contains("/") ? "/" + Uri.parse(url).getLastPathSegment() : url;
+            // now I got something like primary%3AUser%2FPasswords%2Ftest
+            // and to match an uri, we have to add some silly protocol
+            return Uri.parse("content://" + fileName).getLastPathSegment();
+        }
+
+        return null;
     }
 
     /**
@@ -90,7 +97,7 @@ public class ARevelationHelper {
 
     public static String backupFile(Context context, String file) throws IOException {
         String backupFile = null;
-        if (file != null && file != "") {
+        if (file != null && !"".equals(file)) {
             backupFile = ARevelationHelper.getRevelationBackupFile(context, file);
             ARevelationHelper.copyFileUsingStream(file, backupFile, context.getContentResolver());
         }
@@ -123,10 +130,12 @@ public class ARevelationHelper {
      */
     public static void redrawRevelationListViewFragment(FragmentManager fragmentManager, Fragment targetFragment){
         // Amazing piece of shit, but I don't know how to do it in another way
-        fragmentManager.beginTransaction()
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        if (Build.VERSION.SDK_INT >= 26) {
+            transaction.setReorderingAllowed(false);
+        }
+        transaction
                 .detach(targetFragment)
-                .commit();
-        fragmentManager.beginTransaction()
                 .attach(targetFragment)
                 .commit();
     }

@@ -61,25 +61,31 @@ public class ItemDialogFragment extends DialogFragment {
                     case 0:
                         ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
                         ClipData clip = ClipData.newPlainText("aRevelation copied data", field.getFieldValue());
-                        clipboard.setPrimaryClip(clip);
+                        if (clipboard != null) {
+                            clipboard.setPrimaryClip(clip);
+                        }
                         break;
                     case 1:
                         try {
                             DialogFragment dial = EditFieldDialog.newInstance(field.getUuid(), header.equals(getString(R.string.generic_password)));
                             dial.setTargetFragment(ItemDialogFragment.this.getTargetFragment(), 0); // Amazing piece of shit, but I don't know how to do it in another way
                             dial.show(getFragmentManager(), "ItemDialogFragment");
+                            System.out.println("IDF: "+ getTargetFragment().getTag());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                         break;
                     case 2:
                         try {
-                            int passwordSize = (field != null && field.getFieldValue() != null) ? field.getFieldValue().length() : 0;
-                            field.setFieldValue(PasswordGenerationHelper.getRandomPassword(getActivity(), passwordSize));
+                            if (field != null) {
+                                int passwordSize = (field.getFieldValue() != null) ? field.getFieldValue().length() : 0;
+                                field.setFieldValue(PasswordGenerationHelper.getRandomPassword(getActivity(), passwordSize));
+                            }
+
+                            ARevelationHelper.redrawRevelationListViewFragment(getFragmentManager(), getTargetFragment());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        ARevelationHelper.redrawRevelationListViewFragment(getFragmentManager(), getTargetFragment());
                         break;
                 }
             }

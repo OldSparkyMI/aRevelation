@@ -1,6 +1,5 @@
 package com.github.marmaladesky;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
@@ -10,16 +9,16 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import de.igloffstein.maik.arevelation.helpers.FabHelper;
+
 public class StartScreenFragment extends Fragment {
 
     private static final String LOG_TAG = StartScreenFragment.class.getSimpleName();
 
-    @TargetApi(19)
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        getActivity().findViewById(R.id.fab).setVisibility(View.INVISIBLE);
+        FabHelper.hideFabIcon(getActivity());
 
         View v = inflater.inflate(R.layout.start_screen, container, false);
 

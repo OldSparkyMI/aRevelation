@@ -22,6 +22,10 @@
         android:icon="@drawable/ic_information_1447"
         android:title="@string/title_activity_arevelation_settings"
         />
+    <item android:id="@+id/menu_licence"
+        android:icon="@drawable/ic_information_1447"
+        android:title="@string/title_activity_arevelation_licence"
+        />
     <item android:id="@+id/menu_about"
         android:icon="@drawable/ic_information_1447"
         android:title="@string/about"

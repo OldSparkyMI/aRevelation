@@ -31,6 +31,9 @@ import org.simpleframework.xml.core.Persister;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
+
+import de.igloffstein.maik.arevelation.helpers.FabHelper;
 
 import static com.github.marmaladesky.ARevelation.ARGUMENT_FILE;
 
@@ -41,8 +44,8 @@ import static com.github.marmaladesky.ARevelation.ARGUMENT_FILE;
  */
 public class AskPasswordDialog extends DialogFragment {
 
-    protected static AskPasswordDialog askPasswordDialog = null;
-    public String file;
+    private static AskPasswordDialog askPasswordDialog = null;
+    private String file;
 
     public static AskPasswordDialog getInstance(String file) {
         if (askPasswordDialog == null) {
@@ -102,7 +105,7 @@ public class AskPasswordDialog extends DialogFragment {
                     // Hide keyboard
                     InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
                             Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(passwordEdit.getWindowToken(), 0);
+                    Objects.requireNonNull(imm).hideSoftInputFromWindow(passwordEdit.getWindowToken(), 0);
 
                     (new DecryptTask(v.getContext())).execute(passwordEdit.getText().toString(), file, v.getContext());
                 }
@@ -118,7 +121,7 @@ public class AskPasswordDialog extends DialogFragment {
 
     private class DecryptTask extends AsyncTask<Object, Void, DecryptTask.DecryptTaskResult> {
 
-        private Context context;
+        private final Context context;
         private String password;
 
         DecryptTask(Context context) {
@@ -178,7 +181,7 @@ public class AskPasswordDialog extends DialogFragment {
                     .replace(R.id.mainContainer, nextFrag)
                     .addToBackStack(null).commit();
 
-            getActivity().findViewById(R.id.fab).setVisibility(View.VISIBLE);
+            FabHelper.showFabIcon(getActivity());
 
             int preferenceAutoLock = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("preference_auto_lock", "-1"));
             if (preferenceAutoLock > 0) {

@@ -39,6 +39,7 @@ public class RevelationEntryFragment extends Fragment {
 
 
     public static RevelationEntryFragment newInstance(String entryId) {
+        Log.e(LOG_TAG,"EntryID: "+entryId);
         RevelationEntryFragment f = new RevelationEntryFragment();
 
         Bundle args = new Bundle();
@@ -153,7 +154,7 @@ public class RevelationEntryFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (entry != null) outState.putString("entryId", entry.getUuid());
+        if (entry != null) outState.putString(ARGUMENT_ENTRY_ID, entry.getUuid());
     }
 
     private class PasswordOnClickListener implements AdapterView.OnItemClickListener {

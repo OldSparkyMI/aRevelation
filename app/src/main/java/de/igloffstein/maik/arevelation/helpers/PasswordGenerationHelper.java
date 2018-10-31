@@ -15,9 +15,9 @@ import java.util.Random;
 
 public class PasswordGenerationHelper {
 
-    private static String characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private static String numbers = "0123456789";
-    private static String specialCharacters = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
+    private static final String characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static final String numbers = "0123456789";
+    private static final String specialCharacters = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 
     public static String getRandomPassword(Activity activity, int passwordSize) {
         int defaultSize = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(activity).getString("preference_password_size", "6"));
@@ -29,7 +29,7 @@ public class PasswordGenerationHelper {
         return getRandomPassword(activity, defaultSize, useCharacters, useNumbers, userSpecialChars);
     }
 
-    public static String getRandomPassword(Activity activity, int passwordSize, boolean useCharacters, boolean useNumbers, boolean useSpecialChars) {
+    private static String getRandomPassword(Activity activity, int passwordSize, boolean useCharacters, boolean useNumbers, boolean useSpecialChars) {
         String availableCharacters = shuffle(
                 new StringBuilder()
                         .append(useCharacters ? characters : "")

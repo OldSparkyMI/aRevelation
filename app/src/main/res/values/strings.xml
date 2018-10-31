@@ -32,6 +32,7 @@
     <string name="generated_empty_password_label">No password generated, change settings</string>
     <string name="backup_restored">Restored old file, new changes are lost</string>
     <string name="unsaved_changes">Cancel deactivated because of unsaved changes.</string>
+    <string name="new_value">New value</string>
     <!--Field names-->
     <string name="name">Name</string>
     <string name="description">Description</string>
@@ -72,9 +73,10 @@
     <string name="error_cannot_backup">Error: Can\'t create backup file, won\'t save</string>
     <string name="cannot_save_file">Can\'t write</string>
     <string name="error_cannot_save_empty_file">Can\'t save empty file</string>
-    <!-- Temporarily -->
-    <string name="new_folder_currently_not_supported">Creating a new folder is currently not supported.</string>
+
+    <!-- Menu -->
     <string name="title_activity_arevelation_settings">Settings</string>
+    <string name="title_activity_arevelation_licence">Licence</string>
 
     <!-- Strings related to Settings -->
     <!-- password settings -->

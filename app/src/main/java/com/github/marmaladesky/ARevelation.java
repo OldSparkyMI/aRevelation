@@ -33,7 +33,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import de.igloffstein.maik.arevelation.activities.ARevelationSettingsActivity;
@@ -44,6 +43,7 @@ import de.igloffstein.maik.arevelation.enums.EntryType;
 import de.igloffstein.maik.arevelation.fragments.AboutFragment;
 import de.igloffstein.maik.arevelation.helpers.ARevelationHelper;
 import de.igloffstein.maik.arevelation.helpers.EntryHelper;
+import de.igloffstein.maik.arevelation.helpers.EntryStateHelper;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -56,15 +56,13 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
     private static final String DEFAULT_REVELATION_DATA_VERSION = "1";
     private static final int REQUEST_FILE_OPEN = 1;
     private static final int REQUEST_CHOOSE_DIRECTORY = 2;
-    public static final String ARGUMENT_RVLDATA = "rvlData";
+    private static final String ARGUMENT_RVLDATA = "rvlData";
     public static final String ARGUMENT_PASSWORD = "password";
     public static final String ARGUMENT_FILE = "file";
     public static final String BACKUP_FILE_ENDING = ".arvlbak";
     public static final String NEW_FILE = "revelation://newFile";
     @Getter
     private static String backupFile = null;// string contains the path
-    @Getter
-    private LinkedList<Entry> currentEntryState = new LinkedList<>();
     private static int sessionDepth = 0;
 
     DateFormat dateFormatter;
@@ -95,10 +93,13 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
             entry.setName(getString(id));
 
             // add new element
-            if (currentEntryState.size() <= 0) {
-                rvlData.addEntry(entry);
+            Entry parentEntry = EntryStateHelper.get();
+            if (parentEntry != null) {
+                // parent entry exists, add
+                parentEntry.list.add(entry);
             } else {
-                currentEntryState.getLast().list.add(entry);
+                // add to root, no parent entry
+                rvlData.addEntry(entry);
             }
 
             RevelationListViewFragment.notifyDataSetChanged();
@@ -147,6 +148,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
      */
     @Override
     public void onResume() {
+        Log.d(LOG_TAG, "onResume ...");
         super.onResume();
         activityResumed();
 
@@ -239,6 +241,7 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EntryStateHelper.clear();
         setContentView(R.layout.main);
 
         // restore state!
@@ -256,7 +259,11 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
 
         // call superclass to save any view hierarchy
         // this should be the last call: https://developer.android.com/guide/components/activities/activity-lifecycle.html#oncreate
-        super.onSaveInstanceState(outState);
+        try {
+            super.onSaveInstanceState(outState);
+        } catch (IllegalStateException e) {     // IllegalStateException on Huawei Y6II (HWCAM-H)
+            Log.i(LOG_TAG, e.getMessage());
+        }
     }
 
     @Override
@@ -456,6 +463,10 @@ public class ARevelation extends AppCompatActivity implements AboutFragment.OnFr
             case R.id.menu_settings:
                 Intent intent = new Intent(this, ARevelationSettingsActivity.class);
                 startActivity(intent);
+                break;
+            case R.id.menu_licence:
+                Uri uri = Uri.parse( "https://github.com/OldSparkyMI/aRevelation/blob/beta/LICENSE" );
+                startActivity( new Intent( Intent.ACTION_VIEW, uri ) );
                 break;
             case R.id.menu_about:
                 optionItemSelectedAbout();

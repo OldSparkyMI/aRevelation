@@ -30,7 +30,7 @@ public enum FieldType {
     GENERIC_URL("generic-url");
 
     private final String id;
-    public final FieldType canonical;
+    private final FieldType canonical;
 
     FieldType(String id) {
         this(id, null);

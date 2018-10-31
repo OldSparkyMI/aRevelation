@@ -1,13 +1,5 @@
 package com.github.marmaladesky;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import com.github.marmaladesky.data.Entry;
-import com.github.marmaladesky.data.RevelationData;
-
 import android.app.Fragment;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -20,7 +12,17 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.github.marmaladesky.data.Entry;
+import com.github.marmaladesky.data.RevelationData;
+
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import de.igloffstein.maik.arevelation.adapters.RevelationStructureBrowserAdapter;
+import de.igloffstein.maik.arevelation.helpers.EntryStateHelper;
+import de.igloffstein.maik.arevelation.helpers.FabHelper;
 
 public class RevelationListViewFragment extends Fragment {
     private static final String LOG_TAG = RevelationListViewFragment.class.getSimpleName();
@@ -31,7 +33,7 @@ public class RevelationListViewFragment extends Fragment {
     private static boolean timerInitialized = false;
     public static final String FRAGMENT_TAG = RevelationEntryFragment.class.getSimpleName();
 
-    protected static Timer timer;
+    private static Timer timer;
     private String groupUuid;
 
     public static void cancelTimer() {
@@ -43,7 +45,7 @@ public class RevelationListViewFragment extends Fragment {
         }
     }
 
-    protected void newTimer() {
+    private void newTimer() {
         final ARevelation aRevelation = (ARevelation) getActivity();
         if (!timerInitialized && aRevelation.isLockingSave()) {
             Log.d(LOG_TAG, "Creating new timer ...");
@@ -61,7 +63,7 @@ public class RevelationListViewFragment extends Fragment {
                                 int minutesLeft = preferenceAutoLock - ++minuteCounter;
                                 Log.d(LOG_TAG, "lock in: " + minutesLeft);
                                 if (minutesLeft > 0) {
-                                    if (aRevelation.isActivityVisible()) {
+                                    if (ARevelation.isActivityVisible()) {
                                         Toast.makeText(aRevelation, getResources().getQuantityString(R.plurals.auto_lock_time_left, minutesLeft, minutesLeft), Toast.LENGTH_LONG).show();
                                     }
                                 } else {
@@ -142,36 +144,48 @@ public class RevelationListViewFragment extends Fragment {
             newTimer();
         }
 
+        FabHelper.showFabIcon(getActivity());
+
+        // We entered an entry, add to state!
+        RevelationData rvlData = ((ARevelation) getActivity()).rvlData;
+        if (rvlData != null) {
+            // add the current folder element - if there to the entry state
+            Entry entry = rvlData.getEntryById(groupUuid);
+            if (entry != null) {
+                EntryStateHelper.add(entry);
+            }
+        }
+
         return v;
     }
 
+    /**
+     * Note: Don't disable the fab icon here
+     * If the user enters a directory, the fab icon will hide, because we create a new
+     * RevelationListViewFragment for every view.
+     */
     @Override
     public void onPause() {
         Log.d(LOG_TAG, "onPause");
         super.onPause();
+
+    }
+
+    @Override
+    public void onDestroy(){
+        Log.d(LOG_TAG, "onDestroy");
+        super.onDestroy();
         try {
-            ((ARevelation) getActivity()).getCurrentEntryState().removeLast();
+            EntryStateHelper.remove();
         } catch (NoSuchElementException e) {
             // ignore
         }
-        getActivity().findViewById(R.id.fab).setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void onResume() {
         Log.d(LOG_TAG, "onResume");
         super.onResume();
-
-        getActivity().findViewById(R.id.fab).setVisibility(View.VISIBLE);
-
-        RevelationData rvlData = ((ARevelation) getActivity()).rvlData;
-        if (rvlData != null) {
-            // add the current folder element - if there to the entry state
-            Entry entry = rvlData.getEntryById(groupUuid);
-            if (entry != null) {
-                ((ARevelation) getActivity()).getCurrentEntryState().add(entry);
-            }
-        }
     }
 
     @Override
@@ -185,25 +199,16 @@ public class RevelationListViewFragment extends Fragment {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             try {
                 Entry n = (Entry) parent.getItemAtPosition(position);
-                if (!n.type.equals(Entry.TYPE_FOLDER)) {
-                    RevelationEntryFragment nextFrag = RevelationEntryFragment.newInstance(n.getUuid());
-                    getFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.mainContainer, nextFrag)
-                            .addToBackStack(null).commit();
-                } else {
-                    RevelationListViewFragment nextFrag = RevelationListViewFragment.newInstance(n.getUuid());
-                    getFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.mainContainer, nextFrag)
-                            .addToBackStack(null).commit();
-                }
+                Fragment nextFrag = !n.type.equals(Entry.TYPE_FOLDER) ? RevelationEntryFragment.newInstance(n.getUuid()) : RevelationListViewFragment.newInstance(n.getUuid());
+                getFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.mainContainer, nextFrag)
+                        .addToBackStack(null).commit();
+
             } catch (Exception e) {
                 e.printStackTrace();
                 throw e;
             }
         }
-
     }
-
 }
