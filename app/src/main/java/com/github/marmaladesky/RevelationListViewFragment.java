@@ -16,7 +16,6 @@ import com.github.marmaladesky.data.Entry;
 import com.github.marmaladesky.data.RevelationData;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -147,16 +146,19 @@ public class RevelationListViewFragment extends Fragment {
         FabHelper.showFabIcon(getActivity());
 
         // We entered an entry, add to state!
-        RevelationData rvlData = ((ARevelation) getActivity()).rvlData;
-        if (rvlData != null) {
-            // add the current folder element - if there to the entry state
-            Entry entry = rvlData.getEntryById(groupUuid);
-            if (entry != null) {
-                EntryStateHelper.add(entry);
-            }
-        }
+        // add the current folder element - if there to the entry state
+        EntryStateHelper.add(getEntry());
 
         return v;
+    }
+
+    private Entry getEntry() {
+        RevelationData rvlData = ((ARevelation) getActivity()).rvlData;
+        if (rvlData != null) {
+            return rvlData.getEntryById(groupUuid);
+        }
+
+        return null;
     }
 
     /**
@@ -175,11 +177,7 @@ public class RevelationListViewFragment extends Fragment {
     public void onDestroy(){
         Log.d(LOG_TAG, "onDestroy");
         super.onDestroy();
-        try {
-            EntryStateHelper.remove();
-        } catch (NoSuchElementException e) {
-            // ignore
-        }
+        EntryStateHelper.remove(getEntry());
     }
 
     @Override

@@ -1,4 +1,8 @@
 # Releases
+## 1.9
+- Fix: android.content.res.Resources$NotFoundException for Nokia Nokia 8 (NB1), Android 8.1
+- Minor bugfixes
+
 ## 1.8
 - Fix: java.lang.IllegalStateException crashes for Huawei Y6II (HWCAM-H)
 - Fix: java.lang.NullPointerException crashes for A1 PRO

@@ -9,20 +9,23 @@ import android.content.Context;
  */
 
 public enum EntryType {
-    CREDITCARD, CRYPTOKEY, DATABASE, DOOR, EMAIL, FTP, GENERIC, PHONE, SHELL, REMOTEDESKTOP, VNC, WEBSITE, FOLDER;
+    CREDITCARD, CRYPTOKEY, DATABASE, DOOR, EMAIL, FTP, GENERIC, PHONE, SHELL, REMOTEDESKTOP, VNC, WEBSITE, FOLDER, UNKNOWN;
 
     public static EntryType getFromPosition(int position){
         EntryType[] entryTypes = EntryType.values();
-        return (position >= 0 && position <= EntryType.values().length) ? entryTypes[position] : null;
+        // don't count unknown entry state (-1)
+        return (position >= 0 && position < EntryType.values().length-1) ? entryTypes[position] : UNKNOWN;
     }
 
     public static String[] getTranslatedEntryTypes(Context context){
         final EntryType[] entryTypes = EntryType.values();
-        String[] translatedEntryTypes = new String[entryTypes.length];
+        String[] translatedEntryTypes = new String[entryTypes.length-1];
         int idx = 0;
         for(EntryType entryType : EntryType.values()) {
-            int id = context.getResources().getIdentifier(entryType.toString().toLowerCase(), "string", context.getPackageName());
-            translatedEntryTypes[idx++] = ((id > 0) ? context.getString(id) : entryType.toString());
+            if (entryType != EntryType.UNKNOWN) {
+                int id = context.getResources().getIdentifier(entryType.toString().toLowerCase(), "string", context.getPackageName());
+                translatedEntryTypes[idx++] = ((id > 0) ? context.getString(id) : entryType.toString());
+            }
         }
         return translatedEntryTypes;
     }

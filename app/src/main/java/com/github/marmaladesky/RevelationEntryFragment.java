@@ -64,15 +64,14 @@ public class RevelationEntryFragment extends Fragment {
         ArrayList<Map<String, Object>> data = new ArrayList<>();
 
         HashMap<String, Object> values = new HashMap<>();
-
         values.put(ROW_HEADER_IDENTIFIER, getString(R.string.name));
-        values.put(ROW_DATA_IDENTIFIER, entry.getName() == null ? "" : entry.getName());
+        values.put(ROW_DATA_IDENTIFIER, entry != null && entry.getName() != null ? entry.getName() : "");
         data.add(values);
 
         if (!Entry.TYPE_FOLDER.toLowerCase().equals(entry.type)) {
             values = new HashMap<>();
             values.put(ROW_HEADER_IDENTIFIER, getString(R.string.description));
-            values.put(ROW_DATA_IDENTIFIER, entry.getDescription() == null ? "" : entry.getDescription());
+            values.put(ROW_DATA_IDENTIFIER, entry != null && entry.getDescription() != null ? entry.getDescription() : "");
             data.add(values);
 
             for (Field f : entry.fields) {
@@ -84,7 +83,7 @@ public class RevelationEntryFragment extends Fragment {
 
             values = new HashMap<>();
             values.put(ROW_HEADER_IDENTIFIER, getString(R.string.notes));
-            values.put(ROW_DATA_IDENTIFIER, entry.getNotes() == null ? "" : entry.getNotes());
+            values.put(ROW_DATA_IDENTIFIER, entry != null && entry.getNotes() != null ? entry.getNotes() : "");
             data.add(values);
         }
 
@@ -93,7 +92,6 @@ public class RevelationEntryFragment extends Fragment {
         values.put(ROW_HEADER_IDENTIFIER, getString(R.string.updated));
         values.put(ROW_DATA_IDENTIFIER, dateFormatter.format(new Date(entry.updated * 1000L))); // In python world it is seconds
         data.add(values);
-
 
         SimpleAdapter itemsAdapter = new SimpleAdapter(
                 this.getActivity(), data,
@@ -140,7 +138,6 @@ public class RevelationEntryFragment extends Fragment {
         simple.setAdapter(itemsAdapter);
         simple.setOnItemClickListener(new PasswordOnClickListener());
         ((ARevelation) getActivity()).checkButton();
-
         return v;
     }
 

@@ -78,7 +78,7 @@ public class RevelationStructureBrowserAdapter extends ArrayAdapter<String> {
                     private  void delete() {
                         Log.d(LOG_TAG, "Deleting: " + entry.getUuid());
                         // remove from the main data storage
-                        ((ARevelation) aRevelation).getRvlData().removeEntryById(entry.getUuid());
+                        aRevelation.getRvlData().removeEntryById(entry.getUuid());
                         // remove from the adapter view
                         data.remove(entry);
                         // notify data changes
@@ -142,6 +142,8 @@ public class RevelationStructureBrowserAdapter extends ArrayAdapter<String> {
                 return R.drawable.ic_file_url_1759;
             case FOLDER:
                 return R.drawable.ic_folder_1791;
+            case UNKNOWN:
+                return R.drawable.ic_question_1445;
             default:
                 return null;
         }
