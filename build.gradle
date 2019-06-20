@@ -7,7 +7,7 @@ buildscript {
 		jcenter()
 	}
 	dependencies {
-		classpath 'com.android.tools.build:gradle:3.2.1'
+		classpath 'com.android.tools.build:gradle:3.4.1'
 
 
 		// NOTE: Do not place your application dependencies here; they belong
@@ -21,8 +21,8 @@ plugins {
 }
 
 lombok { // optional: values below are the defaults
-    version = "1.16.18"
-    sha256 = "3ca225ce3917eac8bf4b7d2186845df4e70dcdede356dca8537b6d78a535c91e"
+    version = "1.18.8"
+    sha256 = "448003bc1b234aac04b58e27d7755c12c3ec4236"
 }
 
 allprojects {
@@ -32,11 +32,11 @@ allprojects {
 		jcenter()
 	}
 
-	gradle.projectsEvaluated {
+	/*gradle.projectsEvaluated {
 		tasks.withType(JavaCompile) {
 			options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
 		}
-	}
+	}*/
 }
 
 //task clean(type: Delete) {

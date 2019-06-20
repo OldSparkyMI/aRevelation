@@ -1,4 +1,10 @@
 # Releases
+## 1.10
+- Migration to AndroidX
+- Fix: https://github.com/OldSparkyMI/aRevelation/issues/16 - an entry with empty name will be displayed, name not mandatory anymore
+- Update: Gradle to 5.1.1
+- Update: Lombok to 1.18.8
+
 ## 1.9
 - Fix: android.content.res.Resources$NotFoundException for Nokia Nokia 8 (NB1), Android 8.1
 - Minor bugfixes

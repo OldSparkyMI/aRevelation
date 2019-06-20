@@ -22,7 +22,7 @@
     <string name="ask_password_message">Input password</string>
     <string name="new_filename">Input Filename</string>
     <string name="self_testing_warning">Warning! Editing and saving could cause data lost! Be careful.</string>
-    <string name="self_testing_super_warning">Super Warning! Editing and saving will cause data lost! Be careful.</string>
+    <string name="self_testing_super_warning">Super Warning! Editing and saving will most likely cause data lost! Be careful.</string>
     <string name="self_testing_passed_message">Self testing passed. Editing is safe</string>
     <string name="self_testing_internal_error">Internal unknown error of self testing. Be careful.</string>
     <string name="decrypt_label">Decrypting…</string>

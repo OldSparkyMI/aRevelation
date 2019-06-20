@@ -1,6 +1,10 @@
 package com.github.marmaladesky.data;
 
-import org.simpleframework.xml.*;
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
+import org.simpleframework.xml.Order;
+import org.simpleframework.xml.Root;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -23,7 +27,7 @@ public class Entry implements Serializable {
     @Attribute(name="type")
     public final String type;
 
-    @Element(name = PROPERTY_NAME)
+    @Element(name = PROPERTY_NAME, required = false)
     private String name;
     private boolean isNameUpdated;
     private final String uuidName = UUID.randomUUID().toString();
@@ -55,7 +59,7 @@ public class Entry implements Serializable {
                  @Element(name = PROPERTY_UPDATED) long updated,
                  @ElementList(name = "entry", inline = true, required = false) List<Entry> list) {
         this.type = type.toLowerCase(); // Revelation 0.4.14 (Desktop version) understands only lowercase types
-        this.name = name;
+        this.name = name != null ? name : "";
         this.description = description != null ? description : "";
         this.notes = notes != null ? notes : "";
         this.fields = fields != null ? fields : new ArrayList<Field>();
